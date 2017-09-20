@@ -22,7 +22,7 @@ public class InventoryItem {
 	private int id;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="department_id")
+	@JoinColumn(name="DEPARTMENT_ID")
 	private Department department;
 	
 	@Column(name="unit_price",nullable=false)
