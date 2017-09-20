@@ -30,7 +30,7 @@ public class LineItem {
 	private int quantity;
 	
 	@OneToOne
-	@JoinColumn(name = "INVENTORY_ITEM_ID",nullable=false)
+	@JoinColumn(name = "inv_item_id",nullable=false)
 	private InventoryItem inventoryItem;
 
 	public LineItem() {
