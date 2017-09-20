@@ -1,4 +1,4 @@
-package com.ims.beans.first;
+package com.ims.beans;
 
 
 import javax.persistence.Column;

@@ -1,4 +1,4 @@
-package com.ims.beans.third;
+package com.ims.beans;
 
 
 import java.io.Serializable;
@@ -16,8 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import com.ims.beans.first.Customer;
 
 @Entity
 @Table(name="Orders")

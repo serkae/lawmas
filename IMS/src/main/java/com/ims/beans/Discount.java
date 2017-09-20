@@ -1,10 +1,8 @@
-package com.ims.beans.third;
+package com.ims.beans;
 
 import java.sql.Timestamp;
 
 import javax.persistence.*;
-
-import com.ims.beans.second.InventoryItem;
 
 
 @Entity

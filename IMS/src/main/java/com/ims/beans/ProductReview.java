@@ -1,4 +1,4 @@
-package com.ims.beans.third;
+package com.ims.beans;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import com.ims.beans.second.InventoryItem;
 
 @Entity
 @Table(name="ProductReview")
