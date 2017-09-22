@@ -24,10 +24,19 @@ public class StatesService {
 		this.sRepo = sRepo;
 	}
 	
-	public void add(State s) {
+	public void addState(State s) {
 		sRepo.save(s);
 	}
 	public List<State> getAll(){
 		return (List<State>) sRepo.findAll();
+	}
+	public State getStateById(int id) {
+		return sRepo.findOne(id);
+	}
+	public void updateState(State s) {
+		sRepo.saveAndFlush(s);
+	}
+	public void removeState(State s) {
+		sRepo.delete(s);
 	}
 }
