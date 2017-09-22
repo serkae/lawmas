@@ -24,6 +24,9 @@ public class StatesService {
 		this.sRepo = sRepo;
 	}
 	
+	public void add(State s) {
+		sRepo.save(s);
+	}
 	public List<State> getAll(){
 		return (List<State>) sRepo.findAll();
 	}
