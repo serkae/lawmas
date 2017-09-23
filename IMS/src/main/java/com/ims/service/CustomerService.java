@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ims.beans.Customer;
-
 import com.ims.dao.CustomerRepository;
+import com.ims.beans.Customer;
 
 @Component
 @Transactional
@@ -34,7 +33,7 @@ public class CustomerService {
 	public Customer getCustomerById(int id) {
 		return aRepo.findOne(id);
 	}
-	public void updateState(Customer s) {
+	public void updateCustomer(Customer s) {
 		aRepo.saveAndFlush(s);
 	}
 	public void removeCustomer(Customer s) {

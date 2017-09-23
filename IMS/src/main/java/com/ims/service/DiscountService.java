@@ -33,7 +33,7 @@ public class DiscountService {
 	public Discount getDiscountById(int id) {
 		return aRepo.findOne(id);
 	}
-	public void updateState(Discount s) {
+	public void updateDiscount(Discount s) {
 		aRepo.saveAndFlush(s);
 	}
 	public void removeDepartment(Discount s) {

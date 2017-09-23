@@ -33,7 +33,7 @@ public class DepartmentService {
 	public Department getDepartmentById(int id) {
 		return aRepo.findOne(id);
 	}
-	public void updateState(Department s) {
+	public void updateDepartment(Department s) {
 		aRepo.saveAndFlush(s);
 	}
 	public void removeDepartment(Department s) {

@@ -33,7 +33,7 @@ public class AdminService {
 	public Admin getAdminById(int id) {
 		return aRepo.findOne(id);
 	}
-	public void updateState(Admin s) {
+	public void updateAdmin(Admin s) {
 		aRepo.saveAndFlush(s);
 	}
 	public void removeAdmin(Admin s) {

@@ -33,7 +33,7 @@ public class CardService {
 	public Card getCardById(int id) {
 		return aRepo.findOne(id);
 	}
-	public void updateState(Card s) {
+	public void updateCard(Card s) {
 		aRepo.saveAndFlush(s);
 	}
 	public void removeCard(Card s) {
