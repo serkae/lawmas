@@ -1,0 +1,12 @@
+package com.ims.dao;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.ims.beans.Customer;
+
+public interface CustomerRepository extends JpaRepository<Customer, Integer>{
+
+	List<Customer> findBylastname(String lastname);
+}

@@ -13,6 +13,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.ims.beans.Card;
+import com.ims.beans.State;
+
 @Entity
 @Table(name="Customer")
 public class Customer {
