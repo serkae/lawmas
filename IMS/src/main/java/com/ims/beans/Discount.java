@@ -20,7 +20,7 @@ public class Discount {
 	private InventoryItem inventoryItem;
 	
 	@Column(name = "DISCOUNT_TYPE",nullable=false)
-	private float discountType;
+	private int discountType;
 	@Column(name = "AMOUNT",nullable=false)
 	private float amount;
 	@Column(name = "DESCRIPTION")
@@ -33,7 +33,7 @@ public class Discount {
 	
 	public Discount() {}
 	
-	public Discount(int discountID, InventoryItem inventoryItem, float discountType, float amount, String description,
+	public Discount(int discountID, InventoryItem inventoryItem, int discountType, float amount, String description,
 			Timestamp startDate, Timestamp endDate) {
 		super();
 		this.discountID = discountID;
@@ -54,7 +54,7 @@ public class Discount {
 	public double getDiscountType() {
 		return discountType;
 	}
-	public void setDiscountType(float discountType) {
+	public void setDiscountType(int discountType) {
 		this.discountType = discountType;
 	}
 	public double getAmount() {
