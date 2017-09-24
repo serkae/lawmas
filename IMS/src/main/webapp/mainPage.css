@@ -55,7 +55,18 @@ ul{
 	height: 40px;
 	width: 100%;
 }
-
+<!-- adminHomePage.html -->
 #managerSideNav{
   border-right: 2px solid black;
+}
+<!-- manageInventoryHome.html-->
+#manageInventoryHome{
+  text-align:center;
+}
+#manageInventoryHome > a{
+  font-color: blue;
+}
+.MIHLinks{
+  color: blue;
+  text-decoration: underline;
 }
