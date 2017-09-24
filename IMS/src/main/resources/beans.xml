@@ -42,7 +42,4 @@
 		<property name="sessionFactory" ref="mySessionFactory"></property>
 	</bean>
 	
-	<bean id="myDAO" class="com.ims.dao.IMSDao">
-		<property name="sessionFactory" ref="mySessionFactory"></property>
-	</bean>
 </beans>
