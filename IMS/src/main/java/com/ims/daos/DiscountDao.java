@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -7,16 +7,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.Discount;
-import com.ims.dao.DiscoutRepository;
+import com.ims.repositories.DiscoutRepository;
 
 @Component
 @Transactional
-public class DiscountService {
+public class DiscountDao {
 	
 	@Autowired
 	private DiscoutRepository aRepo; //i spelled it wrong...
 	
-	public DiscountService() {
+	public DiscountDao() {
 		
 	}
 	

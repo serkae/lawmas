@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -7,18 +7,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.LineItem;
-import com.ims.dao.LineItemRepository;
+import com.ims.repositories.LineItemRepository;
 
 
 
 @Component
 @Transactional
-public class LineItemService {
+public class LineItemDao {
 
 	@Autowired
 	private LineItemRepository aRepo;
 	
-	public LineItemService() {
+	public LineItemDao() {
 		
 	}
 	

@@ -1,4 +1,4 @@
-package com.ims.dao;
+package com.ims.repositories;
 
 import java.util.List;
 

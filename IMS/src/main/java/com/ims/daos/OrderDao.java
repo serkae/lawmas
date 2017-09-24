@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.Order;
-import com.ims.dao.OrderRepository;
+import com.ims.repositories.OrderRepository;
 
 
 @Component
 @Transactional
-public class OrderService {
+public class OrderDao {
 
 	@Autowired
 	private OrderRepository aRepo;
 	
-	public OrderService() {
+	public OrderDao() {
 		
 	}
 	

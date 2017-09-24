@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -7,16 +7,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.State;
-import com.ims.dao.StateRepository;
+import com.ims.repositories.StateRepository;
 
 @Component
 @Transactional
-public class StatesService {
+public class StatesDao {
 
 	@Autowired
 	private StateRepository sRepo;
 	
-	public StatesService() {
+	public StatesDao() {
 		
 	}
 	
