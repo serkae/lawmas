@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -6,17 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ims.dao.CustomerRepository;
 import com.ims.beans.Customer;
+import com.ims.repositories.CustomerRepository;
 
 @Component
 @Transactional
-public class CustomerService {
+public class CustomerDao {
 	
 	@Autowired
 	private CustomerRepository aRepo;
 	
-	public CustomerService() {
+	public CustomerDao() {
 		
 	}
 	

@@ -1,7 +1,6 @@
 package com.ims.beans;
 
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -21,10 +20,9 @@ import com.ims.beans.Customer;
 
 @Entity
 @Table(name="Orders")
-public class Order implements Serializable {
+public class Order {
     
-    private static final long serialVersionID = 1L;
-    
+
     @Id
     @Column(name="ORDER_ID")
     @SequenceGenerator(name="ORDERID_SEQ", sequenceName="ORDERID_SEQ")

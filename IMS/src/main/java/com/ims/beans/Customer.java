@@ -49,7 +49,7 @@ public class Customer {
 	@Column(nullable=false)
 	private String zipcode;
 	
-	@Column(nullable=false)
+	@Column
 	private String phone;
 
 	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)

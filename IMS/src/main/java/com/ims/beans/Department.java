@@ -11,7 +11,7 @@ public class Department {
 
 	@Id
 	@Column(name = "DEPARTMENT_ID")
-	private int depID;
+	private int departmentId;
 	
 	@Column(name = "DEPARTMENT_NAME")
 	private String name;
@@ -20,20 +20,20 @@ public class Department {
 
 	public Department(int depID, String name) {
 		super();
-		this.depID = depID;
+		this.departmentId = depID;
 		this.name = name;
 	}
 
 
 
 	public int getDepID() {
-		return depID;
+		return departmentId;
 	}
 
 
 
 	public void setDepID(int depID) {
-		this.depID = depID;
+		this.departmentId = depID;
 	}
 
 
@@ -50,7 +50,7 @@ public class Department {
 
 	@Override
 	public String toString() {
-		return "Department [depID=" + depID + ", name=" + name + "]";
+		return "Department [depID=" + departmentId + ", name=" + name + "]";
 	}
 	
 	
