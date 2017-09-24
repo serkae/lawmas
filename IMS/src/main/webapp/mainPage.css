@@ -55,3 +55,7 @@ ul{
 	height: 40px;
 	width: 100%;
 }
+
+#managerSideNav{
+  border-right: 2px solid black;
+}
