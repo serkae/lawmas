@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daoImps;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.Department;
-import com.ims.dao.DepartmentRepository;
+import com.ims.repositories.DepartmentRepository;
 
 @Component
 @Transactional

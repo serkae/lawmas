@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="ADMIN")
-public class Admin {
+public class Admin{
 	
 	@Id
 	@Column(name="ADMIN_ID")

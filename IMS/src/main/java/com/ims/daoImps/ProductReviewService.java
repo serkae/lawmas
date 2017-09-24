@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daoImps;
 
 import java.util.List;
 
@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import com.ims.beans.ProductReview;
-
-import com.ims.dao.ProductReviewRepository;
+import com.ims.repositories.ProductReviewRepository;
 
 @Component
 @Transactional
