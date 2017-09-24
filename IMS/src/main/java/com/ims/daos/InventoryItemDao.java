@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import com.ims.repositories.InventoryItemRepository;
 
 @Component
 @Transactional
-public class InventoryItemService {
+public class InventoryItemDao {
 
 	@Autowired
 	private InventoryItemRepository aRepo;
 	
-	public InventoryItemService() {
+	public InventoryItemDao() {
 		
 	}
 	

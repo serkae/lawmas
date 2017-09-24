@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ims.beans.Admin;
 import com.ims.dtos.AdminDto;
-import com.ims.dtos.TestDto;
 import com.ims.services.AdminService;
 
 @RestController
@@ -32,19 +32,12 @@ public class AdminController {
 		return new ResponseEntity<AdminDto>(adminService.authenticateUser(adminDto), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/test",method=(RequestMethod.POST),
+	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<TestDto> test(@RequestBody TestDto td){
-		System.out.println(td);
-		return new ResponseEntity<TestDto>(td, HttpStatus.OK);
+	public ResponseEntity<AdminDto> registerUser(@RequestBody Admin admin){
+		System.out.println("Creating user: "+admin.getEmail());
+		return new ResponseEntity<AdminDto>(adminService.createAdmin(admin), HttpStatus.OK);
+		
 	}
-//	@RequestMapping(value="/register",method=(RequestMethod.POST),
-//			consumes=(MediaType.APPLICATION_JSON_VALUE),
-//			produces=(MediaType.APPLICATION_JSON_VALUE))
-//	public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto){
-//		System.out.println("Creating user: "+userDto.getUsername());
-//		return new ResponseEntity<UserDto>(userServiceImpl.createUser(userDto), HttpStatus.OK);
-//		
-//	}
 }

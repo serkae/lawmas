@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import com.ims.repositories.DepartmentRepository;
 
 @Component
 @Transactional
-public class DepartmentService {
+public class DepartmentDao {
 	
 	@Autowired
 	private DepartmentRepository aRepo;
 	
-	public DepartmentService() {
+	public DepartmentDao() {
 		
 	}
 	

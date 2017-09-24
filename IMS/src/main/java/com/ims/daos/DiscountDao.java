@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import com.ims.repositories.DiscoutRepository;
 
 @Component
 @Transactional
-public class DiscountService {
+public class DiscountDao {
 	
 	@Autowired
 	private DiscoutRepository aRepo; //i spelled it wrong...
 	
-	public DiscountService() {
+	public DiscountDao() {
 		
 	}
 	

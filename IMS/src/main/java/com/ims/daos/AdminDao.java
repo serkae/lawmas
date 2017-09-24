@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 

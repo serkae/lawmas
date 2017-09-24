@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -13,12 +13,12 @@ import com.ims.repositories.LineItemRepository;
 
 @Component
 @Transactional
-public class LineItemService {
+public class LineItemDao {
 
 	@Autowired
 	private LineItemRepository aRepo;
 	
-	public LineItemService() {
+	public LineItemDao() {
 		
 	}
 	

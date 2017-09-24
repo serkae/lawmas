@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import com.ims.repositories.StateRepository;
 
 @Component
 @Transactional
-public class StatesService {
+public class StatesDao {
 
 	@Autowired
 	private StateRepository sRepo;
 	
-	public StatesService() {
+	public StatesDao() {
 		
 	}
 	

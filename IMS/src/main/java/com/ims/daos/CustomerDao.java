@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import com.ims.repositories.CustomerRepository;
 
 @Component
 @Transactional
-public class CustomerService {
+public class CustomerDao {
 	
 	@Autowired
 	private CustomerRepository aRepo;
 	
-	public CustomerService() {
+	public CustomerDao() {
 		
 	}
 	

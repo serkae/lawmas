@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import com.ims.repositories.CardRepository;
 
 @Component
 @Transactional
-public class CardService {
+public class CardDao {
 
 	@Autowired
 	private CardRepository aRepo;
 	
-	public CardService() {
+	public CardDao() {
 		
 	}
 	

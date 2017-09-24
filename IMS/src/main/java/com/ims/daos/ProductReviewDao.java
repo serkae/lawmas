@@ -1,4 +1,4 @@
-package com.ims.daoImps;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -12,12 +12,12 @@ import com.ims.repositories.ProductReviewRepository;
 
 @Component
 @Transactional
-public class ProductReviewService {
+public class ProductReviewDao {
 
 	@Autowired
 	private ProductReviewRepository aRepo;
 	
-	public ProductReviewService() {
+	public ProductReviewDao() {
 		
 	}
 	
