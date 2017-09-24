@@ -70,3 +70,7 @@ ul{
   color: blue;
   text-decoration: underline;
 }
+<!-- Inventory Search -->
+#inventorySearch{
+  width: 500px;
+}
