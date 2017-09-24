@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -7,16 +7,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.Card;
-import com.ims.dao.CardRepository;
+import com.ims.repositories.CardRepository;
 
 @Component
 @Transactional
-public class CardService {
+public class CardDao {
 
 	@Autowired
 	private CardRepository aRepo;
 	
-	public CardService() {
+	public CardDao() {
 		
 	}
 	

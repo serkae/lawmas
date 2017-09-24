@@ -32,11 +32,9 @@ public class ProductReview {
 	@Column(name="description")
 	private String description;
 
-	public ProductReview() {
-		super();
-	}
+	public ProductReview() {}
 
-	public ProductReview(int id, InventoryItem inventoryItem, int rating, String comment) {
+	public ProductReview(int id, InventoryItem inventoryItem, int rating, String description) {
 		super();
 		this.id = id;
 		this.inventoryItem = inventoryItem;

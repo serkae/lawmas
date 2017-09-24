@@ -1,4 +1,4 @@
-package com.ims.service;
+package com.ims.daos;
 
 import java.util.List;
 
@@ -7,16 +7,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.Department;
-import com.ims.dao.DepartmentRepository;
+import com.ims.repositories.DepartmentRepository;
 
 @Component
 @Transactional
-public class DepartmentService {
+public class DepartmentDao {
 	
 	@Autowired
 	private DepartmentRepository aRepo;
 	
-	public DepartmentService() {
+	public DepartmentDao() {
 		
 	}
 	

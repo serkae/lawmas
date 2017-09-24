@@ -1,4 +1,4 @@
-package com.ims.dao;
+package com.ims.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
