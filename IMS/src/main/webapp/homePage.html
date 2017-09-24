@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<link rel="shortcut icon" href="/" />
+<title>WorldTree Home Page</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- This loads JS (angular & ui-router) -->
+<script src="http://code.angularjs.org/1.2.13/angular.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+<style>
+.navbar-nav > li {
+	padding-top: 10px;
+	padding-right: 30px;
+    padding-left: 30px;
+}
+.a {
+	background-color: #ffbf80;
+}
+.jumbotron {
+	font-family: Sacramento;
+}
+.p {
+	font-family: Opened Sans Condensed;
+}
+.btn {
+	background-color: #d9ffb3;
+}
+</style>
+</head>
+
+<!-- Applies the angular app, customerRouting, to the homePage -->
+<body ng-app="customerRouting">
+
+<nav class="navbar navbar-light" style="background-color: #b3ffd9;">
+  <div class="container-fluid">
+  	<ul class="nav navbar-nav">
+  		<li><a ui-sref="home"><span class="glyphicon glyphicon-home"></span></a></li>
+  		<li><form class="form-inline">
+    		<input class="form-control mr-sm-2" type="text" placeholder="Search">
+    		<button class="btn" type="submit">
+    			<span class="glyphicon glyphicon-search"></span> Search
+    		</button>
+  			</form>
+  		</li>
+  		<li><a ui-sref="cart"><span class="glyphicon glyphicon-shopping-cart" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet"></span></a></li>
+  		<li><span class="glyphicon glyphicon-user" data-toggle="modal" data-target="#login"></span></li>
+  	</ul>
+  </div>
+</nav>
+
+<!-- Here is where the partials will go -->
+<div class="container">
+    <div ui-view></div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="login" role="dialog">
+	<div class="modal-dialog">
+
+	<!-- Modal content -->
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">Customer Login</h4>
+		</div>
+		<div class="modal-body">
+			<form class="form-horizontal">
+    			<div class="form-group">
+        			<label for="firstname" class="control-label col-xs-2">First Name:</label>
+        			<div class="col-xs-10">
+            			<input type="text" class="form-control" name="firstname" id="firstname" placeholder="First Name" required>
+       				 </div>
+    			</div>
+    			<div class="form-group">
+        			<label for="password" class="control-label col-xs-2">Password:</label>
+        			<div class="col-xs-10">
+            			<input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+       				 </div>
+    			</div>
+    		</form>
+    	</div>
+    	<div class="modal-footer">
+			<button type="submit" class="btn btn-default">Login</button>
+		</div>
+	</div>
+	</div>
+</div>
+
+</body>
+</html>
