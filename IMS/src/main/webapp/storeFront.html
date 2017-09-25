@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<link rel="shortcut icon" href="/" />
+<title>WorldTree Home Page</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- This loads JS (angular & ui-router) -->
+<script src="http://code.angularjs.org/1.2.13/angular.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+<link rel="stylesheet" type="text/css" href="mainPage.css">
+<style>
+.navbar-nav > li {
+    padding-top: 10px;
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.a {
+    background-color: #ffbf80;
+}
+.h1 {
+    font-family: Sacramento;
+}
+.p {
+    font-family: Opened Sans Condensed;
+}
+.btn {
+    background-color: #d9ffb3;
+}
+</style>
+</head>
+<!-- Applies the angular app, customerRouting, to the homePage -->
+<body>
+<nav class="navbar navbar-light" style="background-color: #b3ffd9;">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+        <li><a ui-sref="home"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li><form class="form-inline">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn" type="submit">
+                <span class="glyphicon glyphicon-search"></span> Search
+            </button>
+            </form>
+        </li>
+        <li><a ui-sref="cart"><span class="glyphicon glyphicon-shopping-cart" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet"></span></a></li>
+        <li><button data-toggle="modal" data-target="#login"><span class="glyphicon glyphicon-user" ></span></button></li>
+    </ul>
+  </div>
+</nav>
+<!-- Here is where the partials will go -->
+<div class="container">
+    <div ui-view></div>
+</div>
+
+
+	<!-- Modal -->
+<div class="modal fade" id="login" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Customer Login</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="firstname" class="control-label col-xs-2">First Name:</label>
+                    <div class="col-xs-10">
+                        <input type="text" class="form-control" name="firstname" id="firstname" placeholder="First Name" required>
+                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="control-label col-xs-2">Password:</label>
+                    <div class="col-xs-10">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                     </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+</body>
+</html>
