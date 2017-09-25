@@ -2,7 +2,10 @@ package com.ims.beans;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -11,32 +14,28 @@ public class Department {
 
 	@Id
 	@Column(name = "DEPARTMENT_ID")
-	private int departmentId;
+	@SequenceGenerator(name = "DEPARTMENT_ID_SEQ", sequenceName="DEPARTMENT_ID_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="DEPARTMENT_ID_SEQ")
+	private int id;
 	
 	@Column(name = "DEPARTMENT_NAME")
 	private String name;
 
 	public Department() {}
 
-	public Department(int depID, String name) {
+	public Department(int id, String name) {
 		super();
-		this.departmentId = depID;
+		this.id = id;
 		this.name = name;
 	}
 
-
-
-	public int getDepID() {
-		return departmentId;
+	public int getId() {
+		return id;
 	}
 
-
-
-	public void setDepID(int depID) {
-		this.departmentId = depID;
+	public void setId(int id) {
+		this.id = id;
 	}
-
-
 
 	public String getName() {
 		return name;
@@ -50,7 +49,7 @@ public class Department {
 
 	@Override
 	public String toString() {
-		return "Department [depID=" + departmentId + ", name=" + name + "]";
+		return "Department [id=" + id + ", name=" + name + "]";
 	}
 	
 	

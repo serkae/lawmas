@@ -6,6 +6,7 @@ public class AdminDto {
 	private String email;
 	private String password;
 	private boolean authenticated;
+	
 	public AdminDto(int id, String email, String password, boolean authenticated) {
 		super();
 		this.id = id;

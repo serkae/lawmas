@@ -33,8 +33,17 @@ public class DepartmentDao {
 	public Department getDepartmentById(int id) {
 		return aRepo.findOne(id);
 	}
-	public void updateDepartment(Department s) {
-		aRepo.saveAndFlush(s);
+	public Department getDepartmentByName(String name) {
+		List<Department> result = aRepo.findByName(name);
+		if(result.size() == 0) {
+			return null;
+		}
+		else {
+			return result.get(0);
+		}
+	}
+	public void updateDepartment(Department d) {
+		aRepo.setDepartmentById(d.getName(),d.getId());
 	}
 	public void removeDepartment(Department s) {
 		aRepo.delete(s);
