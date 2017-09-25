@@ -16,9 +16,9 @@ import javax.persistence.Table;
 public class InventoryItem {
 	
 	@Id
-	@Column(name="inventory_item_id")
-	@SequenceGenerator(name="inv_item_id_seq", sequenceName="inv_item_id_seq")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="inv_item_id_seq")
+	@Column(name="inventoryitem_id")
+	@SequenceGenerator(name="inventoryitem_id_seq", sequenceName="inventoryitem_id_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="inventoryitem_id_seq")
 	private int id;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
