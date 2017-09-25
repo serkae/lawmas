@@ -41,15 +41,15 @@ public class InventoryItem {
 	@Column(name="image")
 	private String image;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="review_id")
-	private ProductReview productReview;
+//	@ManyToOne(fetch=FetchType.EAGER)
+//	@JoinColumn(name="review_id")
+//	private ProductReview productReview;
 
 	public InventoryItem() {}
 	
 
 	public InventoryItem(int id, Department department, float unitPrice, int quantity, String description,
-			Discount discount, String image, ProductReview productReview) {
+			Discount discount, String image) {
 		super();
 		this.id = id;
 		this.department = department;
@@ -58,7 +58,6 @@ public class InventoryItem {
 		this.description = description;
 		this.discount = discount;
 		this.image = image;
-		this.productReview = productReview;
 	}
 
 	public int getId() {
@@ -127,22 +126,12 @@ public class InventoryItem {
 		this.image = image;
 	}
 
-	
-	public ProductReview getProductReview() {
-		return productReview;
-	}
-
-
-	public void setProductReview(ProductReview productReview) {
-		this.productReview = productReview;
-	}
 
 
 	@Override
 	public String toString() {
 		return "InventoryItem [id=" + id + ", department=" + department.toString() + ", unitPrice=" + unitPrice + ", quantity="
-				+ quantity + ", description=" + description + ", discount=" + discount.toString() + ", image=" + image
-				+ ", productReview=" + productReview.toString() + "]";
+				+ quantity + ", description=" + description + ", discount=" + discount.toString() + ", image=" + image + "]";
 	}
 
 
