@@ -12,9 +12,4 @@ app.controller('custShowInfoController', function($scope) {
 		zipcode: "123456",
 		phone: "123-456-7890"
 	}
-	
-	$scope.showModal = false;
-    $scope.open = function(){
-    $scope.showModal = !$scope.showModal;
-    };
 });
