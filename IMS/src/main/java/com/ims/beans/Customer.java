@@ -42,7 +42,7 @@ public class Customer {
 	@Column(nullable=false)
 	private String city;
 
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="STATE_ID")
 	private State state;
 	
@@ -52,7 +52,7 @@ public class Customer {
 	@Column
 	private String phone;
 
-	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="CARD_ID")
 	private Card card;
 
@@ -182,7 +182,7 @@ public class Customer {
 	public String toString() {
 		return "Customer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email
 				+ ", password=" + password + ", address=" + address + ", city=" + city + ", state=" + state.toString()
-				+ ", zipcode=" + zipcode + ", phone=" + phone + ", card=" + card.toString() + "]";
+				+ ", zipcode=" + zipcode + ", phone=" + phone + "]";
 	}
 
 	

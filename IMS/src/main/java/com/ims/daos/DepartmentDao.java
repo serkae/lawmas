@@ -24,8 +24,8 @@ public class DepartmentDao {
 		this.aRepo = aRepo;
 	}
 	
-	public void addDepartment(Department s) {
-		aRepo.save(s);
+	public Department createOrUpdateDepartment(Department s) {
+		return aRepo.save(s);
 	}
 	public List<Department> getAll(){
 		return (List<Department>) aRepo.findAll();
@@ -33,8 +33,14 @@ public class DepartmentDao {
 	public Department getDepartmentById(int id) {
 		return aRepo.findOne(id);
 	}
-	public void updateDepartment(Department s) {
-		aRepo.saveAndFlush(s);
+	public Department getDepartmentByName(String name) {
+		List<Department> result = aRepo.findByName(name);
+		if(result.size() == 0) {
+			return null;
+		}
+		else {
+			return result.get(0);
+		}
 	}
 	public void removeDepartment(Department s) {
 		aRepo.delete(s);

@@ -24,17 +24,14 @@ public class InventoryItemDao {
 		this.aRepo = aRepo;
 	}
 	
-	public void addInventoryItem(InventoryItem s) {
-		aRepo.save(s);
+	public InventoryItem createOrUpdateInventoryItem(InventoryItem s) {
+		return aRepo.save(s);
 	}
 	public List<InventoryItem> getAll(){
 		return (List<InventoryItem>) aRepo.findAll();
 	}
 	public InventoryItem getInventoryItemById(int id) {
 		return aRepo.findOne(id);
-	}
-	public void updateInventoryItem(InventoryItem s) {
-		aRepo.saveAndFlush(s);
 	}
 	public void removeInventoryItem(InventoryItem s) {
 		aRepo.delete(s);
