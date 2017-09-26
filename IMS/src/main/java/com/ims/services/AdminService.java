@@ -1,5 +1,7 @@
 package com.ims.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,10 @@ public class AdminService {
 	public void removeAdmin(Admin admin) {
 		// remove from DB
 		adminDao.removeAdmin(admin);
+	}
+	
+	public List<Admin> getAll() {
+		return adminDao.getAll();
 	}
 
 }

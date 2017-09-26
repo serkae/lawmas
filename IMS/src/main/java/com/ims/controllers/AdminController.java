@@ -1,5 +1,7 @@
 package com.ims.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,8 +45,16 @@ public class AdminController {
 	@RequestMapping(value="/delete",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public void removeAdmin(@RequestBody Admin admin) {
+	public ResponseEntity<String> removeAdmin(@RequestBody Admin admin) {
 		System.out.println("Deleting user: " + admin.getEmail());
 		adminService.removeAdmin(admin);
+		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}
+
+	@RequestMapping(value="/getAll",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<List<Admin>> getAllAdmins(){
+		return new ResponseEntity<List<Admin>>(adminService.getAll(), HttpStatus.OK);
+	}
+
 }
