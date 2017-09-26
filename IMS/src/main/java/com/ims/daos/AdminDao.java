@@ -24,8 +24,8 @@ public class AdminDao{
 		this.adminRepository = adminRepository;
 	}
 	
-	public void addAdmin(Admin s) {
-		adminRepository.save(s);
+	public Admin saveAdmin(Admin s) {
+		return adminRepository.save(s);
 	}
 	public List<Admin> getAll(){
 		return (List<Admin>) adminRepository.findAll();
@@ -42,10 +42,7 @@ public class AdminDao{
 			return result.get(0);
 		}
 	}
-	public void updateAdmin(Admin s) {
-		adminRepository.saveAndFlush(s);
-	}
 	public void removeAdmin(Admin s) {
-		adminRepository.delete(s);
+		adminRepository.delete(s);;
 	}
 }
