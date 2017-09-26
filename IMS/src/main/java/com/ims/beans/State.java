@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class State {
 	
 	@Id
-	@Column(name="State_ID")
+	@Column(name="STATE_ID")
 	private int id;
 
 	@Column

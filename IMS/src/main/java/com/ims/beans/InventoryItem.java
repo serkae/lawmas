@@ -16,13 +16,13 @@ import javax.persistence.Table;
 public class InventoryItem {
 	
 	@Id
-	@Column(name="inv_item_id")
-	@SequenceGenerator(name="inv_item_id_seq", sequenceName="inv_item_id_seq")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="inv_item_id_seq")
+	@Column(name="inventoryitem_id")
+	@SequenceGenerator(name="inventoryitem_id_seq", sequenceName="inventoryitem_id_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="inventoryitem_id_seq")
 	private int id;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="department_id")
+	@JoinColumn(name="DEPARTMENT_ID")
 	private Department department;
 	
 	@Column(name="unit_price",nullable=false)
@@ -41,13 +41,15 @@ public class InventoryItem {
 	@Column(name="image")
 	private String image;
 	
-	@Column(name="rating")
-	private float rating;
+//	@ManyToOne(fetch=FetchType.EAGER)
+//	@JoinColumn(name="review_id")
+//	private ProductReview productReview;
 
 	public InventoryItem() {}
 	
+
 	public InventoryItem(int id, Department department, float unitPrice, int quantity, String description,
-			Discount discount, String image, float rating) {
+			Discount discount, String image) {
 		super();
 		this.id = id;
 		this.department = department;
@@ -56,10 +58,7 @@ public class InventoryItem {
 		this.description = description;
 		this.discount = discount;
 		this.image = image;
-		this.rating = rating;
 	}
-
-
 
 	public int getId() {
 		return id;
@@ -127,22 +126,16 @@ public class InventoryItem {
 		this.image = image;
 	}
 
-	public double getRating() {
-		return rating;
-	}
-
-	public void setRating(float rating) {
-		this.rating = rating;
-	}
-
 
 
 	@Override
 	public String toString() {
 		return "InventoryItem [id=" + id + ", department=" + department.toString() + ", unitPrice=" + unitPrice + ", quantity="
-				+ quantity + ", description=" + description + ", discount=" + discount.getDescription() + ", image=" + image
-				+ ", rating=" + rating + "]";
+				+ quantity + ", description=" + description + ", discount=" + discount.toString() + ", image=" + image + "]";
 	}
+
+
+	
 
 	
 	

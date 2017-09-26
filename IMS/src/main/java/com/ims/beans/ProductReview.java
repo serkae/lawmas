@@ -23,7 +23,7 @@ public class ProductReview {
 	private int id;
 	
 	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
-	@JoinColumn(name="inventory_item_id")
+	@JoinColumn(name="inventoryitem_id")
 	private InventoryItem inventoryItem;
 	
 	@Column(name="rating",nullable=false)
@@ -32,11 +32,9 @@ public class ProductReview {
 	@Column(name="description")
 	private String description;
 
-	public ProductReview() {
-		super();
-	}
+	public ProductReview() {}
 
-	public ProductReview(int id, InventoryItem inventoryItem, int rating, String comment) {
+	public ProductReview(int id, InventoryItem inventoryItem, int rating, String description) {
 		super();
 		this.id = id;
 		this.inventoryItem = inventoryItem;

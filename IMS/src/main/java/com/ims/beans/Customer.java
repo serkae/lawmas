@@ -13,6 +13,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.ims.beans.Card;
+import com.ims.beans.State;
+
 @Entity
 @Table(name="Customer")
 public class Customer {
@@ -46,7 +49,7 @@ public class Customer {
 	@Column(nullable=false)
 	private String zipcode;
 	
-	@Column(nullable=false)
+	@Column
 	private String phone;
 
 	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
