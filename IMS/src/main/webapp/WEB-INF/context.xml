@@ -64,4 +64,6 @@
 		entity-manager-factory-ref="myEmf">
 	</jpa:repositories>
 
+
+
 </beans>
