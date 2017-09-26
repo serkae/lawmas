@@ -23,7 +23,7 @@ public class ProductReview {
 	private int id;
 	
 	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
-	@JoinColumn(name="inventory_item_id")
+	@JoinColumn(name="inventoryitem_id")
 	private InventoryItem inventoryItem;
 	
 	@Column(name="rating",nullable=false)

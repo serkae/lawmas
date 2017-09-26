@@ -67,7 +67,7 @@ ul{
   border-right: 2px solid black;
 }
 <!-- manageInventoryHome.html-->
-#manageInventoryHome{
+#manageInventoryHomePage{
   text-align:center;
 }
 #manageInventoryHome > a{
@@ -80,4 +80,8 @@ ul{
 <!-- Inventory Search -->
 #inventorySearch{
   width: 500px;
+}
+<!--Add New Inventory -->
+#addNewInventory{
+  text-align:center;
 }

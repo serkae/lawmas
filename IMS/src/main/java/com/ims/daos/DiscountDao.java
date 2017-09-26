@@ -7,20 +7,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.Discount;
-import com.ims.repositories.DiscoutRepository;
+import com.ims.repositories.DiscountRepository;
 
 @Component
 @Transactional
 public class DiscountDao {
 	
 	@Autowired
-	private DiscoutRepository aRepo; //i spelled it wrong...
+	private DiscountRepository aRepo; //i spelled it wrong...
 	
 	public DiscountDao() {
 		
 	}
 	
-	public void setDiscountRepo(DiscoutRepository aRepo) {
+	public void setDiscountRepo(DiscountRepository aRepo) {
 		this.aRepo = aRepo;
 	}
 	

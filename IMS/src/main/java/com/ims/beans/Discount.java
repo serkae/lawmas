@@ -16,7 +16,7 @@ public class Discount {
 	private int discountID;
 	
 	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name="Inventory_Item_ID")
+	@JoinColumn(name="inventoryitem_id")
 	private InventoryItem inventoryItem;
 	
 	@Column(name = "DISCOUNT_TYPE",nullable=false)
