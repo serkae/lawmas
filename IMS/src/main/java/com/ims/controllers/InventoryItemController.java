@@ -29,6 +29,7 @@ public class InventoryItemController {
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<InventoryItem> addItem(@RequestBody InventoryItem i){
+		System.out.println("Creating: " + i.toString());
 		return new ResponseEntity<InventoryItem>(inventoryItemService.createOrUpdate(i), HttpStatus.OK);
 	}
 	

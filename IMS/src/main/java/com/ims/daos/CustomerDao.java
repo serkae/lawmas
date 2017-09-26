@@ -27,6 +27,7 @@ public class CustomerDao {
 	public Customer createOrUpdateCustomer(Customer s) {
 		return aRepo.save(s);
 	}
+	
 	public List<Customer> getAll(){
 		return (List<Customer>) aRepo.findAll();
 	}

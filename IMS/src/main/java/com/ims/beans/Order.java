@@ -60,10 +60,10 @@ public class Order {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	public Timestamp getOrderDate() {
+	public Timestamp getOrder_Date() {
         return order_Date;
     }
-    public void setOrderDate(Timestamp orderDate) {
+    public void setOrder_Date(Timestamp orderDate) {
         this.order_Date = orderDate;
     }
 	@Override
