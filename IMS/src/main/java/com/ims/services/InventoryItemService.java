@@ -25,6 +25,10 @@ public class InventoryItemService {
 	public List<InventoryItem> getAll() {
 		return inventoryItemDao.getAll();
 	}
+	
+	public InventoryItem getById(int i) {
+		return inventoryItemDao.getInventoryItemById(i);
+	}
 
 	public void remove(InventoryItem i) {
 		inventoryItemDao.removeInventoryItem(i);

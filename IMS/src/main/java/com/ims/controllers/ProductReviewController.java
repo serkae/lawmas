@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ims.beans.InventoryItem;
 import com.ims.beans.ProductReview;
 import com.ims.dtos.ProductReviewDto;
+import com.ims.services.InventoryItemService;
 import com.ims.services.ProductReviewService;
 
 
@@ -38,7 +40,8 @@ public class ProductReviewController {
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<ProductReviewDto> createOrReplace(@RequestBody ProductReview productReview){
-		System.out.println("Here I am in createOrUpdate: " + productReview.toString());
+		// Loading inventory item from database because of null department
+		InventoryItem i = inventoryItemService.getById(productReview.getInventoryItem().getId());
 		return new ResponseEntity<ProductReviewDto>(productReviewService.createOrUpdateAdmin(productReview), HttpStatus.OK);
 	}
 
