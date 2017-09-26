@@ -28,16 +28,23 @@ public class AdminController {
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<AdminDto> authenticateUser(@RequestBody AdminDto adminDto){
-		System.out.println("Authenticating user: "+adminDto.getEmail());
+		System.out.println("Authenticating user: " + adminDto.getEmail());
 		return new ResponseEntity<AdminDto>(adminService.authenticateUser(adminDto), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/create",method=(RequestMethod.POST),
+	@RequestMapping(value="/createOrUpdate",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<AdminDto> registerUser(@RequestBody Admin admin){
-		System.out.println("Creating user: "+admin.getEmail());
-		return new ResponseEntity<AdminDto>(adminService.createAdmin(admin), HttpStatus.OK);
-		
+		System.out.println("Saving user: " + admin.getEmail());
+		return new ResponseEntity<AdminDto>(adminService.createOrUpdateAdmin(admin), HttpStatus.OK);
+	}
+
+	@RequestMapping(value="/delete",method=(RequestMethod.POST),
+			consumes=(MediaType.APPLICATION_JSON_VALUE),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public void removeAdmin(@RequestBody Admin admin) {
+		System.out.println("Deleting user: " + admin.getEmail());
+		adminService.removeAdmin(admin);
 	}
 }

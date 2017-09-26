@@ -17,14 +17,13 @@ public class AdminService {
 		this.adminDao = adminDao;
 	}
 	
-	public AdminDto createAdmin(Admin admin) {
+	public AdminDto createOrUpdateAdmin(Admin admin) {
 		//add to Db
-		adminDao.addAdmin(admin);
+		adminDao.saveAdmin(admin);
 		//get it back w/ id
 		Admin a = adminDao.getAdminByUsernameAndPassword(admin.getEmail(),admin.getPassword());
 		//create dto
 		AdminDto adminDto = new AdminDto(a.getId(),a.getEmail(),a.getPassword(),true);
-		
 		return adminDto;
 	}
 	
@@ -34,8 +33,12 @@ public class AdminService {
 			adminDto.setAuthenticated(true);
 			adminDto.setId(admin.getId());
 		}
-		
 		return adminDto;
+	}
+	
+	public void removeAdmin(Admin admin) {
+		// remove from DB
+		adminDao.removeAdmin(admin);
 	}
 
 }
