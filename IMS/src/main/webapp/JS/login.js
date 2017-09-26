@@ -2,38 +2,84 @@
  * 
  */
 
-$(document).ready(function() {
-	document.getElementById("submit").addEventListener("click",login);
+var adminLoginApp = angular.module("adminLoginApp", ["ui.router"]);
+
+adminLoginApp.config(function($stateProvider, $urlRouterProvider) {
+	console.log("init admin login app...");
+	
+	$stateProvider
+		.state("auth", {
+			url:"/managerLogin",
+			templateUrl: "managerLogin.html"
+		})
+		.state("login", {
+			url:"/adminHome",
+			templateUrl: "adminHomepage.html"
+		});
 });
 
-function login() {
+adminLoginApp.service("AdminService", function($http, $q) {
+	console.log("in admin service");
 	
-	var email = document.getElementById("email").value;
-	var pass = document.getElementById("pass").value;
+	var service = this;
+	console.log(service);
 	
-	var to = [email,pass];
-	//{"email":email,"pass":pass};
+	service.admin = {
+		id: -1,
+		email: "",
+		password: "",
+		authenticated: false
+	};
 	
-	to = JSON.stringify(to);
+	service.getAdmin= function() {
+		return service.admin;
+	};
 	
-	var xhr = new XMLHttpRequest();
-	xhr.onreadystatechange = function() {
-		
-		if(xhr.readyState == 4 && xhr.status == 200) {
-			if(xhr.responseText == "Invalid") {
-				document.getElementById("message").innerHTML = "Invalid user. Please try again.";
+	console.log("before set admin = " + service.admin);
+	
+	service.setAdmin= function(data) {
+		service.admin.id = data.id;
+		service.admin.email = data.email;
+		service.admin.password = data.password;
+		service.admin.authenticated = data.authenticated;
+	};
+	
+	console.log("after set admin = " + service.admin);
+	
+	service.loginAdmin = function() {
+		console.log("in loginAdmin");
+		var promise;
+		promise = $http.post('rest/admin/auth', service.admin).then(
+				function(response) {
+					console.log(response);
+					return response;
+				},
+				function(error) {
+					console.log('login user promise failed');
+					return $q.reject(error);
+				});
+		return promise;
+	};
+});
+
+adminLoginApp.controller("AdminCtrl", function(AdminService, $state) {
+	console.log("in AdminCtrl");
+	
+	var login = this;
+	console.log(login);
+	login.admin = AdminService.getAdmin();
+	login.doLogin = function() { 
+		console.log("within the doLogin");
+		var promise = AdminService.loginAdmin();
+		promise.then(
+			function(response) {
+				console.log(response);
+				AdminService.authenticateUser(response.data);
+				$state.go('login');
+			},
+			function(error) {
+				console.log(error);
 			}
-			else if (xhr.responseText == "Incorrect") {
-				document.getElementById("message").innerHTML = "Incorrect password. Please try again.";
-			}
-			else {
-				window.location.href = xhr.responseText;
-			}
-		}
+		)
 	}
-	//need to insert the controller that handles admin login here
-	xhr.open("POST", "loginmessagetest", true);
-	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	console.log(to);
-	xhr.send(to);
-};
+});
