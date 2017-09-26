@@ -1,7 +1,21 @@
 @charset "ISO-8859-1";
 
+body {
+	padding-top: 2%;
+	padding-bottom: 5%;
+	padding-left: 5%;
+	padding-right: 5%;
+}
+
+.format-user-info {
+	padding-top: 2%;
+	padding-bottom: 5%;
+	padding-left: 5%;
+	padding-right: 5%;
+}
+
 .center {
-		margin: auto;
+	margin: auto;
     width: 50%;
 }
 
@@ -12,7 +26,7 @@
 }
 
 .bg-format {
-	background: url("../resources/beige-geo.jpg") no-repeat center fixed;
+  background: url("../resources/beige-geo.jpg") no-repeat center fixed;
   background-size: cover;
 }
 
