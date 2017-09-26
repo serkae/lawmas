@@ -15,7 +15,7 @@ public class Discount {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DIS_SEQ")
 	private int discountID;
 	
-	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name="inventoryitem_id")
 	private InventoryItem inventoryItem;
 	

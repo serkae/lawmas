@@ -42,6 +42,7 @@ public class ProductReviewController {
 	public ResponseEntity<ProductReviewDto> createOrReplace(@RequestBody ProductReview productReview){
 		// Loading inventory item from database because of null department
 		InventoryItem i = inventoryItemService.getById(productReview.getInventoryItem().getId());
+		System.out.println("inventory item: " + i.toString());
 		return new ResponseEntity<ProductReviewDto>(productReviewService.createOrUpdateAdmin(productReview), HttpStatus.OK);
 	}
 
