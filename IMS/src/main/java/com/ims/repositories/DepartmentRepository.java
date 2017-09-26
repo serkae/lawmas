@@ -11,8 +11,4 @@ import com.ims.beans.Department;
 public interface DepartmentRepository extends JpaRepository<Department, Integer>{
 
 	List<Department> findByName(String name);
-	
-	@Modifying
-	@Query("update Department d set d.name = ?1 where d.id = ?2")
-	void setDepartmentById(String name, int id);
 }

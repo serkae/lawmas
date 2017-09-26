@@ -29,27 +29,28 @@ public class DepartmentController {
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<DepartmentDto> addDepartment(@RequestBody DepartmentDto dDto){
-		return new ResponseEntity<DepartmentDto>(departmentService.addDepartment(dDto), HttpStatus.OK);
+	public ResponseEntity<Department> addDepartment(@RequestBody Department d){
+		return new ResponseEntity<Department>(departmentService.createOrUpdate(d), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/getAll",method=(RequestMethod.GET),produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<List<Department>> getAllDepartments(){
-		return new ResponseEntity<List<Department>>(departmentService.getAllDepartments(), HttpStatus.OK);
+		return new ResponseEntity<List<Department>>(departmentService.getAll(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<DepartmentDto> updateDepartment(@RequestBody Department d){
+	public ResponseEntity<Department> updateDepartment(@RequestBody Department d){
 		System.out.println("Updating: " + d.toString());
-		return new ResponseEntity<DepartmentDto>(departmentService.updateDepartment(d), HttpStatus.OK);
+		return new ResponseEntity<Department>(departmentService.createOrUpdate(d), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/remove",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<DepartmentDto> removeDepartment(@RequestBody DepartmentDto dDto){
-		return new ResponseEntity<DepartmentDto>(departmentService.removeDepartment(dDto), HttpStatus.OK);
+	public ResponseEntity<String> removeDepartment(@RequestBody Department d){
+		departmentService.remove(d);
+		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}
 }

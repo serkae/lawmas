@@ -15,60 +15,29 @@ public class DepartmentService {
 	@Autowired
 	private DepartmentDao departmentDao;
 
-	public void setAdminDao(DepartmentDao departmentDao) {
+	public void setDepartmentDao(DepartmentDao departmentDao) {
 		this.departmentDao = departmentDao;
 	}
 	
-	public DepartmentDto addDepartment(DepartmentDto dDto) {
-		//set db
-		Department d = new Department();
-		d.setName(dDto.getName());
-		//add
-		departmentDao.addDepartment(d);
-		//get back
-		d = departmentDao.getDepartmentByName(d.getName());
-		if(d != null) {
-			dDto.setActionApplied(true);
-		}
-		else {
-			dDto.setActionApplied(false);
-		}
-		return dDto;
+	public Department createOrUpdate(Department d) {
+		return departmentDao.createOrUpdateDepartment(d);
 	}
 	
-	public List<Department> getAllDepartments(){
+	public List<Department> getAll(){
 		return departmentDao.getAll();
 	}
 	
-	public DepartmentDto updateDepartment(Department d) {
-		//init dto
-		DepartmentDto dDto = new DepartmentDto();
-		dDto.setName(d.getName());
+	public DepartmentDto remove(Department d) {
 		
-		//send update, if failed then post action failed and return
-		try {
-			departmentDao.updateDepartment(d);
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			dDto.setActionApplied(false);
-			return dDto;
-		}
-		//successful, so true
-		dDto.setActionApplied(true);
-		return dDto;
-	} 
-	
-	public DepartmentDto removeDepartment(DepartmentDto dDto) {
-		//set db
-		Department d = new Department();
-		//get back
-		d = departmentDao.getDepartmentByName(dDto.getName());
+		DepartmentDto dDto = new DepartmentDto();
+		
 		if(d != null) {
+			dDto.setName(d.getName());
 			departmentDao.removeDepartment(d);
 			dDto.setActionApplied(true);
 		}
 		else {
+			dDto.setName("null");
 			dDto.setActionApplied(false);
 		}
 		return dDto;

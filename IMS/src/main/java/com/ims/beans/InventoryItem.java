@@ -31,6 +31,9 @@ public class InventoryItem {
 	@Column(name="quantity",nullable=false)
 	private int quantity;
 	
+	@Column(name="name")
+	private String name;
+	
 	@Column(name="description")
 	private String description;
 	
@@ -127,17 +130,12 @@ public class InventoryItem {
 	}
 
 
-
 	@Override
 	public String toString() {
-		return "InventoryItem [id=" + id + ", department=" + department.toString() + ", unitPrice=" + unitPrice + ", quantity="
-				+ quantity + ", description=" + description + ", discount=" + discount.toString() + ", image=" + image + "]";
+		return "InventoryItem [id=" + id + ", department=" + department + ", unitPrice=" + unitPrice + ", quantity="
+				+ quantity + ", name=" + name + ", description=" + description + ", image=" + image + "]";
 	}
 
 
-	
-
-	
-	
 	
 }

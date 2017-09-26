@@ -24,8 +24,8 @@ public class DepartmentDao {
 		this.aRepo = aRepo;
 	}
 	
-	public void addDepartment(Department s) {
-		aRepo.save(s);
+	public Department createOrUpdateDepartment(Department s) {
+		return aRepo.save(s);
 	}
 	public List<Department> getAll(){
 		return (List<Department>) aRepo.findAll();
@@ -41,9 +41,6 @@ public class DepartmentDao {
 		else {
 			return result.get(0);
 		}
-	}
-	public void updateDepartment(Department d) {
-		aRepo.setDepartmentById(d.getName(),d.getId());
 	}
 	public void removeDepartment(Department s) {
 		aRepo.delete(s);
