@@ -1,5 +1,7 @@
 package com.ims.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +19,11 @@ public class AdminService {
 		this.adminDao = adminDao;
 	}
 	
-	public AdminDto createAdmin(Admin admin) {
+	public AdminDto createOrUpdateAdmin(Admin admin) {
 		//add to Db
-		adminDao.addAdmin(admin);
-		//get it back w/ id
-		Admin a = adminDao.getAdminByUsernameAndPassword(admin.getEmail(),admin.getPassword());
+		admin = adminDao.saveAdmin(admin);
 		//create dto
-		AdminDto adminDto = new AdminDto(a.getId(),a.getEmail(),a.getPassword(),true);
-		
+		AdminDto adminDto = new AdminDto(admin.getId(),admin.getEmail(),admin.getPassword(),true);
 		return adminDto;
 	}
 	
@@ -34,8 +33,16 @@ public class AdminService {
 			adminDto.setAuthenticated(true);
 			adminDto.setId(admin.getId());
 		}
-		
 		return adminDto;
+	}
+	
+	public void removeAdmin(Admin admin) {
+		// remove from DB
+		adminDao.removeAdmin(admin);
+	}
+	
+	public List<Admin> getAll() {
+		return adminDao.getAll();
 	}
 
 }
