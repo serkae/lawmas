@@ -22,7 +22,7 @@ public class ProductReview {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="review_id_seq")
 	private int id;
 	
-	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
 	@JoinColumn(name="inventoryitem_id")
 	private InventoryItem inventoryItem;
 	
