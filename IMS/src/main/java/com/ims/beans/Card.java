@@ -1,15 +1,11 @@
 package com.ims.beans;
 
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -28,7 +24,7 @@ public class Card {
 	@Column(nullable=false)
 	private String nameoncard;
 	@Column(nullable=false)
-	private Date expiration;
+	private String expiration;
 	@Column(nullable=false)
 	private String securitycode;
 	
@@ -37,7 +33,7 @@ public class Card {
 	}
 
 
-	public Card(int id, String cardnumber, String nameoncard, Date expiration, String securitycode) {
+	public Card(int id, String cardnumber, String nameoncard, String expiration, String securitycode) {
 		super();
 		this.id = id;
 		this.cardnumber = cardnumber;
@@ -70,10 +66,10 @@ public class Card {
 	public void setNameoncard(String nameoncard) {
 		this.nameoncard = nameoncard;
 	}
-	public Date getExpiration() {
+	public String getExpiration() {
 		return expiration;
 	}
-	public void setExpiration(Date expiration) {
+	public void setExpiration(String expiration) {
 		this.expiration = expiration;
 	}
 	public String getSecuritycode() {

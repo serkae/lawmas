@@ -1,9 +1,7 @@
 package com.ims.beans;
 
 
-import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,10 +17,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="Orders")
-public class Order implements Serializable {
+public class Order {
     
-    private static final long serialVersionID = 1L;
-    
+
     @Id
     @Column(name="ORDER_ID")
     @SequenceGenerator(name="ORDERID_SEQ", sequenceName="ORDERID_SEQ")
@@ -34,17 +31,17 @@ public class Order implements Serializable {
     private Customer customer;
     
     @Column(nullable = false)
-    private Timestamp orderDate;
+    private Timestamp order_Date;
     
     public Order() {
         super();
     }
     
-    public Order(int id, Customer customer, Timestamp orderDate) {
+    public Order(int id, Customer customer, Timestamp order_Date) {
 		super();
 		this.id = id;
 		this.customer = customer;
-		this.orderDate = orderDate;
+		this.order_Date = order_Date;
 	}
 
 	public int getId() {
@@ -60,15 +57,15 @@ public class Order implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	public Date getOrderDate() {
-        return orderDate;
+	public Timestamp getOrder_Date() {
+        return order_Date;
     }
-    public void setOrderDate(Timestamp orderDate) {
-        this.orderDate = orderDate;
+    public void setOrder_Date(Timestamp order_Date) {
+        this.order_Date = order_Date;
     }
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", customer=" + customer.toString() +", orderDate=" + orderDate
+		return "Order [id=" + id + ", customer=" + customer.toString() +", order_Date=" + order_Date
 				+ "]";
 	}
     
