@@ -31,6 +31,9 @@ public class InventoryItem {
 	@Column(name="quantity",nullable=false)
 	private int quantity;
 	
+	@Column(name="name",nullable=false)
+	private String name;
+	
 	@Column(name="description")
 	private String description;
 	
@@ -48,13 +51,14 @@ public class InventoryItem {
 	public InventoryItem() {}
 	
 
-	public InventoryItem(int id, Department department, float unitPrice, int quantity, String description,
+	public InventoryItem(int id, Department department, float unitPrice, String name, int quantity, String description,
 			Discount discount, String image) {
 		super();
 		this.id = id;
 		this.department = department;
 		this.unitPrice = unitPrice;
 		this.quantity = quantity;
+		this.name = name;
 		this.description = description;
 		this.discount = discount;
 		this.image = image;
@@ -75,6 +79,18 @@ public class InventoryItem {
 	public void setUnitPrice(float unitPrice) {
 		this.unitPrice = unitPrice;
 	}
+	
+	
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 
 	public int getQuantity() {
 		return quantity;
@@ -127,17 +143,12 @@ public class InventoryItem {
 	}
 
 
-
 	@Override
 	public String toString() {
-		return "InventoryItem [id=" + id + ", department=" + department.toString() + ", unitPrice=" + unitPrice + ", quantity="
-				+ quantity + ", description=" + description + ", discount=" + discount.toString() + ", image=" + image + "]";
+		return "InventoryItem [id=" + id + ", department=" + department + ", unitPrice=" + unitPrice + ", quantity="
+				+ quantity + ", name=" + name + ", description=" + description + ", image=" + image + "]";
 	}
 
 
-	
-
-	
-	
 	
 }
