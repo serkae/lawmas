@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="storeApp">
 <head>
 <meta charset="ISO-8859-1">
 <link rel="shortcut icon" href="/" />
 <title>WorldTree Home Page</title>
+<script src="mainPage.css"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -13,10 +14,15 @@
 <!-- Importing fonts to use for the site -->
 <link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+<script src="js/home.js"></script>
 <style>
 .jumbotron {
-	margin-bottom: 0px;
+	padding-top: 10px;
+	padding-bottom: 5px;
 	background-color: #d9ffb3;
+}
+.navbar {
+	margin-bottom: 0px;
 }
 .navbar-nav > li {
 	padding-top: 10px;
@@ -49,19 +55,12 @@ label {
 </head>
 
 <!-- Applies the angular app, customerRouting, to the homePage -->
-<body ng-app="customerRouting">
-
-<div class="jumbotron jumbotron-fluid">
- <div class="container">
-   <h1 class="display-3" id ="storeJumbo">World Tree Store</h1>
-   <p class="lead">Welcome to the WorldTree Store.</p>
- </div>
-</div>
+<body>
 
 <nav class="navbar navbar-light" style="background-color: #b3ffd9;">
   <div class="container-fluid">
   	<ul class="nav navbar-nav">
-  		<li><button class="btn"><a ui-sref="home"><span class="glyphicon glyphicon-home"></span></a></button></li>
+  		<li><button class="btn"><a ui-sref="mainStore"><span class="glyphicon glyphicon-home"></span></a></button></li>
   		<li><form class="form-inline">
     		<input class="form-control mr-sm-2" type="text" placeholder="Search">
     		<button class="btn" type="submit">
@@ -74,6 +73,13 @@ label {
   	</ul>
   </div>
 </nav>
+
+<div class="jumbotron jumbotron-fluid">
+ <div class="container">
+   <h1 class="display-3" id ="storeJumbo">World Tree Store</h1>
+   <p class="lead">Welcome to the WorldTree Store.</p>
+ </div>
+</div>
 
 <!-- Here is where the partials will go -->
 <div class="container">

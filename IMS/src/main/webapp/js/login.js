@@ -31,6 +31,7 @@ function login() {
 			}
 		}
 	}
+	//need to insert the controller that handles admin login here
 	xhr.open("POST", "loginmessagetest", true);
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	console.log(to);
