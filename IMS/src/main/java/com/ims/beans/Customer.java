@@ -182,7 +182,7 @@ public class Customer {
 	public String toString() {
 		return "Customer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email
 				+ ", password=" + password + ", address=" + address + ", city=" + city + ", state=" + state.toString()
-				+ ", zipcode=" + zipcode + ", phone=" + phone + ", card=" + card.toString() + "]";
+				+ ", zipcode=" + zipcode + ", phone=" + phone + "]";
 	}
 
 	

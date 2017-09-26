@@ -34,7 +34,7 @@ public class Order {
     private Customer customer;
     
     @Column(nullable = false)
-    private Timestamp orderDate;
+    private Timestamp order_Date;
     
     public Order() {
         super();
@@ -44,7 +44,7 @@ public class Order {
 		super();
 		this.id = id;
 		this.customer = customer;
-		this.orderDate = orderDate;
+		this.order_Date = orderDate;
 	}
 
 	public int getId() {
@@ -60,15 +60,15 @@ public class Order {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	public Date getOrderDate() {
-        return orderDate;
+	public Timestamp getOrderDate() {
+        return order_Date;
     }
     public void setOrderDate(Timestamp orderDate) {
-        this.orderDate = orderDate;
+        this.order_Date = orderDate;
     }
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", customer=" + customer.toString() +", orderDate=" + orderDate
+		return "Order [id=" + id + ", customer=" + customer.toString() +", orderDate=" + order_Date
 				+ "]";
 	}
     
