@@ -22,6 +22,8 @@
 		</div>
 		<button data-toggle="modal" data-target="#editMyInfo"
 			class="btn btn-info">Edit My Info</button>
+		<button data-toggle="modal" data-target="#changeMyPassword"
+			class="btn btn-info">Change My Password</button>
 	</div>
 
 	<!-- Modal for editing info -->
@@ -52,9 +54,46 @@
 									required value={{manInfo.email}}>
 							</div>
 						</div>
-						<button type="submit" class="btn btn-success">Submit
+						<button type="submit" class="btn btn-green">Submit
 							Changes</button>
-						<button type="submit" class="btn btn-danger">Cancel</button>
+						<button type="button" class="btn btn-orange" data-dismiss="modal">Cancel</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for changing password -->
+	<div class="modal fade" id="changeMyPassword" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h2 class="modal-title">Change My Password</h2>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<div class="col-xs-10">
+								<input type="password" class="form-control"
+									placeholder="New Password" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-xs-10">
+								<input type="password" class="form-control"
+									placeholder="Confirm New Password" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-xs-10">
+								<input type="password" class="form-control"
+									placeholder="Current Password" required>
+							</div>
+						</div>
+						<button type="submit" class="btn btn-green">Submit
+							Changes</button>
+						<button type="button" class="btn btn-orange" data-dismiss="modal">Cancel</button>
 					</form>
 				</div>
 			</div>
