@@ -24,8 +24,8 @@ public class AdminDao{
 		this.adminRepository = adminRepository;
 	}
 	
-	public void saveAdmin(Admin s) {
-		adminRepository.save(s);
+	public Admin saveAdmin(Admin s) {
+		return adminRepository.save(s);
 	}
 	public List<Admin> getAll(){
 		return (List<Admin>) adminRepository.findAll();

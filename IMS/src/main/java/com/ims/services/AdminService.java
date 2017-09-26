@@ -19,11 +19,9 @@ public class AdminService {
 	
 	public AdminDto createOrUpdateAdmin(Admin admin) {
 		//add to Db
-		adminDao.saveAdmin(admin);
-		//get it back w/ id
-		Admin a = adminDao.getAdminByUsernameAndPassword(admin.getEmail(),admin.getPassword());
+		admin = adminDao.saveAdmin(admin);
 		//create dto
-		AdminDto adminDto = new AdminDto(a.getId(),a.getEmail(),a.getPassword(),true);
+		AdminDto adminDto = new AdminDto(admin.getId(),admin.getEmail(),admin.getPassword(),true);
 		return adminDto;
 	}
 	
