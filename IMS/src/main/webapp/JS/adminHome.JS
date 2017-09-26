@@ -21,6 +21,10 @@ adminApp.config(function($stateProvider, $urlRouterProvider){
 		.state("manageInventoryHome.addNewInventory",{
 			url: "/addNewInventory",
 			templateUrl: "partials/addNewInventory.html"
+		})
+		.state("manageInventoryHome.viewCurrentInventory",{
+			url: "/viewCurrentInventory",
+			templateUrl: "partials/viewCurrentInventory.html"
 		});
 	console.log("IN HERE");
 	
