@@ -40,42 +40,63 @@ public class Discount {
 		this.endDate = endDate;
 	}
 
+
 	public int getDiscountID() {
 		return discountID;
 	}
+
+
 	public void setDiscountID(int discountID) {
 		this.discountID = discountID;
 	}
+	
 	public double getDiscount_Type() {
 		return discount_Type;
 	}
 	public void setDiscount_Type(int discountType) {
 		this.discount_Type = discountType;
 	}
-	public double getAmount() {
+
+
+	public float getAmount() {
 		return amount;
 	}
+
+
 	public void setAmount(float amount) {
 		this.amount = amount;
 	}
+
+
 	public String getDescription() {
 		return description;
 	}
+
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+
 	public Timestamp getStartDate() {
 		return startDate;
 	}
+
+
 	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 	}
+
+
 	public Timestamp getEndDate() {
 		return endDate;
 	}
+
+
 	public void setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
 	}
+
 
 	@Override
 	public String toString() {
@@ -84,8 +105,5 @@ public class Discount {
 				+ ", endDate=" + endDate + "]";
 	}
 
-	
-	
-	
 	
 }
