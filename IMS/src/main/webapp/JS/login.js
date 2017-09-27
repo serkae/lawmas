@@ -7,14 +7,16 @@ var adminLoginApp = angular.module("adminLoginApp", ["ui.router"]);
 adminLoginApp.config(function($stateProvider, $urlRouterProvider) {
 	console.log("init admin login app...");
 	
+	
+	
 	$stateProvider
 		.state("auth", {
 			url:"/managerLogin",
-			templateUrl: "managerLogin.html"
+			templateUrl: "/managerLogin.html"
 		})
-		.state("login", {
-			url:"/adminHome",
-			templateUrl: "adminHomepage.html"
+		.state("adminHomepage", {
+			url:"/adminHomepage",
+			templateUrl: "/adminHomepage.html"
 		});
 });
 
@@ -51,12 +53,9 @@ adminLoginApp.service("AdminService", function($http, $q) {
 		var promise;
 		promise = $http.post('rest/admin/auth', service.admin).then(
 				function(response) {
-					service.admin.id = response.data;
-					service.admin.email = response.data;
-					service.admin.password = response.data;
-					service.admin.authenticated = response.data;
+					
 					console.log(response.data);
-					return response.data;
+					return response;
 				},
 				function(error) {
 					console.log('login user promise failed');
@@ -67,24 +66,29 @@ adminLoginApp.service("AdminService", function($http, $q) {
 	};
 });
 
-adminLoginApp.controller("AdminCtrl", function(AdminService, $state, $scope) {
+adminLoginApp.controller("AdminCtrl", function(AdminService,$window) {
 	console.log("in AdminCtrl");
-	
 
-
-	
 	var login = this;
 	console.log(login);
 	login.admin = AdminService.getAdmin();
 	login.doLogin = function() { 
 		console.log("within the doLogin");
 		var promise = AdminService.loginAdmin();
-		console.log(login.admin.email + " " + login.admin.password + " " + login.admin.authenticated);
 		promise.then(
 			function(response) {
 				console.log("Response: "+ response);
+				if(login.admin!= null){
+					login.admin.authenticated = true;
+					AdminService.setAdmin(response.data);
+					console.log("setting user in login ctrl")
+					console.log(AdminService.getAdmin());
+					$window.location.href = "http://localhost:8383/IMS/adminHomepage.html#/adminMainPage";
+				}
+				else{
+					alert("Invalid login!");
+				}
 				
-				$state.go('login');
 			},
 			function(error) {
 				console.log("Error: " + error);
