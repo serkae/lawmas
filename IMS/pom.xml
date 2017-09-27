@@ -83,6 +83,7 @@
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 
+		
 		<dependency>
 			<groupId>com.github.noraui</groupId>
 			<artifactId>ojdbc7</artifactId>

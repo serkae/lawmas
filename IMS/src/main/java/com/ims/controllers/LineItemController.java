@@ -11,9 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ims.beans.Customer;
+import com.ims.beans.InventoryItem;
 import com.ims.beans.LineItem;
+import com.ims.beans.Order;
+import com.ims.services.CustomerService;
 import com.ims.services.InventoryItemService;
 import com.ims.services.LineItemService;
+import com.ims.services.OrderService;
 
 @RestController
 @RequestMapping("/lineItem")
@@ -25,18 +30,31 @@ public class LineItemController {
 	@Autowired
 	InventoryItemService iiservice;
 	
+	@Autowired
+	OrderService oservice;
+	
+	@Autowired
+	CustomerService cservice;
+	
 	public void setLiService(LineItemService liservice) {
 		this.liservice = liservice;
 	}
-	
+	public void setIiservice(InventoryItemService iiservice) {
+		this.iiservice = iiservice;
+	}
+	public void setOservice(OrderService oservice) {
+		this.oservice = oservice;
+	}
+	public void setCservice(CustomerService cservice) {
+		this.cservice = cservice;
+	}
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<LineItem> createOrder(@RequestBody LineItem i){
-		System.out.println(i);
-		iiservice.getById(i.getItem().getId());
-		System.out.println("Creating order: " + i.getId());
-		
+		InventoryItem a = iiservice.getById(i.getInventoryItem().getId());
+		Order o = oservice.getOrder(i.getOrder().getId());
+		Customer c = cservice.getById(o.getCustomer().getId());
 		return new ResponseEntity<LineItem>(liservice.createOrUpdateLineItem(i), HttpStatus.OK);
 		
 	}

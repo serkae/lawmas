@@ -26,8 +26,8 @@ public class LineItemDao {
 		this.aRepo = aRepo;
 	}
 	
-	public void addLineItem(LineItem s) {
-		aRepo.save(s);
+	public LineItem addLineItem(LineItem s) {
+		return aRepo.save(s);
 	}
 	public List<LineItem> getAll(){
 		return (List<LineItem>) aRepo.findAll();
