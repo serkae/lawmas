@@ -51,19 +51,27 @@ adminLoginApp.service("AdminService", function($http, $q) {
 		var promise;
 		promise = $http.post('rest/admin/auth', service.admin).then(
 				function(response) {
-					console.log(response);
-					return response;
+					service.admin.id = response.data;
+					service.admin.email = response.data;
+					service.admin.password = response.data;
+					service.admin.authenticated = response.data;
+					console.log(response.data);
+					return response.data;
 				},
 				function(error) {
 					console.log('login user promise failed');
 					return $q.reject(error);
 				});
+		
 		return promise;
 	};
 });
 
-adminLoginApp.controller("AdminCtrl", function(AdminService, $state) {
+adminLoginApp.controller("AdminCtrl", function(AdminService, $state, $scope) {
 	console.log("in AdminCtrl");
+	
+
+
 	
 	var login = this;
 	console.log(login);
@@ -71,14 +79,15 @@ adminLoginApp.controller("AdminCtrl", function(AdminService, $state) {
 	login.doLogin = function() { 
 		console.log("within the doLogin");
 		var promise = AdminService.loginAdmin();
+		console.log(login.admin.email + " " + login.admin.password + " " + login.admin.authenticated);
 		promise.then(
 			function(response) {
-				console.log(response);
-				AdminService.authenticateUser(response.data);
+				console.log("Response: "+ response);
+				
 				$state.go('login');
 			},
 			function(error) {
-				console.log(error);
+				console.log("Error: " + error);
 			}
 		)
 	}
