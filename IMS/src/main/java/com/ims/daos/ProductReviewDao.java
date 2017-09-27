@@ -17,25 +17,20 @@ public class ProductReviewDao {
 	@Autowired
 	private ProductReviewRepository aRepo;
 	
-	public ProductReviewDao() {
-		
-	}
+	public ProductReviewDao() {}
 	
 	public void setProductReviewRepo(ProductReviewRepository aRepo) {
 		this.aRepo = aRepo;
 	}
 	
-	public void addReview(ProductReview s) {
-		aRepo.save(s);
+	public ProductReview saveReview(ProductReview s) {
+		return aRepo.save(s);
 	}
 	public List<ProductReview> getAll(){
 		return (List<ProductReview>) aRepo.findAll();
 	}
 	public ProductReview getReviewById(int id) {
 		return aRepo.findOne(id);
-	}
-	public void updateReview(ProductReview s) {
-		aRepo.saveAndFlush(s);
 	}
 	public void removeReview(ProductReview s) {
 		aRepo.delete(s);
