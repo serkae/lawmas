@@ -21,11 +21,13 @@ public class CardService {
 	}
 	
 	public CardDto createCard(Card c) {
-		cDao.addCard(c);
+		c = cDao.addCard(c);
 		CardDto dto = new CardDto(c.getId(), c.getCardnumber(), c.getNameoncard(), c.getExpiration(), 
 				c.getSecuritycode(),true);
 		return dto;
 	}
 	
-	
+	public void deleteCard(Card c) {
+		cDao.removeCard(c);
+	}
 }

@@ -51,7 +51,7 @@ public class LineItemController {
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<LineItem> createOrder(@RequestBody LineItem i){
+	public ResponseEntity<LineItem> createLineItem(@RequestBody LineItem i){
 		InventoryItem a = iiservice.getById(i.getInventoryItem().getId());
 		Order o = oservice.getOrder(i.getOrder().getId());
 		Customer c = cservice.getById(o.getCustomer().getId());
@@ -62,27 +62,34 @@ public class LineItemController {
 	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<LineItem> updateOrder(@RequestBody LineItem i){
-		System.out.println(i);
-		System.out.println("Creating order: " + i.getId());
+	public ResponseEntity<LineItem> updateLineItem(@RequestBody LineItem i){
+		InventoryItem a = iiservice.getById(i.getInventoryItem().getId());
+		Order o = oservice.getOrder(i.getOrder().getId());
+		Customer c = cservice.getById(o.getCustomer().getId());
 		return new ResponseEntity<LineItem>(liservice.createOrUpdateLineItem(i), HttpStatus.OK);
 		
 	}
 	
 	@RequestMapping(value="/getAll",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<List<LineItem>> getAllOrders(){
+	public ResponseEntity<List<LineItem>> getAllLineItems(){
 		System.out.println("Listing orders: ");
 		return new ResponseEntity<List<LineItem>>(liservice.getAllLineItems(), HttpStatus.OK);
 		
 	}
-
 	
-
-	@RequestMapping(value="/getOrder",method=(RequestMethod.GET),
+	@RequestMapping(value="/getAllByOrder",method=(RequestMethod.POST),
+			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<LineItem> getOrder(int id){
-		System.out.println("Listing orders: ");
+	public ResponseEntity<List<LineItem>> getLineItemsByOrder(@RequestBody Order o){
+		Customer c = cservice.getById(o.getCustomer().getId());
+		return new ResponseEntity<List<LineItem>>(liservice.getAllLineItemsByOrder(o), HttpStatus.OK);
+		
+	}
+
+	@RequestMapping(value="/getLine",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<LineItem> getLineId(int id){
 		return new ResponseEntity<LineItem>(liservice.getLineItem(id), HttpStatus.OK);
 		
 	}
@@ -91,8 +98,10 @@ public class LineItemController {
 	@RequestMapping(value="/delete",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<String> removeOrder(@RequestBody LineItem i){
-		System.out.println("removing order: ");
+	public ResponseEntity<String> removeLineItem(@RequestBody LineItem i){
+		InventoryItem a = iiservice.getById(i.getInventoryItem().getId());
+		Order o = oservice.getOrder(i.getOrder().getId());
+		Customer c = cservice.getById(o.getCustomer().getId());
 		liservice.deleteLineItem(i);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 		

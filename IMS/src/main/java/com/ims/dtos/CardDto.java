@@ -1,7 +1,5 @@
 package com.ims.dtos;
 
-import javax.persistence.Column;
-
 public class CardDto {
 
 	private int id;

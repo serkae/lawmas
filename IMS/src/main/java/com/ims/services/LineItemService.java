@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ims.beans.LineItem;
+import com.ims.beans.Order;
 import com.ims.daos.LineItemDao;
 
 @Service
@@ -24,6 +25,10 @@ public class LineItemService {
 	
 	public List<LineItem> getAllLineItems(){
 		return dao.getAll();
+	}
+	
+	public List<LineItem> getAllLineItemsByOrder(Order o){
+		return dao.getAllByOrder(o);
 	}
 	
 	public LineItem getLineItem(int id){

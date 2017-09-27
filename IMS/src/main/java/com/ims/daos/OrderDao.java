@@ -26,6 +26,7 @@ public class OrderDao {
 	}
 	
 	public Order addOrder(Order s) {
+		
 		return aRepo.save(s);
 	}
 	public List<Order> getAll(){

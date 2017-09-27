@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ims.beans.Customer;
 import com.ims.beans.Order;
+import com.ims.services.CustomerService;
 import com.ims.services.OrderService;
 
 @RestController
@@ -20,9 +22,14 @@ public class OrderController {
 	
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	CustomerService cservice;
 	
 	public void setOrderServiceImpl(OrderService orderService) {
 		this.orderService = orderService;
+	}
+	public void setCservice(CustomerService cservice) {
+		this.cservice = cservice;
 	}
 	
 	
@@ -30,8 +37,6 @@ public class OrderController {
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<Order> createOrder(@RequestBody Order o){
-		System.out.println(o);
-		System.out.println("Creating order: " + o.getId());
 		return new ResponseEntity<Order>(orderService.createOrUpdateOrder(o), HttpStatus.OK);
 		
 	}
@@ -54,7 +59,7 @@ public class OrderController {
 	}
 	
 
-	@RequestMapping(value="/getAllFromCustomerId",method=(RequestMethod.GET),
+	@RequestMapping(value="/getAllByCustomerId",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<List<Order>> getAllOrdersFromCustomerId(int id){
 		System.out.println("Listing orders: ");
