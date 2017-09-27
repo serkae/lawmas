@@ -26,7 +26,7 @@ public class Order {
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ORDERID_SEQ")
     private int id;
     
-    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="CUSTOMER_ID",nullable=false)
     private Customer customer;
     

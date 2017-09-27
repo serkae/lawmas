@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -37,22 +38,17 @@ public class InventoryItem {
 	@Column(name="description")
 	private String description;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="discount_id")
 	private Discount discount;
 	
 	@Column(name="image")
 	private String image;
 	
-//	@ManyToOne(fetch=FetchType.EAGER)
-//	@JoinColumn(name="review_id")
-//	private ProductReview productReview;
-
 	public InventoryItem() {}
-	
 
-	public InventoryItem(int id, Department department, float unitPrice, String name, int quantity, String description,
-			Discount discount, String image) {
+	public InventoryItem(int id, Department department, float unitPrice, int quantity, String name, String description,
+			String image) {
 		super();
 		this.id = id;
 		this.department = department;
@@ -60,7 +56,6 @@ public class InventoryItem {
 		this.quantity = quantity;
 		this.name = name;
 		this.description = description;
-		this.discount = discount;
 		this.image = image;
 	}
 
@@ -72,25 +67,21 @@ public class InventoryItem {
 		this.id = id;
 	}
 
-	public double getUnitPrice() {
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	public float getUnitPrice() {
 		return unitPrice;
 	}
 
 	public void setUnitPrice(float unitPrice) {
 		this.unitPrice = unitPrice;
 	}
-	
-	
-
-	public String getName() {
-		return name;
-	}
-
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 
 	public int getQuantity() {
 		return quantity;
@@ -98,6 +89,14 @@ public class InventoryItem {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDescription() {
@@ -108,32 +107,6 @@ public class InventoryItem {
 		this.description = description;
 	}
 
-	
-
-	public Department getDepartment() {
-		return department;
-	}
-
-
-
-	public void setDepartment(Department department) {
-		this.department = department;
-	}
-
-
-
-	public Discount getDiscount() {
-		return discount;
-	}
-
-
-
-	public void setDiscount(Discount discount) {
-		this.discount = discount;
-	}
-
-
-
 	public String getImage() {
 		return image;
 	}
@@ -142,13 +115,11 @@ public class InventoryItem {
 		this.image = image;
 	}
 
-
 	@Override
 	public String toString() {
 		return "InventoryItem [id=" + id + ", department=" + department + ", unitPrice=" + unitPrice + ", quantity="
 				+ quantity + ", name=" + name + ", description=" + description + ", image=" + image + "]";
 	}
-
 
 	
 }

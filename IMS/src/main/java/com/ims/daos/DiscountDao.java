@@ -24,8 +24,8 @@ public class DiscountDao {
 		this.aRepo = aRepo;
 	}
 	
-	public void addDiscount(Discount s) {
-		aRepo.save(s);
+	public Discount createOrUpdateDiscount(Discount s) {
+		return aRepo.save(s);
 	}
 	public List<Discount> getAll(){
 		return (List<Discount>) aRepo.findAll();
@@ -36,7 +36,7 @@ public class DiscountDao {
 	public void updateDiscount(Discount s) {
 		aRepo.saveAndFlush(s);
 	}
-	public void removeDepartment(Discount s) {
+	public void removeDiscount(Discount s) {
 		aRepo.delete(s);
 	}
 
