@@ -46,6 +46,7 @@
 
 
 
+
 		<!-- HIBERNATE -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
