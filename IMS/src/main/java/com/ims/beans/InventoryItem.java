@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -36,6 +37,10 @@ public class InventoryItem {
 	
 	@Column(name="description")
 	private String description;
+	
+	@OneToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="discount_id")
+	private Discount discount;
 	
 	@Column(name="image")
 	private String image;

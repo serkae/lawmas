@@ -30,6 +30,10 @@ public class InventoryItemService {
 		return inventoryItemDao.getInventoryItemById(i);
 	}
 
+	public InventoryItem getById(int i) {
+		return inventoryItemDao.getInventoryItemById(i);
+	}
+	
 	public void remove(InventoryItem i) {
 		inventoryItemDao.removeInventoryItem(i);
 	}

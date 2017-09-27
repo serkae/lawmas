@@ -16,7 +16,7 @@ public class Discount {
 	private int discountID;
 	
 	@Column(name = "DISCOUNT_TYPE",nullable=false)
-	private int discountType;
+	private int discount_Type;
 	@Column(name = "AMOUNT",nullable=false)
 	private float amount;
 	@Column(name = "DESCRIPTION")
@@ -28,13 +28,12 @@ public class Discount {
 	
 	
 	public Discount() {}
-
-
-	public Discount(int discountID, int discountType, float amount, String description, Timestamp startDate,
-			Timestamp endDate) {
+	
+	public Discount(int discountID, int discountType, float amount, String description,
+			Timestamp startDate, Timestamp endDate) {
 		super();
 		this.discountID = discountID;
-		this.discountType = discountType;
+		this.discount_Type = discountType;
 		this.amount = amount;
 		this.description = description;
 		this.startDate = startDate;
@@ -50,15 +49,12 @@ public class Discount {
 	public void setDiscountID(int discountID) {
 		this.discountID = discountID;
 	}
-
-
-	public int getDiscountType() {
-		return discountType;
+	
+	public double getDiscount_Type() {
+		return discount_Type;
 	}
-
-
-	public void setDiscountType(int discountType) {
-		this.discountType = discountType;
+	public void setDiscount_Type(int discountType) {
+		this.discount_Type = discountType;
 	}
 
 
@@ -104,8 +100,9 @@ public class Discount {
 
 	@Override
 	public String toString() {
-		return "Discount [discountID=" + discountID + ", discountType=" + discountType + ", amount=" + amount
-				+ ", description=" + description + ", startDate=" + startDate + ", endDate=" + endDate + "]";
+		return "Discount [discountID=" + discountID + ", discountType="
+				+ discount_Type + ", amount=" + amount + ", description=" + description + ", startDate=" + startDate
+				+ ", endDate=" + endDate + "]";
 	}
 
 	
