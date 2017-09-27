@@ -1,12 +1,11 @@
 <div id = "addNewInventory">
   Adding New Inventory
   <br/>
-  <form>
-  <input type = "text" id = "productName" placeholder = "Product Name" required><br/>
-  <input type = "text" id = "description" placeholder = "Description" required><br/>
-  <input type = "text" id = "department" placeholder = "Department" required><br/>
-  <input type = "text" id = "unitPrice" placeholder = "Unit Price" required><br/>
-  <input type = "text" id = "quantity" placeholder = "Quantity" required><br/>
+  <form name = "invForm" ng-controller = "manageCtrl as manage" ng-submit= "manage.inventory.addItem()" >
+  <input type = "text" ng-model = "inventory.item.name" placeholder = "Product Name" required><br/>
+  <input type = "text" ng-model = "inventory.item.description" placeholder = "Description" required><br/>
+  <input type = "text" ng-model = "inventory.item.unitPrice" placeholder = "Unit Price" required><br/>
+  <input type = "text" ng-model = "inventory.item.quantity" placeholder = "Quantity" required><br/>
   <button type= "button">Submit</button>
   </form>
   </div>

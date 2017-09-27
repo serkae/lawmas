@@ -1,3 +1,25 @@
 <div>
 Viewing your current inventory
+<!-- <p ng-repeat = "x in itemlist">{{x}}</p> -->
+<table class = "table">
+<thead>
+<tr>
+<th>id</th>
+<th>department</th>
+<th>name</th>
+<th>unit price</th>
+<th>quantity</th>
+<th>description</th>
+</tr>
+</thead>
+<tr ng-repeat = "x in itemlist">
+<td>{{x.id}}</td>
+<td>{{x.department.id}}</td>
+<td>{{x.name}}</td>
+<td>{{x.unitPrice}}</td>
+<td>{{x.quantity}}</td>
+<td>{{x.description}}</td>
+<td></td>
+</tr>
+</table>
 </div>

@@ -6,9 +6,7 @@ var adminLoginApp = angular.module("adminLoginApp", ["ui.router"]);
 
 adminLoginApp.config(function($stateProvider, $urlRouterProvider) {
 	console.log("init admin login app...");
-	
-	
-	
+
 	$stateProvider
 		.state("auth", {
 			url:"/managerLogin",
