@@ -24,8 +24,8 @@ public class CardDao {
 		this.aRepo = aRepo;
 	}
 	
-	public void addCard(Card s) {
-		aRepo.save(s);
+	public Card addCard(Card s) {
+		return aRepo.save(s);
 	}
 	public List<Card> getAll(){
 		return (List<Card>) aRepo.findAll();

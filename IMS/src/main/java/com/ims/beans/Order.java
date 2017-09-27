@@ -2,7 +2,6 @@ package com.ims.beans;
 
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,8 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.ims.beans.Customer;
-
 @Entity
 @Table(name="Orders")
 public class Order {
@@ -29,7 +26,7 @@ public class Order {
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ORDERID_SEQ")
     private int id;
     
-    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="CUSTOMER_ID",nullable=false)
     private Customer customer;
     
