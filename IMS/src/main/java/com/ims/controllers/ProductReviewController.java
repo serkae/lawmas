@@ -50,6 +50,7 @@ public class ProductReviewController {
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<String> removeReview(@RequestBody ProductReview productReview) {
+		productReview.setInventoryItem(null);
 		productReviewService.removeAdmin(productReview);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}
