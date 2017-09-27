@@ -27,6 +27,10 @@ public class CustomerService {
 		return customerDao.getAll();
 	}
 
+	public Customer getById(int i) {
+		return customerDao.getCustomerById(i);
+	}
+	
 	public void remove(Customer c) {
 		customerDao.removeCustomer(c);
 	}

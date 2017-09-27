@@ -74,12 +74,12 @@ public class LineItem {
 		this.quantity = quantity;
 	}
 
-	public InventoryItem getItem() {
+	public InventoryItem getInventoryItem() {
 		return inventoryItem;
 	}
 
 
-	public void setItem(InventoryItem item) {
+	public void setInventoryItem(InventoryItem item) {
 		this.inventoryItem = item;
 	}
 

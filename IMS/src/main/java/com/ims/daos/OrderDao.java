@@ -25,8 +25,9 @@ public class OrderDao {
 		this.aRepo = aRepo;
 	}
 	
-	public void addOrder(Order s) {
-		aRepo.save(s);
+	public Order addOrder(Order s) {
+		
+		return aRepo.save(s);
 	}
 	public List<Order> getAll(){
 		return (List<Order>) aRepo.findAll();
@@ -39,5 +40,9 @@ public class OrderDao {
 	}
 	public void removeOrder(Order s) {
 		aRepo.delete(s);
+	}
+
+	public List<Order> getAllFromCustomerId(int id){
+		return aRepo.findOrderByCustomerId(id);
 	}
 }

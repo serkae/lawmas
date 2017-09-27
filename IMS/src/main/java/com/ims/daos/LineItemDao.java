@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.LineItem;
+import com.ims.beans.Order;
 import com.ims.repositories.LineItemRepository;
 
 
@@ -26,12 +27,17 @@ public class LineItemDao {
 		this.aRepo = aRepo;
 	}
 	
-	public void addLineItem(LineItem s) {
-		aRepo.save(s);
+	public LineItem addLineItem(LineItem s) {
+		return aRepo.save(s);
 	}
 	public List<LineItem> getAll(){
 		return (List<LineItem>) aRepo.findAll();
 	}
+	
+	public List<LineItem> getAllByOrder(Order o){
+		return aRepo.findByOrder(o);
+	}
+	
 	public LineItem getLineItemById(int id) {
 		return aRepo.findOne(id);
 	}
