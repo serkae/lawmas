@@ -201,30 +201,64 @@ adminApp.service("InventoryService", function($http, $q){
 
 });
 
-adminApp.controller("manageCtrl", function(InventoryService){
+adminApp.controller("manageCtrl", function(InventoryService, $scope, $http){
 	console.log("in manageCtrl");
+//	var inventory = this;
+//	
+//	inventory.item = InventoryService.getItem();
+//	console.log(inventory.item);
+
+	$scope.name = "";
+	$scope.description = "";
+	$scope.unitPrice;
+	$scope.quantity;
+	
+	$scope.displayItem = function(){
+		console.log($scope.name + " " + $scope.unitPrice)
+	}
+	
 	var inventory = this;
 	
-	inventory.item = InventoryService.getItem();
-	console.log(inventory.item);
-
-	
-	
+	$scope.item = {
+		id: -1,
+		name: $scope.name,
+		description: $scope.description,
+		unitPrice: $scope.unitPrice,
+		quantity: $scope.quantity,
+		department: null,
+		discount: null
+	};
 	
 	inventory.addItem = function(){
-		console.log("in addItem");
-		
-		var promise = InventoryService.createItem();
-
-		promise.then(
-				function(response){
-					console.log(response.data);
-					InventoryService.setItem(response.data);
-				},
-				function(error){
-					console.log(error);
-				})
+		inventory.item = {
+			id: -1,
+			name: $scope.name,
+			description: $scope.description,
+			unitPrice: $scope.unitPrice,
+			quantity: $scope.quantity,
+			department: null,
+			discount: null
+		};
+		$http.post("rest/inventoryitem/create", inventory.item).success(function(){
+			console.log("SUCCESS?")
+		})
 	}
+	
+	
+//	inventory.addItem = function(){
+//		console.log("in addItem");
+//		
+//		var promise = InventoryService.createItem();
+//
+//		promise.then(
+//				function(response){
+//					console.log(response.data);
+//					InventoryService.setItem(response.data);
+//				},
+//				function(error){
+//					console.log(error);
+//				})
+//	}
 
 });
 
