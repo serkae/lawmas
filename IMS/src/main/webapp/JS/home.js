@@ -14,7 +14,7 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	.state("mainStorePage", {
 		url:"/mainStorePage",
 		templateUrl: "partials/mainStorePage.html",
-		controller: "getAllInvItemsCtrl"
+		controller: "getInvItemsCtrl"
 	})
 	.state("cart", {
 		url: "/cart",
@@ -22,7 +22,9 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	});
 });
 
-storeApp.controller('getAllInvItemsCtrl', function($http, $scope) {
+storeApp.controller('getInvItemsCtrl', function($http, $scope) {
+	$scope.sortType = "id";
+	$scope.sortReverse = false;
 	$http.get('rest/inventoryitem/getAll').success(function(data) {
 		$scope.allInvItems = data;
 	});

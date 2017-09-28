@@ -62,8 +62,8 @@ label {
   	<ul class="nav navbar-nav">
   		<li><button class="btn"><a ui-sref="mainStorePage"><span class="glyphicon glyphicon-home"></span></a></button></li>
   		<li><form class="form-inline">
-    		<input class="form-control mr-sm-2" type="text" placeholder="Search">
-    		<button class="btn" type="submit">
+    		<input class="form-control mr-sm-2" type="text" placeholder="Search" ng-model="searchTerms">
+    		<button class="btn" type="submit" ui-sref="mainStorePage">
     			<span class="glyphicon glyphicon-search"></span> Search
     		</button>
   			</form>
