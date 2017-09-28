@@ -8,5 +8,6 @@ import com.ims.beans.Customer;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer>{
 
+	List<Customer> findByEmailAndPassword(String email, String password);
 	List<Customer> findBylastname(String lastname);
 }
