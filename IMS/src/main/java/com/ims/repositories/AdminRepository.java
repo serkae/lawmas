@@ -9,5 +9,5 @@ import com.ims.beans.Customer;
 
 public interface AdminRepository extends JpaRepository<Admin, Integer>{
 
-	List<Customer> findByEmailAndPassword(String email, String password);
+	List<Admin> findByEmailAndPassword(String email, String password);
 }

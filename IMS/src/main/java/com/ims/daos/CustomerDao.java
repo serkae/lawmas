@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ims.beans.Admin;
+import com.ims.beans.Card;
 import com.ims.beans.Customer;
+import com.ims.beans.State;
 import com.ims.repositories.CustomerRepository;
 
 @Component
@@ -50,6 +51,23 @@ public class CustomerDao {
 	}
 	public void removeCustomer(Customer s) {
 		aRepo.delete(s);
+	}
+	
+	public List<Customer> getAllByLastName(String ln){
+		return aRepo.findBylastname(ln);
+	}
+	
+	
+	public List<Customer> getAllByState(State s){
+		return aRepo.findByState(s);
+	}
+	
+	public Customer getByCard(Card c) {
+		return aRepo.findByCard(c);
+	}
+	
+	public Customer getByCardId(int id) {
+		return aRepo.findByCardId(id);
 	}
 
 }
