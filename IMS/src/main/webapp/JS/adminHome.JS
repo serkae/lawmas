@@ -144,13 +144,17 @@ adminApp.service("InventoryService", function($http, $q){
 	
 	inventory.item = {
 			id: -1,
-			department: "",
 			unitPrice: -1,
 			quantity: -1,
-			name: "",
-			description: "",
-			discount: ""
+			name: " ",
+			description: " ",
+			department: -1,
+			discount: null
 		};
+	
+	inventory.getItem = function(){
+		return inventory.item;
+	}
 	
 	inventory.setItem = function(data){
 		inventory.item.name = data.name;
@@ -182,6 +186,8 @@ adminApp.service("InventoryService", function($http, $q){
 adminApp.controller("manageCtrl", function(InventoryService, $scope){
 	console.log("in manageCtrl");
 	var inventory = this;
+	
+	inventory.item = InventoryService.getItem();
 	
 	$scope.addItem = function(){
 		console.log("in addItem");
