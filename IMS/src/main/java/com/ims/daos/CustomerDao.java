@@ -33,6 +33,16 @@ public class CustomerDao {
 	public List<Customer> getAll(){
 		return (List<Customer>) aRepo.findAll();
 	}
+	
+	public Customer getCustomerByUsernameAndPassword(String email,String password) {
+		List<Customer> result = aRepo.findByEmailAndPassword(email, password);
+		if(result.size() == 0) {
+			return null;
+		}
+		else {
+			return result.get(0);
+		}
+	}
 	public Customer getCustomerById(int id) {
 		return aRepo.findOne(id);
 	}

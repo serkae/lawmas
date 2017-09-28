@@ -10,6 +10,7 @@ import com.ims.beans.State;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer>{
 
+	List<Customer> findByEmailAndPassword(String email, String password);
 	List<Customer> findBylastname(String lastname);
 	
 	List<Customer> findByState(State state);
