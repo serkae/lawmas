@@ -69,7 +69,8 @@ label {
   			</form>
   		</li>
   		<li><button class="btn" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet"><a ui-sref="cart"><span class="glyphicon glyphicon-shopping-cart"></span></a></button></li>
-  		<li><button class="btn" data-toggle="modal" data-target="#login"><span class="glyphicon glyphicon-user"></span></button></li>
+  		<li><button class="btn"><a ui-sref="login"><span class="glyphicon glyphicon-user"></span></a></button></li>
+  		<li ng-show="mainStorePage.customerInfo"><button class="btn" data-toggle="modal" data-target="#userInfo"><span class="glyphicon glyphicon-cog"></span></button></li>
   	</ul>
   </div>
 </nav>
@@ -87,32 +88,32 @@ label {
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="login" role="dialog">
-	<div class="modal-dialog modal-sm">
+<!-- <div class="modal fade" id="login" role="dialog">
+	<div class="modal-dialog modal-sm"> -->
 
 	<!-- Modal content -->
-	<div class="modal-content">
+	<!-- <div class="modal-content"  ng-controller="login" >
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h2 class="modal-title">Customer Login</h2>
 		</div>
 		<div class="modal-body">
-			<form class="form-horizontal">
+			<form class="form-horizontal" ng-submit="login.doLogin()">
     			<div class="form-group">
         			<div class="col-xs-10">
-            			<input type="text" class="form-control" name="email" id="email" placeholder="Email" required>
+            			<input type="text" class="form-control" ng-model="login.customer.email" placeholder="Email" required>
        				 </div>
     			</div>
     			<div class="form-group">
         			<div class="col-xs-10">
-            			<input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+            			<input type="password" class="form-control" ng-model="mainStorePage.login.customer.password" placeholder="Password" required>
        				 </div>
     			</div>
-    			<button type="submit" class="btn btn-default" align="center">Login</button>
+    			<button type="submit" class="btn" align="center">Login</button>
     		</form>
     	</div>
 	</div>
-	</div>
+	</div> -->
 </div>
 
 </body>
