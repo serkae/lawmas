@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ims.beans.Card;
 import com.ims.daos.CardDao;
-import com.ims.dtos.CardDto;
 
 @Service
 
@@ -20,11 +19,8 @@ public class CardService {
 		this.cDao = cDao;
 	}
 	
-	public CardDto createCard(Card c) {
-		c = cDao.addCard(c);
-		CardDto dto = new CardDto(c.getId(), c.getCardnumber(), c.getNameoncard(), c.getExpiration(), 
-				c.getSecuritycode(),true);
-		return dto;
+	public Card createCard(Card c) {
+		return cDao.addCard(c);
 	}
 	
 	public void deleteCard(Card c) {

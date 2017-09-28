@@ -1,8 +1,6 @@
 package com.ims.controllers;
 
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,12 +34,20 @@ public class AdminController {
 		return new ResponseEntity<AdminDto>(adminService.authenticateUser(adminDto), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/createOrUpdate",method=(RequestMethod.POST),
+	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<AdminDto> registerUser(@RequestBody Admin admin){
-		System.out.println("Saving user: " + admin.getEmail());
-		return new ResponseEntity<AdminDto>(adminService.createOrUpdateAdmin(admin), HttpStatus.OK);
+	public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin){
+		AdminDto aDto = new AdminDto(admin.getId(),admin.getEmail(),admin.getPassword(),false);
+		aDto = adminService.authenticateUser(aDto);
+		
+		//if admin doesnt exist
+		if(!aDto.isAuthenticated()) {
+			return new ResponseEntity<Admin>(admin, HttpStatus.NOT_ACCEPTABLE);
+		}
+		admin.setId(aDto.getId());
+		adminService.createOrUpdateAdmin(admin);
+		return new ResponseEntity<Admin>(admin, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/delete",method=(RequestMethod.POST),
@@ -53,10 +59,10 @@ public class AdminController {
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}
 
-	@RequestMapping(value="/getAll",method=(RequestMethod.GET),
-			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<List<Admin>> getAllAdmins(){
-		return new ResponseEntity<List<Admin>>(adminService.getAll(), HttpStatus.OK);
-	}
+//	@RequestMapping(value="/getAll",method=(RequestMethod.GET),
+//			produces=(MediaType.APPLICATION_JSON_VALUE))
+//	public ResponseEntity<List<Admin>> getAllAdmins(){
+//		return new ResponseEntity<List<Admin>>(adminService.getAll(), HttpStatus.OK);
+//	}
 
 }
