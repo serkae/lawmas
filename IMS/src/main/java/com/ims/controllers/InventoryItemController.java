@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ims.beans.InventoryItem;
 import com.ims.services.InventoryItemService;
@@ -68,7 +72,11 @@ public class InventoryItemController {
 			@RequestParam("name") String name,
 			@RequestParam("filepath") String filepath) {
 		
-		AmazonS3 client = new AmazonS3Client(new ProfileCredentialsProvider());
+		BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIAI3MXOKNTE6DFBHAA", "SwxW8kCo0VhbxDLkS2i6n1Zn1vriO2g0rSv1o2bX");
+        AmazonS3 client = AmazonS3ClientBuilder.standard()
+                                .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
+                                .withRegion(Regions.US_EAST_1)
+                                .build();
 		try {
             System.out.println("Uploading a new object to S3 from a file\n");
             File f = new File(filepath);

@@ -149,7 +149,7 @@ adminApp.service("InventoryService", function($http, $q){
 			quantity: -1,
 			name: "",
 			description: "",
-			discount: ""
+			discount: "",
 		};
 	
 	inventory.setItem = function(data){
