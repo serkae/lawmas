@@ -13,6 +13,4 @@ public interface DiscountRepository extends JpaRepository<Discount, Integer>{
 	
 	List<Discount> findByEndDate(Timestamp date);
 
-	//test this!
-	List<Discount> findDiscountsFromDiscountType(int type);
 }
