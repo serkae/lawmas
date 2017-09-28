@@ -3,10 +3,9 @@
 			<form class="navbar-form navbar-left" role="search">
 				<div class="form-group">
 					<div style="float: left">
-						<input type="text" class="form-control" placeholder="Search">
+						<input type="text" class="form-control" placeholder="Search" ng-model = "searchItem">
 					</div>
 					<div style="float: right">
-						<button class="btn btn-default">Search</button>
 					</div>
 				</div>
 			</form>
@@ -29,7 +28,7 @@ Search Query: {{searchInventory}}
 <th>description</th>
 </tr>
 </thead>
-<tr ng-repeat = "x in itemlist  | orderBy:sortType:sortReverse">
+<tr ng-repeat = "x in itemlist  | orderBy:sortType:sortReverse | filter:searchItem">
 <td>{{x.id}}</td>
 <td>{{x.department.id}}</td>
 <td>{{x.name}}</td>
