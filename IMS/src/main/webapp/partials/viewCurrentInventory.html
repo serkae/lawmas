@@ -1,6 +1,23 @@
 <div>
+		<nav class="navbar navbar-default">
+			<form class="navbar-form navbar-left" role="search">
+				<div class="form-group">
+					<div style="float: left">
+						<input type="text" class="form-control" placeholder="Search">
+					</div>
+					<div style="float: right">
+						<button class="btn btn-default">Search</button>
+					</div>
+				</div>
+			</form>
+		</nav>
 Viewing your current inventory
 <!-- <p ng-repeat = "x in itemlist">{{x}}</p> -->
+<div class = "alert alert-info">
+Sort Type: {{sortType}}
+Sort Reverse: {{sortReverse}}
+Search Query: {{searchInventory}}
+</div>
 <table class = "table">
 <thead>
 <tr>
@@ -12,7 +29,7 @@ Viewing your current inventory
 <th>description</th>
 </tr>
 </thead>
-<tr ng-repeat = "x in itemlist">
+<tr ng-repeat = "x in itemlist  | orderBy:sortType:sortReverse">
 <td>{{x.id}}</td>
 <td>{{x.department.id}}</td>
 <td>{{x.name}}</td>

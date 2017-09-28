@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html ng-app="adminLoginApp">
+<!--  <!DOCTYPE html>
+<html >
 <head>
 <meta charset="ISO-8859-1">
 <title>WorldTree Manager Login</title>
@@ -9,19 +9,19 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<!-- This loads JS (angular & ui-router) -->
+
 <script src="http://code.angularjs.org/1.2.13/angular.js"></script>
 <script
 	src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
-<!-- Importing fonts to use for the site -->
+
 <link href="https://fonts.googleapis.com/css?family=Sacramento"
 	rel="stylesheet">
 <link
 	href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300"
 	rel="stylesheet">
-<script src="JS/login.js"></script>
+-->
 
-<style>
+<!--  <style>
 body{
 	background-color: #d9ffb3;
 }
@@ -45,8 +45,9 @@ h1 {
 }
 </style>
 </head>
-<body>
-	<div>
+<body>-->
+
+	<div ng-app="adminLoginApp">
 		<div class="container-fluid">
 			<br> <br> <br> <br> <br> <br>
 			<div class="jumbotron">
@@ -55,7 +56,7 @@ h1 {
 
 				<!-- ng-controller="AdminCtrl as auth" -->
 				<div>
-					<form name="adminForm" ng-controller="AdminCtrl as auth"
+					<form name="adminForm" 
 						ng-submit="auth.doLogin()">
 						<input type="text" ng-model="auth.admin.email"
 							class="form-control" placeholder="Email"><br> <input
@@ -67,5 +68,3 @@ h1 {
 			</div>
 		</div>
 	</div>
-</body>
-</html>
