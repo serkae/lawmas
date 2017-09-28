@@ -16,6 +16,4 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, In
 	
 	List<InventoryItem> findByDiscount(Discount d);
 	
-	//test this!
-	List<InventoryItem> findInventoryItemFromdiscountID(int d);
 }

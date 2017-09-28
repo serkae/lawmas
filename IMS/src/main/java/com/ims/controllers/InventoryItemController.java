@@ -1,5 +1,6 @@
 package com.ims.controllers;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ims.beans.InventoryItem;
 import com.ims.services.InventoryItemService;
 
@@ -18,6 +26,7 @@ import com.ims.services.InventoryItemService;
 @RequestMapping(value="/inventoryitem")
 public class InventoryItemController {
 
+	static String bucketname = "lawmas";
 	@Autowired
 	private InventoryItemService inventoryItemService;
 
@@ -52,5 +61,43 @@ public class InventoryItemController {
 	public ResponseEntity<String> removeItem(@RequestBody InventoryItem i){
 		inventoryItemService.remove(i);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/upload", method = (RequestMethod.POST))
+	public ResponseEntity<String> handlePictureUpload(
+			@RequestParam("name") String name,
+			@RequestParam("filepath") String filepath) {
+		
+		AmazonS3 client = new AmazonS3Client(new ProfileCredentialsProvider());
+		try {
+            System.out.println("Uploading a new object to S3 from a file\n");
+            File f = new File(filepath);
+            client.putObject(new PutObjectRequest(
+            		                 bucketname, name, f));
+
+           
+         } catch (AmazonServiceException ase) {
+            System.out.println((("Caught an AmazonServiceException, which " +
+            		"means your request made it " +
+                    "to Amazon S3, but was rejected with an error response" +
+                    " for some reason"+            
+           "Error Message:    " + ase.getMessage() +
+           " HTTP Status Code: " + ase.getStatusCode() +
+            "AWS Error Code:   " + ase.getErrorCode())+
+            "Error Type:       " + ase.getErrorType() +
+            "Request ID:       " + ase.getRequestId()));
+        } catch (AmazonClientException ace) {
+        	System.out.println((("Caught an AmazonClientException, which " +
+            		"means the client encountered " +
+                    "an internal error while trying to " +
+                    "communicate with S3, " +
+                    "such as not being able to access the network." +
+           "Error Message: " + ace.getMessage())));
+        }
+		
+		
+		return new ResponseEntity<String>("https://s3.amazonaws.com/"+bucketname+"/"+name, HttpStatus.OK);
+		
+		
 	}
 }
