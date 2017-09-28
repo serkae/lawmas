@@ -4,7 +4,7 @@
 
 var adminApp = angular.module("adminApp", ['ui.router']);
 
-adminApp.config(function($stateProvider, $urlRouterProvider){
+adminApp.config(function($stateProvider, $urlRouterProvider) {
 	
 	$urlRouterProvider.otherwise("/managerLogin");
 
@@ -30,6 +30,10 @@ adminApp.config(function($stateProvider, $urlRouterProvider){
 		})
 		.state("manageInventoryHome.viewCurrentInventory",{
 			url: "/viewCurrentInventory",
+			templateUrl: "partials/viewCurrentInventory.html"
+		})
+		.state("managerLogout", {
+			url: "/managerLogin",
 			templateUrl: "partials/viewCurrentInventory.html",
 			controller: "invCtrl"
 		})
@@ -133,7 +137,12 @@ adminApp.controller("AdminCtrl", function(AdminService,$state) {
 
 adminApp.controller("MainPageCtrl", function($state){
 	console.log("in adminMainPage");
-})
+});
+
+adminApp.controller("ManagerLogout", function(state) {
+	console.log("Logging out...");
+	//$window.location.href = "http://localhost:8081/IMS/managerLogin.html";
+});
 
 /*
  * INVENTORY STUFF
@@ -247,5 +256,3 @@ adminApp.controller('manShowInfoController', function($scope) {
 		email: "mscott@mailinator.com"
 	}
 });
-
-
