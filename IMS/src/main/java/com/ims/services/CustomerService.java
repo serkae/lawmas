@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ims.beans.Customer;
-import com.ims.beans.InventoryItem;
 import com.ims.daos.CustomerDao;
+import com.ims.dtos.CustomerDto;
 
 @Service
 public class CustomerService {
@@ -21,6 +21,15 @@ public class CustomerService {
 
 	public Customer createOrUpdate(Customer c) {
 		return customerDao.createOrUpdateCustomer(c);
+	}
+	
+	public CustomerDto authenticateUser(CustomerDto customerDto) {
+		Customer customer = customerDao.getCustomerByUsernameAndPassword(customerDto.getEmail(),customerDto.getPassword());
+		if(customer != null) {
+			customerDto.setAuthenticated(true);
+			customerDto.setId(customer.getId());
+		}
+		return customerDto;
 	}
 	
 	public List<Customer> getAll() {
