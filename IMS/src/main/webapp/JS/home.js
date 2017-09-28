@@ -14,5 +14,5 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 		.state("mainStorePage", {
 			url:"/mainStorePage",
 			templateUrl: "partials/mainStorePage.html", //html
-		})
+		});
 });
