@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ims.beans.Card;
 import com.ims.beans.Customer;
 import com.ims.beans.InventoryItem;
+import com.ims.beans.State;
 import com.ims.daos.CustomerDao;
 
 @Service
@@ -33,5 +35,22 @@ public class CustomerService {
 	
 	public void remove(Customer c) {
 		customerDao.removeCustomer(c);
+	}
+	
+	public List<Customer> getAllByLastName(String ln){
+		return customerDao.getAllByLastName(ln);
+	}
+	
+	
+	public List<Customer> getAllByState(State s){
+		return customerDao.getAllByState(s);
+	}
+	
+	public Customer getByCard(Card c) {
+		return customerDao.getByCard(c);
+	}
+	
+	public Customer getByCardId(int id) {
+		return customerDao.getByCardId(id);
 	}
 }

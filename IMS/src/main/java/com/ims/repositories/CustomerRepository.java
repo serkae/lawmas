@@ -12,8 +12,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>{
 
 	List<Customer> findBylastname(String lastname);
 	
-	Customer findByEmailAndPassword(String email, String password);
-	
 	List<Customer> findByState(State state);
 	
 	Customer findByCard(Card card);
