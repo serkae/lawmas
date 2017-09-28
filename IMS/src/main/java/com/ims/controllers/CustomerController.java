@@ -56,7 +56,7 @@ public class CustomerController {
 		return new ResponseEntity<Customer>(customerService.createOrUpdate(c), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/remove",method=(RequestMethod.POST),
+	@RequestMapping(value="/delete",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<String> removeItem(@RequestBody Customer c){
