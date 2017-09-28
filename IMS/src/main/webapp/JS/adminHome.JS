@@ -162,7 +162,7 @@ adminApp.service("InventoryService", function($http, $q){
 	inventory.createItem = function(){
 		var promise;
 		
-		promise = $http.post("/rest/inventoryitem/create", inventory.item).then(
+		promise = $http.post("rest/inventoryitem/create", inventory.item).then(
 				function(response){
 					console.log(response);
 					return response;
@@ -179,11 +179,11 @@ adminApp.service("InventoryService", function($http, $q){
 
 });
 
-adminApp.controller("manageCtrl", function(InventoryService){
+adminApp.controller("manageCtrl", function(InventoryService, $scope){
 	console.log("in manageCtrl");
 	var inventory = this;
 	
-	inventory.addItem = function(){
+	$scope.addItem = function(){
 		console.log("in addItem");
 		
 		var promise = InventoryService.createItem();
@@ -227,38 +227,7 @@ adminApp.controller('showAllCustsController', function($scope,$http) {
 		$scope.allCusts = data;
 	});
 	
-//	$scope.allCusts = [
-//		{
-//			firstName: "Max",
-//			lastName: "Caulfield",
-//			email: "mcaulfi1@blackwell.com",
-//			address: "123 Deer St",
-//			city: "Arcadia Bay",
-//			state: "Oregon",
-//			zipcode: "123456",
-//			phone: "123-456-7890"
-//		},
-//		{
-//			firstName: "Chloe",
-//			lastName: "Price",
-//			email: "cprice1@blackwell.com",
-//			address: "123 Butterfly St",
-//			city: "Arcadia Bay",
-//			state: "Oregon",
-//			zipcode: "123456",
-//			phone: "234-567-8901"
-//		},
-//		{
-//			firstName: "Rachel",
-//			lastName: "Amber",
-//			email: "ramber1@blackwell.com",
-//			address: "123 Junk St",
-//			city: "Arcadia Bay",
-//			state: "Oregon",
-//			zipcode: "123456",
-//			phone: "345-678-9012"
-//		}
-//	]
+
 });
 
 /*
