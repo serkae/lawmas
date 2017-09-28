@@ -219,6 +219,9 @@ adminApp.controller("invCtrl", function($scope,$http){
 
 
 adminApp.controller('showAllCustsController', function($scope,$http) {
+	$scope.sortType = "lastname";
+	$scope.sortReverse = false;
+	$scope.searchCustomer = "";
 	
 	$http.get('rest/customer/getAll').success(function(data){
 		$scope.allCusts = data;

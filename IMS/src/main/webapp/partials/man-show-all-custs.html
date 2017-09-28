@@ -15,10 +15,9 @@
 			<form class="navbar-form navbar-left" role="search">
 				<div class="form-group">
 					<div style="float: left">
-						<input type="text" class="form-control" placeholder="Search">
+						<input type="text" class="form-control" placeholder="Search" ng-model = "searchCustomer">
 					</div>
 					<div style="float: right">
-						<button class="btn btn-default">Search</button>
 					</div>
 				</div>
 			</form>
@@ -35,7 +34,7 @@
 				<th>Zipcode</th>
 				<th>Phone</th>
 			</tr>
-			<tr ng-repeat="cust in allCusts">
+			<tr ng-repeat="cust in allCusts | orderBy:sortType:sortReverse | filter:searchCustomer">
 				<td>{{cust.firstname}}</td>
 				<td>{{cust.lastname}}</td>
 				<td>{{cust.email}}</td>
