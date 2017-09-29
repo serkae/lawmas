@@ -29,4 +29,9 @@ public class DepartmentService {
 	public void remove(Department d) {
 		departmentDao.removeDepartment(d);
 	}
+	
+	public Department getById(int id) {
+		return departmentDao.getDepartmentById(id);
+	}
+
 }
