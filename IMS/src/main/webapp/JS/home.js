@@ -13,34 +13,13 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	$stateProvider
 		.state("mainStorePage", {
 			url:"/mainStorePage",
-			templateUrl:"partials/mainStorePage.html" //html
+			templateUrl:"partials/mainStorePage.html", //html
+			controller: "MainCtrl as main"
 		})
 		.state("login", {
 			url:"/login",
 			templateUrl:"partials/login.html",
-			controller: "LoginCtrl as auth"
-		})
-		//abstract state meaning it can’t be directly transitioned to
-		//serves as a parent to it’s child states to offer shared functionality
-		/*.state("modal", {
-			views: {
-				"modal": {
-			        templateUrl: "modal.html"
-			      }
-			    },
-			    abstract: true	
-		})
-		.state("modal.login", {
-			views: {
-				"modal": {
-					templateUrl: "modal/login.html"
-				}
-			}
-		})*/
-		.state("mainStorePage.customerInfo", {
-			url:"/customerInfo",
-			templateUrl:"/customerInfo",
-			controller: "custShowInfoController as custInfo"
+			controller: "LoginCtrl as login"
 		})
 });
 
@@ -60,7 +39,7 @@ storeApp.service("CustomerService", function($http, $q){
 	};
 
 	service.setCustomer = function(data){
-		service.customer.username = data.email;
+		service.customer.email = data.email;
 		service.customer.password = data.password;
 		service.customer.authenticated = data.authenticated;
 	};
@@ -70,7 +49,7 @@ storeApp.service("CustomerService", function($http, $q){
 				'rest/customer/auth', service.customer)
 				.then(
 						function(response){
-							console.log(response);
+							console.log(response.data);
 							return response;
 						},
 						function(error){
@@ -81,26 +60,26 @@ storeApp.service("CustomerService", function($http, $q){
 	};
 });
 
-storeApp.controller("LoginCtrl", function(CustomerService, $state){
+storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $state){
 	console.log("in loginctrl");
-
+	
 	var login = this;
-	login.customer = CustomerService.getCustomer();
-	console.log("got customer");
-	console.log(login.customer);
 	
 	login.doLogin = function(){
 		console.log("about to authenticate user");
 		var promise = CustomerService.authenticateCustomer();
-	
+		console.log($scope.email);
 		promise.then(
 				function(response){
+					console.log(response);
 					if(login.customer!= null){
+						console.log(login.customer);
 						login.customer.authenticated = true;
+						$rootScope.authenticated = true;
 						CustomerService.setCustomer(response.data);
 						console.log("setting user in login ctrl")
 						console.log(CustomerService.getCustomer());
-						$state.go("mainStorePage.customerInfo");
+						$state.go("mainStorePage");
 					} else{
 						alert("Invalid login!");
 					}
@@ -111,6 +90,6 @@ storeApp.controller("LoginCtrl", function(CustomerService, $state){
 	};
 });
 
-storeApp.controller('custInfo', function($scope) {
-	$scope.custInfo = CustomerService.getCustomer()
+storeApp.controller("MainCtrl", function() {
+	$scope.authenticate = false;
 });
