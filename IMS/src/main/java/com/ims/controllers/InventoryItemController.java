@@ -3,6 +3,7 @@ package com.ims.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +124,15 @@ public class InventoryItemController {
 	public ResponseEntity<String> handlePictureUpload(
 			@RequestParam("file") MultipartFile f) {
 		
-		BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIAI3MXOKNTE6DFBHAA", "SwxW8kCo0VhbxDLkS2i6n1Zn1vriO2g0rSv1o2bX");
+		String pub= "QUtJQUpRWkZQWVVKR0FVN0ZLQlE=";
+		byte[] decodedBytes = Base64.getDecoder().decode(pub.getBytes());
+		pub = new String(decodedBytes);
+		
+		String priv= "b3lNUCt6VnUzQ3FleENGN0NiK0p3WlFtdTZsRkc4R2JadlVHbkJKeA==";
+		decodedBytes = Base64.getDecoder().decode(priv.getBytes());
+		priv = new String(decodedBytes);
+		
+		BasicAWSCredentials awsCreds = new BasicAWSCredentials(pub, priv);
         AmazonS3 client = AmazonS3ClientBuilder.standard()
                                 .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                                 .withRegion(Regions.US_EAST_1)
