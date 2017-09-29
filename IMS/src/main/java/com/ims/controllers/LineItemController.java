@@ -21,7 +21,7 @@ import com.ims.services.LineItemService;
 import com.ims.services.OrderService;
 
 @RestController
-@RequestMapping("/lineItem")
+@RequestMapping("/lineitem")
 public class LineItemController {
 
 	@Autowired
