@@ -13,8 +13,7 @@
 			ng-show="newDep == 1" placeholder="New Department"> <select
 			class="custom-select" ng-show="oldDep == 1" ng-model="department">
 			<option selected>Select an Existing Department</option>
-			<option ng-repeat="x in departments | orderBy:sortType:sortReverse"
-				value="{{x.name}}">{{x.name}}</option>
+			<option ng-repeat="x in departments | orderBy:sortType:sortReverse">{{x.name}}</option>
 		</select><br /> <input id="unitPrice" type="text" ng-model="unitPrice"
 			placeholder="Unit Price" required><br /> <input id="quantity"
 			type="text" ng-model="quantity" placeholder="Quantity" required><br />

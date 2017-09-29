@@ -259,34 +259,34 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http){
 				
 			});
 		}
-//		if($scope.oldDep == 1){
-//			console.log("We in the old dep");
-//			
-//			$http.get('rest/department/getAll').success(function(data){
-//				console.log(inventory.department.name);
-//				for(var i = 1; i < data.length; i++){
-//					console.log(data.department[i]["name"]);
-//				}
-//				if(inventory.department.name === data.name){
-//					inventory.department.id = data.id;
-//					console.log(data);
-//					console.log("ID: " + inventory.department.id + " Name: " + inventory.department.name);
-//					inventory.item = {
-//							id: -1,
-//							name: $scope.name,
-//							description: $scope.description,
-//							unitPrice: $scope.unitPrice,
-//							quantity: $scope.quantity,
-//							department: {id: inventory.department.id, name: inventory.department.name},
-//							discount: null
-//					};
-//					console.log(inventory.item);
-//					$http.post("rest/inventoryitem/create", inventory.item).success(function(){
-//						console.log("SUCCESS?")
-//					})
-//				}
-//			})
-//		}
+		if($scope.oldDep == 1){
+			console.log("We in the old dep");
+			
+			$http.get('rest/department/getAll').success(function(data){
+				console.log(inventory.department.name);
+				for(var i = 1; i < data.length; i++){
+					console.log(data[i]);
+					var dName = data[i];
+				if(dName.name === inventory.department.name){
+					inventory.department.id = dName.id;
+					console.log("ID: " + inventory.department.id + " Name: " + inventory.department.name);
+					inventory.item = {
+							id: -1,
+							name: $scope.name,
+							description: $scope.description,
+							unitPrice: $scope.unitPrice,
+							quantity: $scope.quantity,
+							department: {id: inventory.department.id, name: inventory.department.name},
+							discount: null
+					};
+					console.log(inventory.item);
+					$http.post("rest/inventoryitem/create", inventory.item).success(function(){
+						console.log("SUCCESS?")
+					})
+				}
+			}
+			})
+		}
 		
 
 	}
