@@ -35,10 +35,6 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		})
 		.state("manageInventoryHome.viewCurrentInventory",{
 			url: "/viewCurrentInventory",
-			templateUrl: "partials/viewCurrentInventory.html"
-		})
-		.state("managerLogout", {
-			url: "/managerLogin",
 			templateUrl: "partials/viewCurrentInventory.html",
 			controller: "invCtrl"
 		})
@@ -203,31 +199,30 @@ adminApp.service("InventoryService", function($http, $q){
 
 adminApp.controller("manageCtrl", function(InventoryService, $scope, $http){
 	console.log("in manageCtrl");
-//	var inventory = this;
-//	
-//	inventory.item = InventoryService.getItem();
-//	console.log(inventory.item);
 
-	$scope.name = "";
-	$scope.description = "";
-	$scope.unitPrice;
-	$scope.quantity;
 	
-	$scope.displayItem = function(){
-		console.log($scope.name + " " + $scope.unitPrice)
+	$scope.newDep = 0;
+	$scope.oldDep = 0
+	
+	$scope.newFunction = function(){
+		$scope.newDep = 1;
+		$scope.oldDep = 0;
+	}
+	$scope.existFunction = function(){
+		$scope.newDep = 0;
+		$scope.oldDep = 1;
 	}
 	
-	var inventory = this;
 	
-	$scope.item = {
-		id: -1,
-		name: $scope.name,
-		description: $scope.description,
-		unitPrice: $scope.unitPrice,
-		quantity: $scope.quantity,
-		department: null,
-		discount: null
-	};
+	
+	$scope.sortType = "name";
+	$scope.sortReverse = false;
+
+	$http.get("rest/department/getAll").success(function(data){
+		$scope.departments = data;
+	})
+	
+	var inventory = this;
 	
 	inventory.addItem = function(){
 		inventory.item = {
@@ -244,21 +239,7 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http){
 		})
 	}
 	
-	
-//	inventory.addItem = function(){
-//		console.log("in addItem");
-//		
-//		var promise = InventoryService.createItem();
-//
-//		promise.then(
-//				function(response){
-//					console.log(response.data);
-//					InventoryService.setItem(response.data);
-//				},
-//				function(error){
-//					console.log(error);
-//				})
-//	}
+
 
 });
 
