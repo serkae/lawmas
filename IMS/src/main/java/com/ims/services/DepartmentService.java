@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.ims.beans.Department;
 import com.ims.daos.DepartmentDao;
-import com.ims.dtos.DepartmentDto;
 
 @Service
 public class DepartmentService {
@@ -18,17 +17,22 @@ public class DepartmentService {
 	public void setDepartmentDao(DepartmentDao departmentDao) {
 		this.departmentDao = departmentDao;
 	}
-	
+
 	public Department createOrUpdate(Department d) {
 		return departmentDao.createOrUpdateDepartment(d);
 	}
-	
+
 	public List<Department> getAll(){
 		return departmentDao.getAll();
+	}
+
+	public void remove(Department d) {
+		departmentDao.removeDepartment(d);
 	}
 	
 	public Department getById(int id) {
 		return departmentDao.getDepartmentById(id);
+<<<<<<< HEAD
 	}
 	
 	public DepartmentDto remove(Department d) {
@@ -45,5 +49,8 @@ public class DepartmentService {
 			dDto.setActionApplied(false);
 		}
 		return dDto;
+=======
+>>>>>>> 890e6002e3fddecf1fc585514875910fb5f95593
 	}
+
 }
