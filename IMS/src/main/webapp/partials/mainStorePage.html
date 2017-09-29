@@ -1,102 +1,112 @@
-	<div>
-		<div class="introDiv" id="dailyDealDiv">Today's Daily Deals</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
-		</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
-		</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
-		</div>
-	</div>
+<table class="table">
+	<tr ng-repeat="item in allInvItems | orderBy:sortType:sortReverse | filter:searchTerms">
+		<td>{{item.name}}</td>
+		<td>{{item.unitPrice | currency}}</td>
+		<td>{{item.quantity}} in stock</td>
+		<td>{{item.department.name}}</td>
+		<td>{{item.description}}</td>
+	</tr>
+</table>
 
-	<div id="department1">
-		<div class="introDiv">Department 1</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
-		</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
-		</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
+<!-- <div>
+	<div class="introDiv" id="dailyDealDiv">Today's Daily Deals</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
 		</div>
 	</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
+		</div>
+	</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
+		</div>
+	</div>
+</div>
 
-	<div>
-		<div class="introDiv" id="dailyDealDiv">Department 2</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
-		</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
-		</div>
-		<div class="outerElement">
-			<div class="innerElement">
-				<ul>
-					<li>Insert Picture Here</li>
-					<li>Insert Name Here</li>
-					<li>Insert Price Here</li>
-					<button>Buy Now!</button>
-				</ul>
-			</div>
+<div id="department1">
+	<div class="introDiv">Department 1</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
 		</div>
 	</div>
-	<div class="card-footer text-muted" id="footer">Footer Bar</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
+		</div>
+	</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div>
+	<div class="introDiv" id="dailyDealDiv">Department 2</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
+		</div>
+	</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
+		</div>
+	</div>
+	<div class="outerElement">
+		<div class="innerElement">
+			<ul>
+				<li>Insert Picture Here</li>
+				<li>Insert Name Here</li>
+				<li>Insert Price Here</li>
+				<button>Buy Now!</button>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="card-footer text-muted" id="footer">Footer Bar</div> -->
