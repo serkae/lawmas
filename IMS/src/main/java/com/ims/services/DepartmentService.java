@@ -32,25 +32,7 @@ public class DepartmentService {
 	
 	public Department getById(int id) {
 		return departmentDao.getDepartmentById(id);
-<<<<<<< HEAD
 	}
 	
-	public DepartmentDto remove(Department d) {
-		
-		DepartmentDto dDto = new DepartmentDto();
-		
-		if(d != null) {
-			dDto.setName(d.getName());
-			departmentDao.removeDepartment(d);
-			dDto.setActionApplied(true);
-		}
-		else {
-			dDto.setName("null");
-			dDto.setActionApplied(false);
-		}
-		return dDto;
-=======
->>>>>>> 890e6002e3fddecf1fc585514875910fb5f95593
-	}
 
 }
