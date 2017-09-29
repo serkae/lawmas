@@ -4,20 +4,55 @@
 
 var adminApp = angular.module("adminApp", ['ui.router']);
 
+//image upload directive 
+adminApp.directive('fileModel', ['$parse', function ($parse) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) {
+			var model = $parse(attrs.fileModel);
+			var modelSetter = model.assign;
+
+			element.bind('change', function(){
+				scope.$apply(function(){
+					modelSetter(scope, element[0].files[0]);
+				});
+			});
+		}
+	};
+}]);
+
+//file upload service
+adminApp.service('fileUpload', ['$http', function ($http) {
+	this.uploadFileToUrl = function(file, uploadUrl){
+		var fd = new FormData();
+		fd.append('file', file);
+		console.log();
+
+		return $http.post(uploadUrl, fd, {
+			transformRequest: angular.identity,
+			headers: {'Content-Type': undefined},
+			transformResponse: function(data, headers){
+				return data;}
+		});
+
+	}
+}]);
+
 adminApp.config(function($stateProvider, $urlRouterProvider) {
-	
+
 	$urlRouterProvider.otherwise("/managerLogin");
 
 	$stateProvider
-		.state("managerLogin",{
-			url: "/managerLogin",
-			templateUrl: "partials/managerLogin.html",
-			controller: "AdminCtrl as auth"
-		})
-		.state("adminMainPage", {
+	.state("managerLogin",{
+		url: "/managerLogin",
+		templateUrl: "partials/managerLogin.html",
+		controller: "AdminCtrl as auth"
+	})
+	.state("adminMainPage", {
 		url: "/adminMainPage",
 		templateUrl: "partials/adminMainPage.html",
 		controller: "MainPageCtrl as adminMainPage"
+
 		})
 		.state("manageInventoryHome",{
 			url: "/manageInventoryHome",
@@ -48,44 +83,49 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 			templateUrl: "partials/man-show-info.html",
 			controller: "manShowInfoController"
 		});
-	console.log("IN HERE");
+
 	
+
+
+
+	console.log("IN HERE");
+
 });
 
 adminApp.service("AdminService", function($http, $q) {
 	console.log("in admin service");
-	
+
 	var service = this;
 	console.log(service);
-	
+
 	service.admin = {
-		id: -1,
-		email: "",
-		password: "",
-		authenticated: false
+			id: -1,
+			email: "",
+			password: "",
+			authenticated: false
 	};
-	
+
 	service.getAdmin= function() {
 		return service.admin;
 	};
-	
+
 	console.log("before set admin = " + service.admin);
-	
+
 	service.setAdmin= function(data) {
 		service.admin.id = data.id;
 		service.admin.email = data.email;
 		service.admin.password = data.password;
 		service.admin.authenticated = data.authenticated;
 	};
-	
+
 	console.log("after set admin = " + service.admin);
-	
+
 	service.loginAdmin = function() {
 		console.log("in loginAdmin");
 		var promise;
 		promise = $http.post('rest/admin/auth', service.admin).then(
 				function(response) {
-					
+
 					console.log(response.data);
 					return response;
 				},
@@ -93,7 +133,7 @@ adminApp.service("AdminService", function($http, $q) {
 					console.log('login user promise failed');
 					return $q.reject(error);
 				});
-		
+
 		return promise;
 	};
 });
@@ -104,29 +144,29 @@ adminApp.controller("AdminCtrl", function(AdminService,$state) {
 	var login = this;
 	console.log(login);
 	login.admin = AdminService.getAdmin();
-	
+
 	login.doLogin = function() { 
 		console.log("within the doLogin");
-		
+
 		var promise = AdminService.loginAdmin();
 		promise.then(
-			function(response) {
-				console.log("Response: "+ response);
-				if(login.admin!= null){
-					login.admin.authenticated = true;
-					AdminService.setAdmin(response.data);
-					console.log("setting user in login ctrl")
-					console.log(AdminService.getAdmin());
-					$state.go("adminMainPage");
+				function(response) {
+					console.log("Response: "+ response);
+					if(login.admin!= null){
+						login.admin.authenticated = true;
+						AdminService.setAdmin(response.data);
+						console.log("setting user in login ctrl")
+						console.log(AdminService.getAdmin());
+						$state.go("adminMainPage");
+					}
+					else{
+						alert("Invalid login!");
+					}
+
+				},
+				function(error) {
+					console.log("Error: " + error);
 				}
-				else{
-					alert("Invalid login!");
-				}
-				
-			},
-			function(error) {
-				console.log("Error: " + error);
-			}
 		)
 	}
 });
@@ -149,9 +189,9 @@ adminApp.controller("ManagerLogout", function(state) {
  * INVENTORY STUFF
  */
 adminApp.service("InventoryService", function($http, $q){
-	
+
 	var service = this;
-	
+
 	service.item = {
 			id: -1,
 			name: " ",
@@ -159,13 +199,15 @@ adminApp.service("InventoryService", function($http, $q){
 			unitPrice: -1,
 			quantity: -1,
 			department: null,
-			discount: null
-		};
-	
+			discount: null,
+			image: " "
+	};
+
 	service.getItem = function(){
 		return service.item;
 	}
-	
+
+
 	service.setItem = function(data){
 		service.item.name = data.name;
 		service.item.description = data.description;
@@ -174,7 +216,12 @@ adminApp.service("InventoryService", function($http, $q){
 		console.log("setting data");
 		console.log(service.item);
 	}
-	
+
+
+	service.uploadPic = function(){
+		var promise; 
+	}
+
 	service.createItem = function(){
 		var promise;
 		service.item = InventoryService.setItem();
@@ -189,108 +236,116 @@ adminApp.service("InventoryService", function($http, $q){
 					console.log("ERROR")
 					return error;
 				}
-		
+
 		);
 		return promise;
 	}
-	
+
 
 });
 
-adminApp.controller("manageCtrl", function(InventoryService, $scope, $http){
+adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, fileUpload){
 	console.log("in manageCtrl");
 
-	
-	$scope.newDep = 0;
-	$scope.oldDep = 0
-	
-	$scope.newFunction = function(){
-		$scope.newDep = 1;
-		$scope.oldDep = 0;
-	}
-	$scope.existFunction = function(){
-		$scope.newDep = 0;
-		$scope.oldDep = 1;
-	}
-	
-	
-	
-	$scope.sortType = "name";
-	$scope.sortReverse = false;
 
-	$http.get("rest/department/getAll").success(function(data){
-		$scope.departments = data;
-	})
+	$scope.name = "";
+	$scope.description = "";
+	$scope.unitPrice;
+	$scope.quantity;
+	$scope.image;
+
+	$scope.displayItem = function(){
+		console.log($scope.name + " " + $scope.unitPrice)
+	}
+
+	$scope.item = {
+			id: -1,
+			name: $scope.name,
+			description: $scope.description,
+			unitPrice: $scope.unitPrice,
+			quantity: $scope.quantity,
+			departmentid: $scope.chosenDepartment,
+			discountid: -1,
+			image: $scope.image
+	};
 	
+	var setDepartments = function(){
+		$http.get("rest/department/getAll").then(function(response){
+			$scope.departments = response.data;
+		})
+
+	}
+	setDepartments();
+	
+
 	var inventory = this;
 	
-	inventory.checkValue = function(){
-		console.log($scope.department);
+	inventory.addDepartment = function(){
+		var department = {
+				"id" : -1,
+				"name" : $scope.depname
+		}
+		$http.post("rest/department/create", department).then(function(response){
+			$scope.departments.push(response.data);
+			$scope.depname = "";
+			console.log("department "+response.data.name+" added");
+		})
 	}
 	
-	
 	inventory.addItem = function(){
-		console.log($scope.oldDep);
-		console.log($scope.newDep);
-		inventory.department = {
-				id: -1,
-				name: $scope.department
-		}
-		if($scope.newDep == 1){
-			$http.post('rest/department/create', inventory.department).success(function(data){
-				console.log("Department Created successfully");
-				inventory.department.id = data.id;
-				console.log(data);
-				console.log("ID: " + inventory.department.id);
+
+		//if file wants to be included
+		if($scope.image != null){
+			var file = $scope.image;
+			console.log('file is ' );
+			console.dir(file);
+			var uploadUrl = "rest/inventoryitem/upload";
+			var promise = fileUpload.uploadFileToUrl(file, uploadUrl);
+			var s3UrlString = "";
+			promise.then(function(response){
+				s3UrlString = response.data;
 				inventory.item = {
 						id: -1,
 						name: $scope.name,
 						description: $scope.description,
 						unitPrice: $scope.unitPrice,
 						quantity: $scope.quantity,
-						department: {id: inventory.department.id, name: inventory.department.name},
-						discount: null
-					};
-					console.log(inventory.item);
-					$http.post("rest/inventoryitem/create", inventory.item).success(function(){
-						console.log("SUCCESS?")
-					})
-				
-				
+						departmentid: $scope.chosenDepartment,
+						discountid: -1,
+						image: s3UrlString
+				};
+
+
+				$http.post("rest/inventoryitem/create", inventory.item).then(function(response){
+					console.log("successfully uploaded with image");
+					console.log(response.data);
+				})
+			})
+			.catch(function(response){
+				return response.data;
 			});
-		}
-		if($scope.oldDep == 1){
-			console.log("We in the old dep");
-			
-			$http.get('rest/department/getAll').success(function(data){
-				console.log(inventory.department.name);
-				for(var i = 1; i < data.length; i++){
-					console.log(data[i]);
-					var dName = data[i];
-				if(dName.name === inventory.department.name){
-					inventory.department.id = dName.id;
-					console.log("ID: " + inventory.department.id + " Name: " + inventory.department.name);
-					inventory.item = {
-							id: -1,
-							name: $scope.name,
-							description: $scope.description,
-							unitPrice: $scope.unitPrice,
-							quantity: $scope.quantity,
-							department: {id: inventory.department.id, name: inventory.department.name},
-							discount: null
-					};
-					console.log(inventory.item);
-					$http.post("rest/inventoryitem/create", inventory.item).success(function(){
-						console.log("SUCCESS?")
-					})
-				}
-			}
+		} //do this if no file included
+		else{
+			inventory.item = {
+					id: -1,
+					name: $scope.name,
+					description: $scope.description,
+					unitPrice: $scope.unitPrice,
+					quantity: $scope.quantity,
+					departmentid: $scope.chosenDepartment,
+					discountid: -1,
+					image: null
+			};
+			console.log("adding");
+			console.log(inventory.item);
+			console.log($scope.chosenDepartment);
+
+			$http.post("rest/inventoryitem/create", inventory.item).then(function(response){
+				console.log("successfully added");
+				console.log(response.data);
 			})
 		}
-		
-
 	}
-	
 
 
 });
@@ -301,23 +356,23 @@ adminApp.controller("invCtrl", function($scope,$http){
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
-	
+
 	$http.get('rest/inventoryitem/getAll').success(function(data){
 		$scope.itemlist = data;
 	});
-	
+
 })
 
 adminApp.controller("addremoveCtrl", function($scope,$http){
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
-	
+
 	$http.get("rest/inventoryitem/getAll").success(function(data){
 		$scope.itemlist = data;
 	})
-	
-	
+
+
 })
 
 
@@ -331,11 +386,11 @@ adminApp.controller('showAllCustsController', function($scope,$http) {
 	$scope.sortType = "lastname";
 	$scope.sortReverse = false;
 	$scope.searchCustomer = "";
-	
+
 	$http.get('rest/customer/getAll').success(function(data){
 		$scope.allCusts = data;
 	});
-	
+
 
 });
 
@@ -345,8 +400,8 @@ adminApp.controller('showAllCustsController', function($scope,$http) {
 
 adminApp.controller('manShowInfoController', function($scope) {
 	$scope.manInfo = {
-		firstName: "Michael",
-		lastName: "Scott",
-		email: "mscott@mailinator.com"
+			firstName: "Michael",
+			lastName: "Scott",
+			email: "mscott@mailinator.com"
 	}
 });
