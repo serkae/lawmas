@@ -37,15 +37,8 @@ public class LineItemService {
 		return dto;
 	}
 
-	public List<LineItemDto> getAllLineItemsByOrder(Order o){
-		List<LineItemDto> dto = new ArrayList<LineItemDto>();
-
-		List<LineItem> result = dao.getAllByOrder(o);
-		for(LineItem i : result) {
-			//dto format : id, orderid,quantity, inventoryitem id
-			dto.add(new LineItemDto(i.getId(),i.getOrder().getId(),i.getQuantity(),i.getInventoryItem().getId()));
-		}
-		return dto;
+	public List<LineItem> getAllLineItemsByOrder(Order o){
+		return dao.getAllByOrder(o);
 	}
 
 	public LineItemDto getLineItemDto(int id){
