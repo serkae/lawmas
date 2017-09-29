@@ -28,12 +28,13 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 			templateUrl: "partials/addNewInventory.html",
 			controller: "manageCtrl as manage"
 		})
+		.state("manageInventoryHome.add-remove",{
+			url: "/add-remove",
+			templateUrl: "partials/add-remove.html",
+			controller: "addremoveCtrl"
+		})
 		.state("manageInventoryHome.viewCurrentInventory",{
 			url: "/viewCurrentInventory",
-			templateUrl: "partials/viewCurrentInventory.html"
-		})
-		.state("managerLogout", {
-			url: "/managerLogin",
 			templateUrl: "partials/viewCurrentInventory.html",
 			controller: "invCtrl"
 		})
@@ -149,29 +150,37 @@ adminApp.controller("ManagerLogout", function(state) {
  */
 adminApp.service("InventoryService", function($http, $q){
 	
-	var inventory = this;
+	var service = this;
 	
-	inventory.item = {
+	service.item = {
 			id: -1,
-			department: "",
+			name: " ",
+			description: " ",
 			unitPrice: -1,
 			quantity: -1,
-			name: "",
-			description: "",
-			discount: ""
+			department: null,
+			discount: null
 		};
 	
-	inventory.setItem = function(data){
-		inventory.item.name = data.name;
-		inventory.item.description = data.description;
-		inventory.item.unitPrice = data.unitPrice;
-		inventory.item.quantity = data.quantity;
+	service.getItem = function(){
+		return service.item;
 	}
 	
-	inventory.createItem = function(){
+	service.setItem = function(data){
+		service.item.name = data.name;
+		service.item.description = data.description;
+		service.item.unitPrice = data.unitPrice;
+		service.item.quantity = data.quantity;
+		console.log("setting data");
+		console.log(service.item);
+	}
+	
+	service.createItem = function(){
 		var promise;
-		
-		promise = $http.post("rest/inventoryitem/create", inventory.item).then(
+		service.item = InventoryService.setItem();
+		console.log("in create item");
+		console.log(service.item);
+		promise = $http.post("rest/inventoryitem/create", service.item).then(
 				function(response){
 					console.log(response);
 					return response;
@@ -188,23 +197,101 @@ adminApp.service("InventoryService", function($http, $q){
 
 });
 
-adminApp.controller("manageCtrl", function(InventoryService, $scope){
+adminApp.controller("manageCtrl", function(InventoryService, $scope, $http){
 	console.log("in manageCtrl");
+
+	
+	$scope.newDep = 0;
+	$scope.oldDep = 0
+	
+	$scope.newFunction = function(){
+		$scope.newDep = 1;
+		$scope.oldDep = 0;
+	}
+	$scope.existFunction = function(){
+		$scope.newDep = 0;
+		$scope.oldDep = 1;
+	}
+	
+	
+	
+	$scope.sortType = "name";
+	$scope.sortReverse = false;
+
+	$http.get("rest/department/getAll").success(function(data){
+		$scope.departments = data;
+	})
+	
 	var inventory = this;
 	
-	$scope.addItem = function(){
-		console.log("in addItem");
-		
-		var promise = InventoryService.createItem();
-		promise.then(
-				function(response){
-					console.log(response);
-					InventoryService.setItem(response.data);
-				},
-				function(error){
-					console.log(error);
-				})
+	inventory.checkValue = function(){
+		console.log($scope.department);
 	}
+	
+	
+	inventory.addItem = function(){
+		console.log($scope.oldDep);
+		console.log($scope.newDep);
+		inventory.department = {
+				id: -1,
+				name: $scope.department
+		}
+		if($scope.newDep == 1){
+			$http.post('rest/department/create', inventory.department).success(function(data){
+				console.log("Department Created successfully");
+				inventory.department.id = data.id;
+				console.log(data);
+				console.log("ID: " + inventory.department.id);
+				inventory.item = {
+						id: -1,
+						name: $scope.name,
+						description: $scope.description,
+						unitPrice: $scope.unitPrice,
+						quantity: $scope.quantity,
+						department: {id: inventory.department.id, name: inventory.department.name},
+						discount: null
+					};
+					console.log(inventory.item);
+					$http.post("rest/inventoryitem/create", inventory.item).success(function(){
+						console.log("SUCCESS?")
+					})
+				
+				
+			});
+		}
+		if($scope.oldDep == 1){
+			console.log("We in the old dep");
+			
+			$http.get('rest/department/getAll').success(function(data){
+				console.log(inventory.department.name);
+				for(var i = 1; i < data.length; i++){
+					console.log(data[i]);
+					var dName = data[i];
+				if(dName.name === inventory.department.name){
+					inventory.department.id = dName.id;
+					console.log("ID: " + inventory.department.id + " Name: " + inventory.department.name);
+					inventory.item = {
+							id: -1,
+							name: $scope.name,
+							description: $scope.description,
+							unitPrice: $scope.unitPrice,
+							quantity: $scope.quantity,
+							department: {id: inventory.department.id, name: inventory.department.name},
+							discount: null
+					};
+					console.log(inventory.item);
+					$http.post("rest/inventoryitem/create", inventory.item).success(function(){
+						console.log("SUCCESS?")
+					})
+				}
+			}
+			})
+		}
+		
+
+	}
+	
+
 
 });
 
@@ -220,6 +307,19 @@ adminApp.controller("invCtrl", function($scope,$http){
 	});
 	
 })
+
+adminApp.controller("addremoveCtrl", function($scope,$http){
+	$scope.sortType = "id";
+	$scope.sortReverse = false;
+	$scope.searchItem = "";
+	
+	$http.get("rest/inventoryitem/getAll").success(function(data){
+		$scope.itemlist = data;
+	})
+	
+	
+})
+
 
 
 /**
