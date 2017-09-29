@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ims.beans.Card;
-import com.ims.beans.Order;
-import com.ims.dtos.CardDto;
 import com.ims.services.CardService;
 
 @RestController
@@ -26,16 +24,25 @@ public class CardController {
 	}
 	
 	
-	@RequestMapping(value="/createOrUpdate",method=(RequestMethod.POST),
+	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<CardDto> createCard(@RequestBody Card c){
+	public ResponseEntity<Card> createCard(@RequestBody Card c){
 		System.out.println("Creating card: " + c.getNameoncard());
-		return new ResponseEntity<CardDto>(cardService.createCard(c), HttpStatus.OK);
+		return new ResponseEntity<Card>(cardService.createCard(c), HttpStatus.OK);
 		
 	}
 	
-
+	
+	@RequestMapping(value="/update",method=(RequestMethod.POST),
+			consumes=(MediaType.APPLICATION_JSON_VALUE),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<Card> updateCard(@RequestBody Card c){
+		System.out.println("Updating card: " + c.getNameoncard());
+		return new ResponseEntity<Card>(cardService.createCard(c), HttpStatus.OK);
+		
+	}
+	
 	@RequestMapping(value="/delete",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))

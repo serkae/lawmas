@@ -2,20 +2,19 @@ package com.ims.dtos;
 
 import java.sql.Timestamp;
 
-import com.ims.beans.Customer;
-
 public class OrderDto {
 	
 	private int id;
-	private Customer customer;
+	private int customerid;
 	private Timestamp orderdate;
-	private boolean autheticated;
-	public OrderDto(int id, Customer customer, Timestamp orderdate, boolean autheticated) {
+	public OrderDto(int id, int customerid, Timestamp orderdate) {
 		super();
 		this.id = id;
-		this.customer = customer;
+		this.customerid = customerid;
 		this.orderdate = orderdate;
-		this.autheticated = autheticated;
+	}
+	public OrderDto() {
+		super();
 	}
 	public int getId() {
 		return id;
@@ -23,11 +22,11 @@ public class OrderDto {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Customer getCustomer() {
-		return customer;
+	public int getCustomerid() {
+		return customerid;
 	}
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setCustomerid(int customerid) {
+		this.customerid = customerid;
 	}
 	public Timestamp getOrderdate() {
 		return orderdate;
@@ -35,18 +34,6 @@ public class OrderDto {
 	public void setOrderdate(Timestamp orderdate) {
 		this.orderdate = orderdate;
 	}
-	public boolean isAutheticated() {
-		return autheticated;
-	}
-	public void setAutheticated(boolean autheticated) {
-		this.autheticated = autheticated;
-	}
-	@Override
-	public String toString() {
-		return "OrderDto [id=" + id + ", customer=" + customer + ", orderdate=" + orderdate + ", autheticated="
-				+ autheticated + "]";
-	}
 	
 	
-
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ims.beans.Customer;
+import com.ims.dtos.CustomerDto;
 import com.ims.services.CustomerService;
 
 @RestController
@@ -23,6 +24,14 @@ public class CustomerController {
 
 	public void setInventoryItemService(CustomerService customerService) {
 		this.customerService = customerService;
+	}
+	
+	@RequestMapping(value="/auth",method=(RequestMethod.POST),
+			consumes=(MediaType.APPLICATION_JSON_VALUE),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<CustomerDto> authenticateUser(@RequestBody CustomerDto customerDto){
+		System.out.println("Authenticating user: " + customerDto.getEmail());
+		return new ResponseEntity<CustomerDto>(customerService.authenticateUser(customerDto), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
@@ -43,10 +52,11 @@ public class CustomerController {
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<Customer> updateItem(@RequestBody Customer c){
 		System.out.println("Updating: " + c.toString());
+		
 		return new ResponseEntity<Customer>(customerService.createOrUpdate(c), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/remove",method=(RequestMethod.POST),
+	@RequestMapping(value="/delete",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<String> removeItem(@RequestBody Customer c){
