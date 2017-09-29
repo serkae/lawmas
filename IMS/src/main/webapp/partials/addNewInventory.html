@@ -1,19 +1,24 @@
-<div style="margin-left:25%" id = "addNewInventory">
-  Adding New Inventory
-  <br/>
-  <form name = "invForm" ng-submit = "manage.addItem()">
-  <input id = "name" type = "text" ng-model = "name" placeholder = "Product Name" required><br/>
-  <input id = "description" type = "text" ng-model = "description" placeholder = "Description" required><br/>
-  <button type = "button" ng-click = "newFunction()">Add New Department</button>
-  <button type = "button" ng-click = "existFunction()">Use Existing Department</button></br>
-  <input id = "newdepartment" type = "text" ng-model = "department" ng-show = "newDep == 1" placeholder = "New Department">
-  <select class = "custom-select" ng-show = "oldDep == 1">
-  	<option selected>Select an Existing Department</option>
-  	<option ng-repeat = "x in departments | orderBy:sortType:sortReverse">{{x.name}}</option>
-  </select><br/>
-  <input id = "unitPrice" type = "text" ng-model = "unitPrice" placeholder = "Unit Price" required><br/>
-  <input id = "quantity" type = "text" ng-model = "quantity" placeholder = "Quantity" required><br/>
-  <button type= "submit" >Submit</button>
-  </form>
-  </div>
-  
+<div style="margin-left: 25%" id="addNewInventory">
+	Adding New Inventory <br />
+	<form name="invForm" ng-submit="manage.addItem()">
+		<input id="name" type="text" ng-model="name"
+			placeholder="Product Name" required><br /> <input
+			id="description" type="text" ng-model="description"
+			placeholder="Description" required><br />
+		<button type="button" ng-click="newFunction()">Add New
+			Department</button>
+		<button type="button" ng-click="existFunction()">Use Existing
+			Department</button>
+		</br> <input id="newdepartment" type="text" ng-model="department"
+			ng-show="newDep == 1" placeholder="New Department"> <select
+			class="custom-select" ng-show="oldDep == 1" ng-model="department">
+			<option selected>Select an Existing Department</option>
+			<option ng-repeat="x in departments | orderBy:sortType:sortReverse"
+				value="{{x.name}}">{{x.name}}</option>
+		</select><br /> <input id="unitPrice" type="text" ng-model="unitPrice"
+			placeholder="Unit Price" required><br /> <input id="quantity"
+			type="text" ng-model="quantity" placeholder="Quantity" required><br />
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
