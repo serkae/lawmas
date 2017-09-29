@@ -115,6 +115,14 @@ public class InventoryItem {
 		this.image = image;
 	}
 
+	public Discount getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Discount discount) {
+		this.discount = discount;
+	}
+
 	@Override
 	public String toString() {
 		return "InventoryItem [id=" + id + ", department=" + department + ", unitPrice=" + unitPrice + ", quantity="

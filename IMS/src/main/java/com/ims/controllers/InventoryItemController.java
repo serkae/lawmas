@@ -2,6 +2,7 @@ package com.ims.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -24,7 +24,12 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ims.beans.Department;
+import com.ims.beans.Discount;
 import com.ims.beans.InventoryItem;
+import com.ims.dtos.InventoryItemDto;
+import com.ims.services.DepartmentService;
+import com.ims.services.DiscountService;
 import com.ims.services.InventoryItemService;
 
 @RestController
@@ -34,36 +39,82 @@ public class InventoryItemController {
 	static String bucketname = "lawmas";
 	@Autowired
 	private InventoryItemService inventoryItemService;
-
+	@Autowired
+	private DepartmentService dService;
+	@Autowired
+	private DiscountService discountService;
 	public void setInventoryItemService(InventoryItemService inventoryItemService) {
 		this.inventoryItemService = inventoryItemService;
+	}
+	
+	public void setdService(DepartmentService dService) {
+		this.dService = dService;
+	}
+	public void setDiscountService(DiscountService discountService) {
+		this.discountService = discountService;
 	}
 
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<InventoryItem> addItem(@RequestBody InventoryItem i){
-		System.out.println("Creating: " + i.toString());
-		return new ResponseEntity<InventoryItem>(inventoryItemService.createOrUpdate(i), HttpStatus.OK);
+	public ResponseEntity<InventoryItemDto> addItem(@RequestBody InventoryItemDto iDto){
+		Department d = dService.getById(iDto.getDepartmentid());
+		Discount di = null;
+		if(iDto.getDiscountid() != -1) {
+			di = discountService.getById(iDto.getDiscountid());
+		}
+		InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
+		i = inventoryItemService.createOrUpdate(i);
+		iDto.setId(i.getId());
+		return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/getAll",method=(RequestMethod.GET),produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<List<InventoryItem>> getAllItems(){
-		return new ResponseEntity<List<InventoryItem>>(inventoryItemService.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<InventoryItemDto>> getAllItems(){
+		List<InventoryItemDto> dtos = new ArrayList<InventoryItemDto>();
+		List<InventoryItem> items = inventoryItemService.getAll();
+		for(InventoryItem i : items) {
+			int dId = -1;
+			if(i.getDiscount() != null) {
+				dId = i.getDiscount().getDiscountID();
+			}
+			dtos.add(new InventoryItemDto(i.getId(),
+										  i.getDepartment().getId(),
+										  i.getUnitPrice(),
+										  i.getQuantity(),
+										  i.getName(),
+										  i.getDescription(),
+										  dId,
+										  i.getImage()));
+		}
+		return new ResponseEntity<List<InventoryItemDto>>(dtos, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<InventoryItem> updateItem(@RequestBody InventoryItem i){
-		System.out.println("Updating: " + i.toString());
-		return new ResponseEntity<InventoryItem>(inventoryItemService.createOrUpdate(i), HttpStatus.OK);
+	public ResponseEntity<InventoryItemDto> updateItem(@RequestBody InventoryItemDto iDto){
+		Department d = dService.getById(iDto.getDepartmentid());
+		Discount di = null;
+		if(iDto.getDiscountid() != -1) {
+			di = discountService.getById(iDto.getDiscountid());
+		}
+		InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
+		i = inventoryItemService.createOrUpdate(i);
+		iDto.setId(i.getId());
+		return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/remove",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<String> removeItem(@RequestBody InventoryItem i){
+	public ResponseEntity<String> removeItem(@RequestBody InventoryItemDto iDto){
+		Department d = dService.getById(iDto.getDepartmentid());
+		Discount di = null;
+		if(iDto.getDiscountid() != -1) {
+			di = discountService.getById(iDto.getDiscountid());
+		}
+		InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
 		inventoryItemService.remove(i);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}

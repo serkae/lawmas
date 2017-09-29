@@ -244,10 +244,6 @@ adminApp.service("InventoryService", function($http, $q){
 
 adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, fileUpload){
 	console.log("in manageCtrl");
-//	var inventory = this;
-
-//	inventory.item = InventoryService.getItem();
-//	console.log(inventory.item);
 
 	$scope.name = "";
 	$scope.description = "";
@@ -259,19 +255,38 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 		console.log($scope.name + " " + $scope.unitPrice)
 	}
 
-	var inventory = this;
-
 	$scope.item = {
 			id: -1,
 			name: $scope.name,
 			description: $scope.description,
 			unitPrice: $scope.unitPrice,
 			quantity: $scope.quantity,
-			department: null,
-			discount: null,
+			departmentid: $scope.chosenDepartment,
+			discountid: -1,
 			image: $scope.image
 	};
-
+	
+	var setDepartments = function(){
+		$http.get("rest/department/getAll").then(function(response){
+			$scope.departments = response.data;
+		})
+	}
+	setDepartments();
+	
+	var inventory = this;
+	
+	inventory.addDepartment = function(){
+		var department = {
+				"id" : -1,
+				"name" : $scope.depname
+		}
+		$http.post("rest/department/create", department).then(function(response){
+			$scope.departments.push(response.data);
+			$scope.depname = "";
+			console.log("department "+response.data.name+" added");
+		})
+	}
+	
 	inventory.addItem = function(){
 
 		//if file wants to be included
@@ -290,14 +305,15 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 						description: $scope.description,
 						unitPrice: $scope.unitPrice,
 						quantity: $scope.quantity,
-						department: null,
-						discount: null,
+						departmentid: $scope.chosenDepartment,
+						discountid: -1,
 						image: s3UrlString
 				};
 
 
-				$http.post("rest/inventoryitem/create", inventory.item).success(function(){
+				$http.post("rest/inventoryitem/create", inventory.item).then(function(response){
 					console.log("successfully uploaded with image");
+					console.log(response.data);
 				})
 			})
 			.catch(function(response){
@@ -311,33 +327,20 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 					description: $scope.description,
 					unitPrice: $scope.unitPrice,
 					quantity: $scope.quantity,
-					department: null,
-					discount: null,
+					departmentid: $scope.chosenDepartment,
+					discountid: -1,
 					image: null
 			};
+			console.log("adding");
+			console.log(inventory.item);
+			console.log($scope.chosenDepartment);
 
-
-			$http.post("rest/inventoryitem/create", inventory.item).success(function(){
-				console.log("success");
+			$http.post("rest/inventoryitem/create", inventory.item).then(function(response){
+				console.log("successfully added");
+				console.log(response.data);
 			})
 		}
 	}
-
-
-//	inventory.addItem = function(){
-//	console.log("in addItem");
-
-//	var promise = InventoryService.createItem();
-
-//	promise.then(
-//	function(response){
-//	console.log(response.data);
-//	InventoryService.setItem(response.data);
-//	},
-//	function(error){
-//	console.log(error);
-//	})
-//	}
 
 });
 

@@ -27,6 +27,10 @@ public class DepartmentService {
 		return departmentDao.getAll();
 	}
 	
+	public Department getById(int id) {
+		return departmentDao.getDepartmentById(id);
+	}
+	
 	public DepartmentDto remove(Department d) {
 		
 		DepartmentDto dDto = new DepartmentDto();
