@@ -99,6 +99,8 @@ adminApp.service("AdminService", function($http, $q) {
 
 	service.admin = {
 			id: -1,
+			firstname : "",
+			lastname : "",
 			email: "",
 			password: "",
 			authenticated: false
@@ -112,6 +114,8 @@ adminApp.service("AdminService", function($http, $q) {
 
 	service.setAdmin= function(data) {
 		service.admin.id = data.id;
+		service.admin.firstname = data.firstname;
+		service.admin.lastname = data.lastname;
 		service.admin.email = data.email;
 		service.admin.password = data.password;
 		service.admin.authenticated = data.authenticated;
@@ -396,10 +400,48 @@ adminApp.controller('showAllCustsController', function($scope,$http) {
  * ADMIN INFO
  */
 
-adminApp.controller('manShowInfoController', function($scope) {
+adminApp.controller('manShowInfoController', function($scope,$http,AdminService) {
+	admin = AdminService.getAdmin();
+	$scope.updateShow = false;
+	$scope.message = "";
+	$scope.messageClass = "";
 	$scope.manInfo = {
-			firstName: "Michael",
-			lastName: "Scott",
-			email: "mscott@mailinator.com"
+			firstName: admin.firstname,
+			lastName: admin.lastname,
+			email: admin.email
 	}
+	$scope.updateInfo = function(){
+		admin.firstname = $scope.manInfo.firstName;
+		admin.lastname = $scope.manInfo.lastName;
+		admin.email = $scope.manInfo.email;
+		
+		AdminService.setAdmin(admin);
+		
+		$http.post('rest/admin/update', admin).then(function(response){
+			$scope.message = "Info Updated."
+			$scope.messageClass = "alert-success";
+			$scope.updateShow = false;
+		});
+	};
+	
+	$scope.updatePass = function(){
+		if($scope.pass1 != $scope.pass2){
+			$scope.message = "New Passwords must match!";
+			$scope.messageClass = "alert-danger";
+		}
+		else if($scope.currPass != admin.password){
+			$scope.message = "Incorrect current password!"
+			$scope.messageClass = "alert-danger";
+		}
+		else{
+			admin.password = $scope.pass1;
+			$http.post('rest/admin/update', admin).then(function(response){
+				AdminService.setAdmin(admin);
+				$scope.passShow = false;
+				$scope.message = "Password Updated."
+				$scope.messageClass = "alert-success";
+			});
+		}
+	};
+	
 });
