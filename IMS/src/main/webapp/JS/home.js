@@ -11,25 +11,88 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	$urlRouterProvider.otherwise('/mainStorePage');
 
 	$stateProvider
-		.state("mainStorePage", {
-			url:"/mainStorePage",
-			templateUrl:"partials/mainStorePage.html", //html
-			controller: "MainCtrl as main",
-		})
-		.state("customerInfo", {
-			url:"/cust-show-info",
-			templateUrl:"partials/cust-show-info.html",
-			controller: "custShowInfoController"
-		})
-		.state("cart", {
-			url: "/cart",
-			templateUrl: "partials/cust-cart.html"
-		})
-		.state("login", {
-			url:"/login",
-			templateUrl:"partials/login.html",
-			controller: "LoginCtrl as login"
-		})
+	.state("mainStorePage", {
+		url:"/mainStorePage",
+		templateUrl:"partials/mainStorePage.html", //html
+		controller: "MainCtrl as main",
+	})
+	.state("customerInfo", {
+		url:"/cust-show-info",
+		templateUrl:"partials/cust-show-info.html",
+		controller: "custShowInfoController"
+	})
+	.state("cart", {
+		url: "/cart",
+		templateUrl: "partials/cust-cart.html"
+	})
+	.state("login", {
+		url:"/login",
+		templateUrl:"partials/login.html",
+		controller: "LoginCtrl as login"
+	});
+});
+
+storeApp.controller('MainCtrl', function($http, $scope) {
+	$scope.sortType = "department";
+	$scope.sortReverse = false;
+	let itemsToShow = [];
+	let allInvItems;
+	let allDepts;
+	$http.get('rest/inventoryitem/getAll').success(function(data) {
+		allInvItems = data;
+		$http.get('rest/department/getAll').success(function(data) {
+			allDepts = data;
+			allInvItems.forEach(function(item) {
+				allDepts.forEach(function(dept) {
+					if (item.departmentid === dept.id) {
+						itemsToShow.push({
+							name: item.name,
+							unitPrice: item.unitPrice,
+							quantity: item.quantity,
+							department: dept.name,
+							description: item.description,
+							image: item.image
+						});
+					}
+				});
+			});
+		});
+	});
+	$scope.itemsToShow = itemsToShow;
+});
+
+storeApp.controller('cartController', function($scope) {
+	$scope.items = [
+		{
+			name: "Blue Beanie",
+			price: 9.99,
+			quantity: 1
+		},
+		{
+			name: "Candlemass T-Shirt",
+			price: 19.99,
+			quantity: 1
+		},
+		{
+			name: "Black Denim Jacket",
+			price: 39.99,
+			quantity: 1
+		},
+		{
+			name: "Raven Feather Necklace",
+			price: 9.99,
+			quantity: 1
+		}
+		]
+
+	$scope.getTotal = function() {
+		var total = 0;
+		for(var i = 0; i < $scope.items.length; i++) {
+			var product = $scope.items[i];
+			total += (product.price * product.quantity);
+		}
+		return total;
+	}
 });
 
 storeApp.service("CustomerService", function($http, $q){
@@ -152,6 +215,7 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 	};
 });
 
+
 //merging of Will's getInvItemsCtrl and my MainCtrl
 storeApp.controller("MainCtrl", function($http, $rootScope, $scope, CustomerService, $state) {
 	
@@ -218,3 +282,4 @@ storeApp.controller('custShowInfoController', function($scope, $state, CustomerS
 		phone: customer.phone
 	}
 });
+
