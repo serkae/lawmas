@@ -14,7 +14,4 @@ public interface OrderRepository extends JpaRepository<Order, Integer>{
 	
 	List<Order> findByCustomer(Customer c);
 	
-	
-	//test this
-	List<Order> findOrderFromOrderDate(Timestamp date);
 }

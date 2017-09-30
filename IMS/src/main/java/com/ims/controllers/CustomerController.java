@@ -37,8 +37,8 @@ public class CustomerController {
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<Customer> addCustomer(@RequestBody Customer c){
-		return new ResponseEntity<Customer>(customerService.createOrUpdate(c), HttpStatus.OK);
+	public ResponseEntity<CustomerDto> addCustomer(@RequestBody CustomerDto c){
+		return new ResponseEntity<CustomerDto>(customerService.createOrUpdate(c), HttpStatus.OK);
 	}
 	
 
@@ -50,17 +50,20 @@ public class CustomerController {
 	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<Customer> updateItem(@RequestBody Customer c){
+	public ResponseEntity<CustomerDto> updateItem(@RequestBody CustomerDto c){
 		System.out.println("Updating: " + c.toString());
 		
-		return new ResponseEntity<Customer>(customerService.createOrUpdate(c), HttpStatus.OK);
+		return new ResponseEntity<CustomerDto>(customerService.createOrUpdate(c), HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/remove",method=(RequestMethod.POST),
+	@RequestMapping(value="/delete",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<String> removeItem(@RequestBody Customer c){
-		customerService.remove(c);
+	public ResponseEntity<String> removeItem(@RequestBody CustomerDto c){
+		Customer cust = new Customer(c.getId(),c.getFirstname(),c.getLastname(),c.getEmail(),c.getPassword(),
+				c.getAddress(),c.getCity(),c.getState(),c.getZipcode(),c.getPhone(),
+				c.getCard());
+		customerService.remove(cust);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}
 }

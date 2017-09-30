@@ -60,16 +60,17 @@ label {
 <nav class="navbar navbar-light" style="background-color: #b3ffd9;">
   <div class="container-fluid">
   	<ul class="nav navbar-nav">
-  		<li><button class="btn"><a ui-sref="mainStore"><span class="glyphicon glyphicon-home"></span></a></button></li>
+  		<li><button class="btn"><a ui-sref="mainStorePage"><span class="glyphicon glyphicon-home"></span></a></button></li>
   		<li><form class="form-inline">
-    		<input class="form-control mr-sm-2" type="text" placeholder="Search">
-    		<button class="btn" type="submit">
+    		<input class="form-control mr-sm-2" type="text" placeholder="Search" ng-model="searchTerms">
+    		<button class="btn" type="submit" ui-sref="mainStorePage">
     			<span class="glyphicon glyphicon-search"></span> Search
     		</button>
   			</form>
   		</li>
   		<li><button class="btn" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet"><a ui-sref="cart"><span class="glyphicon glyphicon-shopping-cart"></span></a></button></li>
-  		<li><button class="btn" data-toggle="modal" data-target="#login"><span class="glyphicon glyphicon-user"></span></button></li>
+  		<li><button class="btn"><a ui-sref="login"><span class="glyphicon glyphicon-user"></span></a></button></li>
+  		<li ng-show="authenticated==true"><button class="btn"><a ui-sref="customerInfo"><span class="glyphicon glyphicon-cog"></span></a></button></li>
   	</ul>
   </div>
 </nav>
@@ -87,32 +88,32 @@ label {
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="login" role="dialog">
-	<div class="modal-dialog modal-sm">
+<!-- <div class="modal fade" id="login" role="dialog">
+	<div class="modal-dialog modal-sm"> -->
 
 	<!-- Modal content -->
-	<div class="modal-content">
+	<!-- <div class="modal-content"  ng-controller="login" >
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h2 class="modal-title">Customer Login</h2>
 		</div>
 		<div class="modal-body">
-			<form class="form-horizontal">
+			<form class="form-horizontal" ng-submit="login.doLogin()">
     			<div class="form-group">
         			<div class="col-xs-10">
-            			<input type="text" class="form-control" name="email" id="email" placeholder="Email" required>
+            			<input type="text" class="form-control" ng-model="login.customer.email" placeholder="Email" required>
        				 </div>
     			</div>
     			<div class="form-group">
         			<div class="col-xs-10">
-            			<input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+            			<input type="password" class="form-control" ng-model="mainStorePage.login.customer.password" placeholder="Password" required>
        				 </div>
     			</div>
-    			<button type="submit" class="btn btn-default" align="center">Login</button>
+    			<button type="submit" class="btn" align="center">Login</button>
     		</form>
     	</div>
 	</div>
-	</div>
+	</div> -->
 </div>
 
 </body>

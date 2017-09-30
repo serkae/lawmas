@@ -7,6 +7,7 @@ public class OrderDto {
 	private int id;
 	private int customerid;
 	private Timestamp orderdate;
+	
 	public OrderDto(int id, int customerid, Timestamp orderdate) {
 		super();
 		this.id = id;

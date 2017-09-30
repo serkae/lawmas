@@ -41,7 +41,6 @@ public class DepartmentController {
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<Department> updateDepartment(@RequestBody Department d){
-		System.out.println("Updating: " + d.toString());
 		return new ResponseEntity<Department>(departmentService.createOrUpdate(d), HttpStatus.OK);
 	}
 	
