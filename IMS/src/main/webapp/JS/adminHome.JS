@@ -53,6 +53,7 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl: "partials/adminMainPage.html",
 		controller: "MainPageCtrl as adminMainPage"
 
+
 		})
 		.state("manageInventoryHome",{
 			url: "/manageInventoryHome",
@@ -85,6 +86,7 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		});
 
 	
+
 
 
 
@@ -213,6 +215,7 @@ adminApp.service("InventoryService", function($http, $q){
 		service.item.description = data.description;
 		service.item.unitPrice = data.unitPrice;
 		service.item.quantity = data.quantity;
+		service.item.image = data.image
 		console.log("setting data");
 		console.log(service.item);
 	}
@@ -353,18 +356,21 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 
 
 adminApp.controller("invCtrl", function($scope,$http){
+	console.log("in inv controller");
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
 
 	$http.get('rest/inventoryitem/getAll').success(function(data){
 		$scope.itemlist = data;
-	});
+	})
 
-})
+});
 
 adminApp.controller("addremoveCtrl", function($scope,$http){
-	console.log("in add-remove ctrl");
+
+	console.log("in add-remove controller");
+
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
@@ -381,7 +387,7 @@ adminApp.controller("addremoveCtrl", function($scope,$http){
 	})
 
 
-})
+});
 
 
 
