@@ -23,11 +23,32 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 });
 
 storeApp.controller('getInvItemsCtrl', function($http, $scope) {
-	$scope.sortType = "id";
+	$scope.sortType = "department";
 	$scope.sortReverse = false;
+	let itemsToShow = [];
+	let allInvItems;
+	let allDepts;
 	$http.get('rest/inventoryitem/getAll').success(function(data) {
-		$scope.allInvItems = data;
+		allInvItems = data;
+		$http.get('rest/department/getAll').success(function(data) {
+			allDepts = data;
+			allInvItems.forEach(function(item) {
+				allDepts.forEach(function(dept) {
+					if (item.department.id === dept.id) {
+						itemsToShow.push({
+							name: item.name,
+							unitPrice: item.unitPrice,
+							quantity: item.quantity,
+							department: dept.name,
+							description: item.description,
+							image: item.image
+						});
+					}
+				});
+			});
+		});
 	});
+	$scope.itemsToShow = itemsToShow;
 });
 
 storeApp.controller('cartController', function($scope) {
