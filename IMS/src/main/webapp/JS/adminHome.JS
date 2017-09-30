@@ -365,6 +365,24 @@ adminApp.controller("invCtrl", function($scope,$http){
 
 });
 
+adminApp.filter("isDiscount",function(){
+	
+	return function(x){
+		var list;
+		var discount = "no";
+		$http.get('rest/inventoryitem/getAll').success(function(data){
+			list = data;
+			for(var i = 0; i < data.length; i++){
+			if(data.discountid != -1){
+				return discount = "Yes";
+			}
+			else
+				return discount = "No";
+			}
+		})
+	}
+	
+});
 adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 
 	console.log("in add-remove controller");
@@ -377,7 +395,7 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 	$scope.searchItem = "";
 
 	$scope.edit = 0;
-	
+	$scope.disco = "No";
 	
 	
 	inventory.id = -1;
@@ -414,8 +432,7 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 	
 	var resetData = function(){
 		$http.get("rest/inventoryitem/getAll").success(function(data){
-			$scope.itemlist = data;
-			console.log(data);
+			$scope.itemlist = data;			
 		});
 	}
 	
@@ -425,6 +442,9 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 		$scope.itemlist = data;
 		console.log(data);
 	})
+	
+	
+	
 
 	$scope.editItem = function(){
 		

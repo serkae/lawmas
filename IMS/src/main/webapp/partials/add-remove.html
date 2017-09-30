@@ -22,6 +22,7 @@
 				<th>department</th>
 				<th>name</th>
 				<th>unit price</th>
+				<th>discount</th>
 				<th>quantity</th>
 				<th>description</th>
 				<th>image</th>
@@ -34,7 +35,8 @@
 			<td>{{x.id}}</td>
 			<td>{{x.departmentid}}</td>
 			<td>{{x.name}}</td>
-			<td>{{x.unitPrice}}</td>
+			<td>{{x.unitPrice | currency}}</td>
+			<td>{{x.discountid | isDiscount}}</td>
 			<td>{{x.quantity}}</td>
 			<td>{{x.description}}</td>
 			<td><img ng-src = "{{x.image}}"/></td>
