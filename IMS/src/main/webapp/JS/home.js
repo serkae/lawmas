@@ -19,7 +19,13 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	.state("cart", {
 		url: "/cart",
 		templateUrl: "partials/cust-cart.html"
-	});
+	})
+
+	.state("getPastOrders",{
+		url:"/pastOrders",
+		templateUrl : "partials/cust-getOrders.html",
+		controller : "getOrdersCtrl"
+	});	
 });
 
 storeApp.controller('getInvItemsCtrl', function($http, $scope) {
@@ -28,6 +34,34 @@ storeApp.controller('getInvItemsCtrl', function($http, $scope) {
 	$http.get('rest/inventoryitem/getAll').success(function(data) {
 		$scope.allInvItems = data;
 	});
+});
+
+
+storeApp.controller('getOrdersCtrl',function($http, $scope){
+$scope.orders = [];
+	
+	$http.get('rest/order/getAll').then( function(response){
+		console.log(response.data);
+		var orders = response.data;
+		for(var i = 0; i < orders.length; i ++){
+			var order = orders[i];
+			var date = new Date(order.order_Date);
+			order.order_Date = date.toLocaleDateString();
+			order.show = false;
+			order.lineitems = [];
+			$scope.orders.push(order);
+		}
+	});
+	
+	$scope.showOrder = function(order){
+		console.log("called");
+		$http.get('rest/lineitem/getAllByOrderId?id=' + order.id).then(function(response){
+			console.log(response);
+			order.lineitems = response.data;
+			order.show = true;
+		});
+	}
+
 });
 
 storeApp.controller('cartController', function($scope) {
