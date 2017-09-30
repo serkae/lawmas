@@ -61,40 +61,6 @@ storeApp.controller('MainCtrl', function($http, $scope) {
 	$scope.itemsToShow = itemsToShow;
 });
 
-storeApp.controller('cartController', function($scope) {
-	$scope.items = [
-		{
-			name: "Blue Beanie",
-			price: 9.99,
-			quantity: 1
-		},
-		{
-			name: "Candlemass T-Shirt",
-			price: 19.99,
-			quantity: 1
-		},
-		{
-			name: "Black Denim Jacket",
-			price: 39.99,
-			quantity: 1
-		},
-		{
-			name: "Raven Feather Necklace",
-			price: 9.99,
-			quantity: 1
-		}
-		]
-
-	$scope.getTotal = function() {
-		var total = 0;
-		for(var i = 0; i < $scope.items.length; i++) {
-			var product = $scope.items[i];
-			total += (product.price * product.quantity);
-		}
-		return total;
-	}
-});
-
 storeApp.service("CustomerService", function($http, $q){
 	console.log("in customerService");
 
@@ -152,13 +118,13 @@ storeApp.service("CustomerService", function($http, $q){
 		service.customer.authenticated = data.authenticated;
 	};
 	
-	/*service.createCustomer = function () {
+	service.createCustomer = function () {
 		var promise;
 		service.customer = CustomerService.setCustomer();
-		console.log("in create item");
+		console.log("in create customer");
 		console.log(service.customer);
 		
-		promise = $http.post("rest/customer/create", service.item).then(
+		promise = $http.post("rest/customer/create", service.customer).then(
 				function(response){
 					console.log(response);
 					return response;
@@ -170,7 +136,7 @@ storeApp.service("CustomerService", function($http, $q){
 
 		);
 		return promise;
-	}*/
+	}
 
 	service.authenticateUser = function(){
 		var promise = $http.post(
@@ -213,25 +179,6 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 				});
 	
 	};
-});
-
-
-//merging of Will's getInvItemsCtrl and my MainCtrl
-storeApp.controller("MainCtrl", function($http, $rootScope, $scope, CustomerService, $state) {
-	
-	$scope.sortType = "id";
-	$scope.sortReverse = false;
-	$http.get('rest/inventoryitem/getAll').success(function(data) {
-		$scope.allInvItems = data;
-	});
-	
-	$rootScope.logout = function () {
-		console.log("within logout");
-		$rootScope.authenticated = false;
-		CustomerService.resetCustomer();
-		console.log(CustomerService.getCustomer());
-		$state.go("mainStorePage");
-	}
 });
 
 storeApp.controller('cartController', function($scope) {
