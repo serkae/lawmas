@@ -60,6 +60,11 @@ public class LineItemController {
 		//setup line item to insert and execute
 		LineItem i = new LineItem(dto.getId(),o,dto.getQuantity(),a);
 		dto = liservice.createOrUpdateLineItem(i);
+		
+		//reduce inventory item quantity
+		a.setQuantity(a.getQuantity() - i.getQuantity());
+		iiservice.createOrUpdate(a);
+		
 		return new ResponseEntity<LineItemDto>(dto, HttpStatus.OK);
 		
 	}
