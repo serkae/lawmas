@@ -88,6 +88,26 @@ storeApp.service("CustomerService", function($http, $q){
 		service.customer.card       = data.card;
 		service.customer.authenticated = data.authenticated;
 	};
+	
+	/*service.createCustomer = function () {
+		var promise;
+		service.customer = CustomerService.setCustomer();
+		console.log("in create item");
+		console.log(service.customer);
+		
+		promise = $http.post("rest/customer/create", service.item).then(
+				function(response){
+					console.log(response);
+					return response;
+				},
+				function(error){
+					console.log("ERROR")
+					return error;
+				}
+
+		);
+		return promise;
+	}*/
 
 	service.authenticateUser = function(){
 		var promise = $http.post(
@@ -133,13 +153,21 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 });
 
 //merging of Will's getInvItemsCtrl and my MainCtrl
-storeApp.controller("MainCtrl", function($http, $scope) {
+storeApp.controller("MainCtrl", function($http, $rootScope, $scope, CustomerService, $state) {
 	
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$http.get('rest/inventoryitem/getAll').success(function(data) {
 		$scope.allInvItems = data;
 	});
+	
+	$rootScope.logout = function () {
+		console.log("within logout");
+		$rootScope.authenticated = false;
+		CustomerService.resetCustomer();
+		console.log(CustomerService.getCustomer());
+		$state.go("mainStorePage");
+	}
 });
 
 storeApp.controller('cartController', function($scope) {
@@ -176,7 +204,7 @@ storeApp.controller('cartController', function($scope) {
 	}
 });
 
-storeApp.controller('custShowInfoController', function($scope, $rootScope, $state,CustomerService) {
+storeApp.controller('custShowInfoController', function($scope, $state, CustomerService) {
 	console.log("this is custshow");
 	var customer = CustomerService.getCustomer();
 	$scope.custInfo = {
@@ -189,13 +217,4 @@ storeApp.controller('custShowInfoController', function($scope, $rootScope, $stat
 		zipcode: customer.zipcode,
 		phone: customer.phone
 	}
-	
-	$scope.logout = function () {
-		console.log("within logout");
-		$rootScope.authenticated = false;
-		CustomerService.resetCustomer();
-		console.log(CustomerService.getCustomer());
-		$state.go("mainStorePage");
-	}
-	
 });

@@ -60,7 +60,7 @@ label {
 <nav class="navbar navbar-light" style="background-color: #b3ffd9;">
   <div class="container-fluid">
   	<ul class="nav navbar-nav">
-  		<li><button class="btn"><a ui-sref="mainStorePage"><span class="glyphicon glyphicon-home"></span></a></button></li>
+  		<li><button class="btn"><a ui-sref="mainStorePage"><span class="glyphicon glyphicon-home"></span></a> Home</button></li>
   		<li><form class="form-inline">
     		<input class="form-control mr-sm-2" type="text" placeholder="Search" ng-model="searchTerms">
     		<button class="btn" type="submit" ui-sref="mainStorePage">
@@ -68,9 +68,10 @@ label {
     		</button>
   			</form>
   		</li>
-  		<li><button class="btn" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet"><a ui-sref="cart"><span class="glyphicon glyphicon-shopping-cart"></span></a></button></li>
-  		<li><button class="btn"><a ui-sref="login"><span class="glyphicon glyphicon-user"></span></a></button></li>
-  		<li ng-show="authenticated==true"><button class="btn"><a ui-sref="customerInfo"><span class="glyphicon glyphicon-cog"></span></a></button></li>
+  		<li><button class="btn" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet"><a ui-sref="cart"><span class="glyphicon glyphicon-shopping-cart"></span></a> View Your Cart</button></li>
+  		<li ng-hide="authenticated==true"><button class="btn"><a ui-sref="login"><span class="glyphicon glyphicon-log-in"></span></a> Login</button></li>
+  		<li ng-show="authenticated==true"><button class="btn"><a ui-sref="customerInfo"><span class="glyphicon glyphicon-cog"></span></a> User Info</button></li>
+  		<li ng-show="authenticated==true"><button class="btn" ng-click="logout()"><a ui-sref="mainStorePage"><span class="glyphicon glyphicon-log-out"></span></a> Logout</button>
   	</ul>
   </div>
 </nav>
