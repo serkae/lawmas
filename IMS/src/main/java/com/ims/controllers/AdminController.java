@@ -37,25 +37,24 @@ public class AdminController {
 	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<Admin> updateAdmin(@RequestBody Admin admin){
-		AdminDto aDto = new AdminDto(admin.getId(),admin.getEmail(),admin.getPassword(),false);
-		aDto = adminService.authenticateUser(aDto);
+	public ResponseEntity<AdminDto> updateAdmin(@RequestBody AdminDto admin){
 		
 		//if admin doesnt exist
-		if(!aDto.isAuthenticated()) {
-			return new ResponseEntity<Admin>(admin, HttpStatus.NOT_ACCEPTABLE);
+		if(!admin.isAuthenticated()) {
+			return new ResponseEntity<AdminDto>(admin, HttpStatus.NOT_ACCEPTABLE);
 		}
-		admin.setId(aDto.getId());
-		adminService.createOrUpdateAdmin(admin);
-		return new ResponseEntity<Admin>(admin, HttpStatus.OK);
+		Admin a = new Admin(admin.getId(),admin.getFirstname(),admin.getLastname(),admin.getEmail(),admin.getPassword());
+		adminService.createOrUpdateAdmin(a);
+		return new ResponseEntity<AdminDto>(admin, HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/delete",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<String> removeAdmin(@RequestBody Admin admin) {
+	public ResponseEntity<String> removeAdmin(@RequestBody AdminDto admin) {
 		System.out.println("Deleting user: " + admin.getEmail());
-		adminService.removeAdmin(admin);
+		Admin a = new Admin(admin.getId(),admin.getFirstname(),admin.getLastname(),admin.getEmail(),admin.getPassword());
+		adminService.removeAdmin(a);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}
 
