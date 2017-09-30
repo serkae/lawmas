@@ -84,7 +84,6 @@ storeApp.service("CustomerService", function($http, $q){
 		service.customer.lastname   = data.lastname;
 		service.customer.email      = data.email;
 		service.customer.password   = data.password;
-		service.authenticated       = data.authenticated;
 		service.customer.address    = data.address;
 		service.customer.city       = data.city;
 		service.customer.state      = data.state;
