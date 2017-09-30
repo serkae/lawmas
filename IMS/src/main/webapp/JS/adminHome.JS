@@ -67,7 +67,7 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		.state("manageInventoryHome.add-remove",{
 			url: "/add-remove",
 			templateUrl: "partials/add-remove.html",
-			controller: "addremoveCtrl"
+			controller: "addremoveCtrl as AR"
 		})
 		.state("manageInventoryHome.viewCurrentInventory",{
 			url: "/viewCurrentInventory",
@@ -367,25 +367,85 @@ adminApp.controller("invCtrl", function($scope,$http){
 
 });
 
-adminApp.controller("addremoveCtrl", function($scope,$http){
+adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 
 	console.log("in add-remove controller");
 
+	
+	var inventory = this;
+	
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
 
+	$scope.edit = 0;
 	
-	$scope.changeItem = function(){
-		$scope.hide = 1;
+	
+	
+	inventory.id = -1;
+	inventory.name = "";
+	inventory.description = "";
+	inventory.unitPrice = -1;
+	inventory.quantity = -1;
+	inventory.departmentid = -1;
+	inventory.discountid = -1;
+	inventory.image = null;
+	
+	$scope.change = function(data){
+		console.log($scope.edit);
+		inventory.id = data.id;
+		console.log(inventory.id);
+		console.log($scope.edit);
+		inventory.name = data.name;
+		inventory.departmentid = data.departmentid;
+		inventory.discountid = data.discountid
+		inventory.image = data.image;
+		inventory.unitPrice = data.unitPrice;
+		inventory.quantity = data.quantity;
+		inventory.description = data.description;	
+		$scope.edit = 1;
+		
 	}
-	
+	$scope.reset = function(){
+		$scope.edit = 0;
+	}
 	
 	$http.get("rest/inventoryitem/getAll").success(function(data){
 		$scope.itemlist = data;
 		console.log(data);
 	})
 
+	$scope.editItem = function(){
+		
+		if($scope.newName != " "){
+			inventory.name = $scope.newName;
+		}
+		if($scope.newUnitPrice != " "){
+			inventory.unitPrice = $scope.newUnitPrice;
+		}
+		if($scope.newQuantity != " "){
+			inventory.quantity = $scope.newQuantity;
+		}
+		if($scope.newDescription != " "){
+			inventory.description = $scope.newDescription;
+		}
+		inventory.item = {
+				id: inventory.id,
+				name: inventory.name,
+				description: inventory.description,
+				unitPrice: inventory.unitPrice,
+				quantity: inventory.quantity,
+				departmentid: inventory.departmentid,
+				discountid: inventory.discountid,
+				image: inventory.image	
+		}
+		console.log(inventory.item);
+		$http.post("rest/inventoryitem/update", inventory.item).success(function(data){
+			console.log(data);
+			console.log("Item updated successfully?")
+		})
+		$state.reload();
+	}
 
 });
 

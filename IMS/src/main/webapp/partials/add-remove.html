@@ -1,4 +1,4 @@
-<div>
+<div style = "width-left:25%" ng-hide = "edit == 1">
 	<nav class="navbar navbar-default">
 		<form class="navbar-form navbar-left" role="search">
 			<div class="form-group">
@@ -13,11 +13,11 @@
 	</nav>
 	Edit your Existing Inventory
 	<!-- <p ng-repeat = "x in itemlist">{{x}}</p> -->
-	<div class="alert alert-info">Sort Type: {{sortType}} Sort
-		Reverse: {{sortReverse}} Search Query: {{searchInventory}}</div>
-	<table class="table">
+
+	<table class="table" >
 		<thead>
 			<tr>
+				<th></th>
 				<th>id</th>
 				<th>department</th>
 				<th>name</th>
@@ -25,19 +25,47 @@
 				<th>quantity</th>
 				<th>description</th>
 				<th>image</th>
+				
 			</tr>
 		</thead>
 		<tr
 			ng-repeat="x in itemlist  | orderBy:sortType:sortReverse | filter:searchItem">
+			<td><button type = "button" ng-click = "change(x)">Edit Stock</button></td>
 			<td>{{x.id}}</td>
-			<td>{{x.department.id}}</td>
+			<td>{{x.departmentid}}</td>
 			<td>{{x.name}}</td>
 			<td>{{x.unitPrice}}</td>
 			<td>{{x.quantity}}</td>
 			<td>{{x.description}}</td>
 			<td>{{x.image}}</td>
-			<td></td>
 		</tr>
 	</table>
 </div>
->>>>>>> 2b953d355029beb10bc29b4f3daffc2762a620cf
+<div ng-hide = "edit == 0">
+	<table>
+		<thead>
+		<tr>
+			<th>Current Inventory Information</th>
+			<th>New Inventory Information</th>
+			</tr>
+		</thead>
+		<tr>
+		<td>
+			<input ng-value="AR.name" disabled><br/>
+			<input ng-value="AR.unitPrice" disabled><br/>
+			<input ng-value="AR.quantity" disabled><br/>
+			<input ng-value = "AR.description" disabled><br/>
+			<button ng-click = "reset()">Go Back</button>
+			</td>
+			<td>
+			<input placeholder = "New Name" ng-model = "newName"><br/>
+			<input placeholder = "New Unit Price" ng-model = "newUnitPrice"><br/>
+			<input placeholder = "New Quantity" ng-model = "newQuantity"><br/>
+			<input placeholder = "New Description" ng-model = "newDescription"><br/>
+			<button type = "submit" ng-click = "editItem()">Submit New Information</button>
+			</td>
+		</tr>
+	</table>
+
+	
+</div>
