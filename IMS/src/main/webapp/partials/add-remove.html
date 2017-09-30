@@ -37,7 +37,7 @@
 			<td>{{x.unitPrice}}</td>
 			<td>{{x.quantity}}</td>
 			<td>{{x.description}}</td>
-			<td>{{x.image}}</td>
+			<td><img ng-src = "{{x.image}}"/></td>
 		</tr>
 	</table>
 </div>
@@ -62,7 +62,23 @@
 			<input placeholder = "New Unit Price" ng-model = "newUnitPrice"><br/>
 			<input placeholder = "New Quantity" ng-model = "newQuantity"><br/>
 			<input placeholder = "New Description" ng-model = "newDescription"><br/>
+			<input placeholder="% discount" ng-model="percentDiscount" ng-show="perDiscount" required>
+			<input placeholder = "Flat discount" ng-model = "flatDiscount" ng-show = "fDiscount"><br />
+			<input placeholder = "Discount Reason" ng-model = "pDiscountReason" ng-show = "perDiscount || fDiscount"required>
+			<br/>
 			<button type = "submit" ng-click = "editItem()">Submit New Information</button>
+			</td> 
+			<td>
+			Apply Discount?
+			<input type="checkbox" ng-model="showDiscount">
+			<p ng-show="showDiscount">
+				Discount Percentage? <input type="checkbox" ng-model="perDiscount">
+			</p>
+			<p ng-show="showDiscount">
+				Discount flat rate? <input type="checkbox" ng-model="fDiscount">
+			</p>
+
+
 			</td>
 		</tr>
 	</table>

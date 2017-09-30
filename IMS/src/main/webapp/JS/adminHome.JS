@@ -52,8 +52,6 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		url: "/adminMainPage",
 		templateUrl: "partials/adminMainPage.html",
 		controller: "MainPageCtrl as adminMainPage"
-
-
 		})
 		.state("manageInventoryHome",{
 			url: "/manageInventoryHome",
@@ -391,6 +389,10 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 	inventory.discountid = -1;
 	inventory.image = null;
 	
+
+	
+	
+	
 	$scope.change = function(data){
 		console.log($scope.edit);
 		inventory.id = data.id;
@@ -410,6 +412,15 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 		$scope.edit = 0;
 	}
 	
+	var resetData = function(){
+		$http.get("rest/inventoryitem/getAll").success(function(data){
+			$scope.itemlist = data;
+			console.log(data);
+		});
+	}
+	
+	resetData();
+	
 	$http.get("rest/inventoryitem/getAll").success(function(data){
 		$scope.itemlist = data;
 		console.log(data);
@@ -417,16 +428,61 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 
 	$scope.editItem = function(){
 		
-		if($scope.newName != " "){
+		if($scope.percentDiscount != null || $scope.flatDiscount != null){
+			if($scope.percentDiscount != null){
+				inventory.discountType = 1;
+				inventory.discountAmount = ($scope.percentDiscount/100);
+			}
+			if($scope.flatDiscount != null){
+				inventory.discountType = 0;
+				inventory.discountAmount = $scope.flatDiscount;
+				if($scope.flatDiscount > inventory.unitPrice){
+					alert("Cannot have the discount be greater than the unit price");
+					return;
+				}
+			}
+			
+			$scope.date = new Date();
+			inventory.startDate = $scope.date
+			inventory.disDescription = $scope.pDiscountReason;
+			var discount = this;
+			discount.item = {
+				discountID: -1,
+				discount_Type: inventory.discountType,
+				amount: inventory.discountAmount,
+				description: inventory.disDescription,
+				startDate: inventory.startDate
+			}
+			$http.post("rest/discount/create", discount.item).success(function(data){
+				console.log("New discount created?");
+			})
+			
+		}
+		
+		
+		if($scope.newName != null){
 			inventory.name = $scope.newName;
 		}
-		if($scope.newUnitPrice != " "){
+		if($scope.newUnitPrice != null){
+			if($scope.newUnitPrice < 0){
+				$scope.newUnitPrice = 0;
+			}
 			inventory.unitPrice = $scope.newUnitPrice;
 		}
-		if($scope.newQuantity != " "){
+		if(inventory.discountType == 0){
+			inventory.unitPrice = inventory.unitPrice - $scope.flatDiscount;
+		}
+		if(inventory.discountType == 1){
+			inventory.unitPrice = inventory.unitPrice - (inventory.unitPrice * inventory.discountAmount);
+		}
+		if($scope.newQuantity != null){
+			if($scope.newQuantity < 0){
+				$scope.newQuantity = 0;
+			}
+			console.log($scope.newQuantity);
 			inventory.quantity = $scope.newQuantity;
 		}
-		if($scope.newDescription != " "){
+		if($scope.newDescription != null){
 			inventory.description = $scope.newDescription;
 		}
 		inventory.item = {
@@ -436,15 +492,17 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 				unitPrice: inventory.unitPrice,
 				quantity: inventory.quantity,
 				departmentid: inventory.departmentid,
-				discountid: inventory.discountid,
+				discountid: inventory.discountType,
 				image: inventory.image	
 		}
 		console.log(inventory.item);
 		$http.post("rest/inventoryitem/update", inventory.item).success(function(data){
 			console.log(data);
 			console.log("Item updated successfully?")
+			$scope.reset();
+			resetData();
 		})
-		$state.reload();
+		
 	}
 
 });
