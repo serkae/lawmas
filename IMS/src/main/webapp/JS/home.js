@@ -216,24 +216,6 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 });
 
 
-//merging of Will's getInvItemsCtrl and my MainCtrl
-storeApp.controller("MainCtrl", function($http, $rootScope, $scope, CustomerService, $state) {
-	
-	$scope.sortType = "id";
-	$scope.sortReverse = false;
-	$http.get('rest/inventoryitem/getAll').success(function(data) {
-		$scope.allInvItems = data;
-	});
-	
-	$rootScope.logout = function () {
-		console.log("within logout");
-		$rootScope.authenticated = false;
-		CustomerService.resetCustomer();
-		console.log(CustomerService.getCustomer());
-		$state.go("mainStorePage");
-	}
-});
-
 storeApp.controller('cartController', function($scope) {
 	$scope.items = [
 		{
