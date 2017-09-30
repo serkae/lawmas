@@ -32,7 +32,7 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	});
 });
 
-storeApp.controller('MainCtrl', function($http, $scope) {
+storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,$state) {
 	$scope.sortType = "department";
 	$scope.sortReverse = false;
 	let itemsToShow = [];
@@ -59,6 +59,13 @@ storeApp.controller('MainCtrl', function($http, $scope) {
 		});
 	});
 	$scope.itemsToShow = itemsToShow;
+	$rootScope.logout = function () {
+        console.log("within logout");
+        $rootScope.authenticated = false;
+        CustomerService.resetCustomer();
+        console.log(CustomerService.getCustomer());
+        $state.go("mainStorePage");
+    }
 });
 
 storeApp.controller('cartController', function($scope) {

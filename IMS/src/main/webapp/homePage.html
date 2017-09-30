@@ -69,9 +69,9 @@ label {
   			</form>
   		</li>
   		<li><button class="btn" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet"><a ui-sref="cart"><span class="glyphicon glyphicon-shopping-cart"></span></a> View Your Cart</button></li>
-  		<li ng-hide="authenticated==true"><button class="btn"><a ui-sref="login"><span class="glyphicon glyphicon-log-in"></span></a> Login</button></li>
-  		<li ng-show="authenticated==true"><button class="btn"><a ui-sref="customerInfo"><span class="glyphicon glyphicon-cog"></span></a> User Info</button></li>
-  		<li ng-show="authenticated==true"><button class="btn" ng-click="logout()"><a ui-sref="mainStorePage"><span class="glyphicon glyphicon-log-out"></span></a> Logout</button>
+  		<li ng-hide="authenticated==true"><button class="btn" ui-sref="login"><span class="glyphicon glyphicon-log-in"></span> Login</button></li>
+  		<li ng-show="authenticated==true"><button class="btn" ui-sref="customerInfo"><span class="glyphicon glyphicon-cog"></span> User Info</button></li>
+  		<li ng-show="authenticated==true"><button class="btn" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</button>
   	</ul>
   </div>
 </nav>
