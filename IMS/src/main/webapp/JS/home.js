@@ -45,30 +45,48 @@ storeApp.service("CustomerService", function($http, $q){
 			password : "",
 			address: "",
 			city: "",
-			state: "",
+			state: null,
 			zipcode: "",
 			phone: "",
-			card: null
+			card: null,
+			authenticated : false
 	};
 
 	service.getCustomer= function(){
 		return service.customer;
 	};
 
+	service.resetCustomer = function(){
+		service.customer={
+				id: -1,
+				firstname: "",
+				lastname: "",
+				email : "",
+				password : "",
+				address: "",
+				city: "",
+				state: null,
+				zipcode: "",
+				phone: "",
+				card: null,
+				authenticated : false
+		};
+	}
+	
 	service.setCustomer = function(data){
 		service.customer.id         = data.id;
-		//service.customer.firstname  = data.firstname;
-		//service.customer.lastname   = data.lastname;
+		service.customer.firstname  = data.firstname;
+		service.customer.lastname   = data.lastname;
 		service.customer.email      = data.email;
 		service.customer.password   = data.password;
 		service.authenticated       = data.authenticated;
-		//service.customer.address    = data.address;
-		//service.customer.city       = data.city;
-		//service.customer.state      = data.state;
-		//service.customer.state.name = data.state.name;
-		//service.customer.zipcode    = data.zipcode;
-		//service.customer.phone      = data.phone;
-		//service.customer.card       = data.card;
+		service.customer.address    = data.address;
+		service.customer.city       = data.city;
+		service.customer.state      = data.state;
+		service.customer.zipcode    = data.zipcode;
+		service.customer.phone      = data.phone;
+		service.customer.card       = data.card;
+		service.customer.authenticated = data.authenticated;
 	};
 
 	service.authenticateUser = function(){
@@ -158,22 +176,25 @@ storeApp.controller('cartController', function($scope) {
 	}
 });
 
-storeApp.controller('custShowInfoController', function($scope, $rootScope, $state) {
+storeApp.controller('custShowInfoController', function($scope, $rootScope, $state,CustomerService) {
 	console.log("this is custshow");
+	var customer = CustomerService.getCustomer();
 	$scope.custInfo = {
-		firstName: "Max",
-		lastName: "Caulfield",
-		email: "mcaulfi1@blackwell.com",
-		address: "123 Deer St",
-		city: "Arcadia Bay",
-		state: "Oregon",
-		zipcode: "123456",
-		phone: "123-456-7890"
+		firstName: customer.firstname,
+		lastName: customer.lastname,
+		email: customer.email,
+		address: customer.address,
+		city: customer.city,
+		state: customer.state.name,
+		zipcode: customer.zipcode,
+		phone: customer.phone
 	}
 	
 	$scope.logout = function () {
 		console.log("within logout");
 		$rootScope.authenticated = false;
+		CustomerService.resetCustomer();
+		console.log(CustomerService.getCustomer());
 		$state.go("mainStorePage");
 	}
 	
