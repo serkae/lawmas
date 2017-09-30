@@ -16,6 +16,11 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 			templateUrl:"partials/mainStorePage.html", //html
 			controller: "MainCtrl as main",
 		})
+		.state("customerInfo", {
+			url:"/cust-show-info",
+			templateUrl:"partials/cust-show-info.html",
+			controller: "custShowInfoController"
+		})
 		.state("cart", {
 			url: "/cart",
 			templateUrl: "partials/cust-cart.html"
@@ -33,9 +38,17 @@ storeApp.service("CustomerService", function($http, $q){
 	var service = this;
 
 	service.customer={
+			id: -1,
+			firstname: "",
+			lastname: "",
 			email : "",
 			password : "",
-			authenticated : false
+			address: "",
+			city: "",
+			state: "",
+			zipcode: "",
+			phone: "",
+			card: null
 	};
 
 	service.getCustomer= function(){
@@ -43,12 +56,22 @@ storeApp.service("CustomerService", function($http, $q){
 	};
 
 	service.setCustomer = function(data){
-		service.customer.email = data.email;
-		service.customer.password = data.password;
-		service.customer.authenticated = data.authenticated;
+		service.customer.id         = data.id;
+		//service.customer.firstname  = data.firstname;
+		//service.customer.lastname   = data.lastname;
+		service.customer.email      = data.email;
+		service.customer.password   = data.password;
+		service.authenticated       = data.authenticated;
+		//service.customer.address    = data.address;
+		//service.customer.city       = data.city;
+		//service.customer.state      = data.state;
+		//service.customer.state.name = data.state.name;
+		//service.customer.zipcode    = data.zipcode;
+		//service.customer.phone      = data.phone;
+		//service.customer.card       = data.card;
 	};
 
-	service.authenticateCustomer = function(){
+	service.authenticateUser = function(){
 		var promise = $http.post(
 				'rest/customer/auth', service.customer)
 				.then(
@@ -64,27 +87,24 @@ storeApp.service("CustomerService", function($http, $q){
 	};
 });
 
-storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $state){
+storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 	console.log("in loginctrl");
 	
 	var login = this;
+	login.customer = CustomerService.getCustomer();
 	
 	login.doLogin = function(){
 		console.log("about to authenticate user");
-		var promise = CustomerService.authenticateCustomer();
-		console.log($scope.email);
+		var promise = CustomerService.authenticateUser();
+		
 		promise.then(
 				function(response){
-					console.log(response);
-					if(login.customer!= null){
+					if(response.data.id !== -1){
 						console.log(login.customer);
-						login.customer.authenticated = true;
-						$rootScope.authenticated = true;
 						CustomerService.setCustomer(response.data);
-						console.log("setting user in login ctrl")
-						console.log(CustomerService.getCustomer());
+						$rootScope.authenticated = true;
 						$state.go("mainStorePage");
-					} else{
+					} else {
 						alert("Invalid login!");
 					}
 				},function(error){
@@ -96,7 +116,6 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $
 
 //merging of Will's getInvItemsCtrl and my MainCtrl
 storeApp.controller("MainCtrl", function($http, $scope) {
-	$scope.authenticate = false;
 	
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
@@ -137,4 +156,25 @@ storeApp.controller('cartController', function($scope) {
 		}
 		return total;
 	}
+});
+
+storeApp.controller('custShowInfoController', function($scope, $rootScope, $state) {
+	console.log("this is custshow");
+	$scope.custInfo = {
+		firstName: "Max",
+		lastName: "Caulfield",
+		email: "mcaulfi1@blackwell.com",
+		address: "123 Deer St",
+		city: "Arcadia Bay",
+		state: "Oregon",
+		zipcode: "123456",
+		phone: "123-456-7890"
+	}
+	
+	$scope.logout = function () {
+		console.log("within logout");
+		$rootScope.authenticated = false;
+		$state.go("mainStorePage");
+	}
+	
 });
