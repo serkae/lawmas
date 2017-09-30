@@ -30,6 +30,11 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 			templateUrl:"partials/login.html",
 			controller: "LoginCtrl as login"
 		})
+		.state("getPastOrders",{
+			url: "/getOrders",
+			templateUrl:"partials/cust-getOrders.html",
+			controller: "getOrdersCtrl"
+		})
 });
 
 storeApp.service("CustomerService", function($http, $q){
@@ -143,10 +148,11 @@ storeApp.controller("MainCtrl", function($http, $scope) {
 });
 
 
-storeApp.controller('getOrdersCtrl',function($http, $scope){
+storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
 $scope.orders = [];
 	
-	$http.get('rest/order/getAll').then( function(response){
+	var customer = CustomerService.getCustomer();
+	$http.get('rest/order/getAllByCustomerId?id=' + customer.id).then( function(response){
 		console.log(response.data);
 		var orders = response.data;
 		for(var i = 0; i < orders.length; i ++){

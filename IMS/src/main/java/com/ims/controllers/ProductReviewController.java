@@ -39,21 +39,21 @@ public class ProductReviewController {
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<ProductReviewDto> createOrReplace(@RequestBody ProductReview productReview){
+	public ResponseEntity<ProductReview> createOrReplace(@RequestBody ProductReview productReview){
 		// Loading inventory item from database because of null department
 		InventoryItem i = inventoryItemService.getById(productReview.getInventoryItem().getId());
 		System.out.println("inventory item: " + i.toString());
-		return new ResponseEntity<ProductReviewDto>(productReviewService.createOrUpdateAdmin(productReview), HttpStatus.OK);
+		return new ResponseEntity<ProductReview>(productReviewService.createOrUpdateProductReview(productReview), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<ProductReviewDto> update(@RequestBody ProductReview productReview){
+	public ResponseEntity<ProductReview> update(@RequestBody ProductReview productReview){
 		// Loading inventory item from database because of null department
 		InventoryItem i = inventoryItemService.getById(productReview.getInventoryItem().getId());
 		System.out.println("inventory item: " + i.toString());
-		return new ResponseEntity<ProductReviewDto>(productReviewService.createOrUpdateAdmin(productReview), HttpStatus.OK);
+		return new ResponseEntity<ProductReview>(productReviewService.createOrUpdateProductReview(productReview), HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/delete",method=(RequestMethod.POST),
@@ -61,7 +61,7 @@ public class ProductReviewController {
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<String> removeReview(@RequestBody ProductReview productReview) {
 		productReview.setInventoryItem(null);
-		productReviewService.removeAdmin(productReview);
+		productReviewService.removeReview(productReview);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}
 
@@ -69,6 +69,18 @@ public class ProductReviewController {
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<List<ProductReview>> getAllReviews(){
 		return new ResponseEntity<List<ProductReview>>(productReviewService.getAll(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getAllByInventoryItemId",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<List<ProductReview>> getAllReviewsFromId(int id){
+		return new ResponseEntity<List<ProductReview>>(productReviewService.getAllFromInventoryItemId(id), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getAverageReviewFromItemId",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<Float> getAverageFromId(int id){
+		return new ResponseEntity<Float>(productReviewService.getAverage(id), HttpStatus.OK);
 	}
 
 }

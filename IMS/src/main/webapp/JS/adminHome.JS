@@ -370,10 +370,30 @@ adminApp.controller("addremoveCtrl", function($scope,$http){
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
 
+	$scope.items = [];
 	$http.get("rest/inventoryitem/getAll").success(function(data){
-		$scope.itemlist = data;
+		var items = data;
+		console.log(data);
+		for(var i = 0; i < items.length; i++){
+			var item = items[i];
+			item.show = false;
+			item.productreviews = [];
+			$scope.items.push(item);
+		}
 	})
-
+	
+	$scope.showReview = function(item){
+		console.log("called");
+		$http.get('rest/productreview/getAllByInventoryItemId?id=' + item.id).then(function(response){
+			console.log(response);
+			item.productreviews = response.data;
+			item.show = true;
+		});
+		$http.get('rest/productreview/getAverageReviewFromItemId?id=' + item.id).then(function(response){
+			console.log(response);
+			item.averagereview = response.data;
+		});
+	}
 
 });
 
