@@ -364,12 +364,20 @@ adminApp.controller("invCtrl", function($scope,$http){
 })
 
 adminApp.controller("addremoveCtrl", function($scope,$http){
+	console.log("in add-remove ctrl");
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
 
+	
+	$scope.changeItem = function(){
+		$scope.hide = 1;
+	}
+	
+	
 	$http.get("rest/inventoryitem/getAll").success(function(data){
 		$scope.itemlist = data;
+		console.log(data);
 	})
 
 
