@@ -26,10 +26,18 @@ public class DiscountController {
 	}
 	
 	
-	@RequestMapping(value="/createOrUpdate",method=(RequestMethod.POST),
+	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<Discount> createOrUpdate(@RequestBody Discount d){
+		//return and create discount
+		return new ResponseEntity<Discount>(discountService.createOrUpdate(d), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/update",method=(RequestMethod.POST),
+			consumes=(MediaType.APPLICATION_JSON_VALUE),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<Discount> update(@RequestBody Discount d){
 		//return and create discount
 		return new ResponseEntity<Discount>(discountService.createOrUpdate(d), HttpStatus.OK);
 	}

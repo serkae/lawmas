@@ -19,7 +19,7 @@ import com.ims.services.ProductReviewService;
 
 
 @RestController
-@RequestMapping(value="/productReview")
+@RequestMapping(value="/productreview")
 public class ProductReviewController {
 
 	@Autowired
@@ -36,10 +36,20 @@ public class ProductReviewController {
 		this.inventoryItemService = inventoryItemService;
 	}
 
-	@RequestMapping(value="/createOrUpdate",method=(RequestMethod.POST),
+	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<ProductReviewDto> createOrReplace(@RequestBody ProductReview productReview){
+		// Loading inventory item from database because of null department
+		InventoryItem i = inventoryItemService.getById(productReview.getInventoryItem().getId());
+		System.out.println("inventory item: " + i.toString());
+		return new ResponseEntity<ProductReviewDto>(productReviewService.createOrUpdateAdmin(productReview), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/update",method=(RequestMethod.POST),
+			consumes=(MediaType.APPLICATION_JSON_VALUE),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<ProductReviewDto> update(@RequestBody ProductReview productReview){
 		// Loading inventory item from database because of null department
 		InventoryItem i = inventoryItemService.getById(productReview.getInventoryItem().getId());
 		System.out.println("inventory item: " + i.toString());

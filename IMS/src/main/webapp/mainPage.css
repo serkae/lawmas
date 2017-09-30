@@ -8,6 +8,13 @@ body{
   font-family: 'Sacramento', cursive;
 
 }
+.jumbotron {
+	margin-left: 350px;
+	margin-right: 350px;
+	background-color: #ffbf80; 
+	align: center;
+} 
+
 #overallJumbo{
  background-color: #d9ffb3;
  margin-bottom: 0;
