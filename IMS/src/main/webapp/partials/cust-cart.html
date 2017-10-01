@@ -14,10 +14,10 @@
 				<th>Price</th>
 				<th>Quantity</th>
 			</tr>
-			<tr ng-repeat="item in items">
+			<tr ng-repeat="item in cart">
 				<td>{{item.name}}</td>
 				<td>{{item.price | currency}}</td>
-				<td>{{item.quantity}}</td>
+				<!-- <td>{{item.quantity}}</td> -->
 			</tr>
 			<tr>
 				<th>Total</th>

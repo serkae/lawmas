@@ -6,7 +6,7 @@
 		<td>{{item.department}}</td>
 		<td>{{item.description}}</td>
 		<td><img ng-src="{{item.image}}"></td>
-		<td><a class="btn"><span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart</a></td>
+		<td><a ng-click="addItemToCart($index)" class="btn"><span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart</a></td>
 	</tr>
 </table>
 

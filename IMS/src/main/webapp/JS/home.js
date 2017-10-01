@@ -32,7 +32,61 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	});
 });
 
-storeApp.controller('MainCtrl', function($http, $scope) {
+storeApp.service('ItemsService', function() {
+	this.itemsToShow;
+
+	this.getItemsToShow = function() {
+		return this.itemsToShow;
+	}
+
+	this.setItemsToShow = function(items) {
+		this.itemsToShow = items;
+	}
+
+	this.lineItem = {
+			id: -1,
+			orderid: -1,
+			quantity: 0,
+			inventoryitemid: -1
+	};
+
+	this.getLineItem = function() {
+		return this.lineItem;
+	};
+
+	this.setLineItem = function(data) {
+		this.lineItem.id = -1,
+		this.lineItem.orderid = data.orderid,
+		this.lineItem.quantity += 1,
+		this.lineItem.inventoryitemid = data.id
+	};
+
+	this.cart = [];
+
+	this.getCart = function() {
+		return this.cart;
+	};
+
+	this.addToCart = function(lineItem) {
+		this.cart.push(lineItem);
+	}
+
+	this.createLineItems = function() {
+		this.cart.forEach(function(lineItem) {
+			let promise = $http.post('rest/lineitem/create', lineItem).then(
+				function(response) {
+					return response;
+				},
+				function(error) {
+					return error;
+				}
+			);
+			return promise;
+		});
+	};
+});
+
+storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
 	$scope.sortType = "department";
 	$scope.sortReverse = false;
 	let itemsToShow = [];
@@ -46,6 +100,7 @@ storeApp.controller('MainCtrl', function($http, $scope) {
 				allDepts.forEach(function(dept) {
 					if (item.departmentid === dept.id) {
 						itemsToShow.push({
+							id: item.id,
 							name: item.name,
 							unitPrice: item.unitPrice,
 							quantity: item.quantity,
@@ -56,43 +111,52 @@ storeApp.controller('MainCtrl', function($http, $scope) {
 					}
 				});
 			});
+			$scope.itemsToShow = itemsToShow;
+			ItemsService.setItemsToShow(itemsToShow);
+			console.log($scope.itemsToShow);
 		});
 	});
-	$scope.itemsToShow = itemsToShow;
 });
 
-storeApp.controller('cartController', function($scope) {
-	$scope.items = [
-		{
-			name: "Blue Beanie",
-			price: 9.99,
-			quantity: 1
-		},
-		{
-			name: "Candlemass T-Shirt",
-			price: 19.99,
-			quantity: 1
-		},
-		{
-			name: "Black Denim Jacket",
-			price: 39.99,
-			quantity: 1
-		},
-		{
-			name: "Raven Feather Necklace",
-			price: 9.99,
-			quantity: 1
-		}
-		]
+storeApp.controller('CartController', function(ItemsService, $http, $scope) {
 
-	$scope.getTotal = function() {
+	$scope.addItemToCart = function($index) {
+		ItemsService.addToCart(ItemsService.itemsToShow[$index]);
+	};
+	
+	$scope.cart = ItemsService.getCart();
+
+//		$scope.items = [
+//		{
+//		name: "Blue Beanie",
+//		price: 9.99,
+//		quantity: 1
+//		},
+//		{
+//		name: "Candlemass T-Shirt",
+//		price: 19.99,
+//		quantity: 1
+//		},
+//		{
+//		name: "Black Denim Jacket",
+//		price: 39.99,
+//		quantity: 1
+//		},
+//		{
+//		name: "Raven Feather Necklace",
+//		price: 9.99,
+//		quantity: 1
+//		}
+//		]
+
+		$scope.getTotal = function() {
 		var total = 0;
 		for(var i = 0; i < $scope.items.length; i++) {
-			var product = $scope.items[i];
-			total += (product.price * product.quantity);
+		var product = $scope.items[i];
+		total += (product.price * product.quantity);
 		}
 		return total;
-	}
+		}
 });
 
 storeApp.service("CustomerService", function($http, $q){
@@ -135,7 +199,7 @@ storeApp.service("CustomerService", function($http, $q){
 				authenticated : false
 		};
 	}
-	
+
 	service.setCustomer = function(data){
 		service.customer.id         = data.id;
 		service.customer.firstname  = data.firstname;
@@ -168,16 +232,46 @@ storeApp.service("CustomerService", function($http, $q){
 	};
 });
 
-storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
+storeApp.service("OrderService", function($http) {
+	this.order = {
+			id: -1,
+			customer: null,
+			order_Date: 0
+	}
+
+	this.getOrder = function() {
+		return this.order;
+	}
+
+	this.setOrder = function(customer) {
+		this.order.id = -1;
+		this.order.customer = customer;
+		this.order.order_Date = new Date().getTime();
+	}
+
+	this.createOrder = function(order) {
+		let promise = $http.post('rest/order/create', order).then(
+				function(response) {
+					return response;
+				},
+				function(error) {
+					return error;
+				}
+		);
+		return promise;
+	}
+});
+
+storeApp.controller("LoginCtrl", function(CustomerService, OrderService, $rootScope, $state){
 	console.log("in loginctrl");
-	
+
 	var login = this;
 	login.customer = CustomerService.getCustomer();
-	
+
 	login.doLogin = function(){
 		console.log("about to authenticate user");
 		var promise = CustomerService.authenticateUser();
-		
+
 		promise.then(
 				function(response){
 					if(response.data.id !== -1){
@@ -191,7 +285,7 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 				},function(error){
 					console.log(error);
 				});
-	
+
 	};
 });
 
@@ -199,16 +293,16 @@ storeApp.controller('custShowInfoController', function($scope, $rootScope, $stat
 	console.log("this is custshow");
 	var customer = CustomerService.getCustomer();
 	$scope.custInfo = {
-		firstName: customer.firstname,
-		lastName: customer.lastname,
-		email: customer.email,
-		address: customer.address,
-		city: customer.city,
-		state: customer.state.name,
-		zipcode: customer.zipcode,
-		phone: customer.phone
+			firstName: customer.firstname,
+			lastName: customer.lastname,
+			email: customer.email,
+			address: customer.address,
+			city: customer.city,
+			state: customer.state.name,
+			zipcode: customer.zipcode,
+			phone: customer.phone
 	}
-	
+
 	$scope.logout = function () {
 		console.log("within logout");
 		$rootScope.authenticated = false;
@@ -216,5 +310,5 @@ storeApp.controller('custShowInfoController', function($scope, $rootScope, $stat
 		console.log(CustomerService.getCustomer());
 		$state.go("mainStorePage");
 	}
-	
+
 });
