@@ -1,6 +1,5 @@
 <table class="table">
 	<tr ng-repeat="item in itemsToShow | orderBy:sortType:sortReverse | filter:searchTerms">
-		<td>{{item.id}}</td>
 		<td>{{item.name}}</td>
 		<td>{{item.unitPrice | currency}}</td>
 		<td>{{item.quantity}} in stock</td>
