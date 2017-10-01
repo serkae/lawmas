@@ -298,19 +298,20 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 	$scope.showReviewWarning = false;
 	$scope.finishedReview = false;
 	$scope.quantities = [];
-	$scope.carousel = {};
-	$scope.carousel.first = [];
-	$scope.carousel.others = [];
-	$scope.carousel.slides = [];
+//	$scope.carousel = {};
+//	$scope.carousel.first = [];
+//	$scope.carousel.others = [];
+//	$scope.carousel.slides = [];
 	//set discount info
 	if($scope.item.discountid != -1){
-		$http.get('rest/discount/get?id='+$scope.item.discountid).then(function(data){
-			if(data.discount_Type == 0){
-				$scope.discountOffer = "$" + data.amount + " off!";
-				$scope.discountMessage = data.description;
+		$http.get('rest/discount/get?id='+$scope.item.discountid).then(function(response){
+			console.log(response.data);
+			if(response.data.discount_Type == 0){
+				$scope.discountOffer = "$" + response.data.amount + " off!";
+				$scope.discountMessage = response.data.description;
 			} else{
-				$scope.discountOffer = data.amount + "% off!";
-				$scope.discountMessage = data.description;
+				$scope.discountOffer = response.data.amount + "% off!";
+				$scope.discountMessage = response.data.description;
 			}
 		}) 
 		$scope.discountShow = true;
@@ -340,49 +341,49 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 			$scope.productreviewAvg = 0;
 		}
 		//start carousel function
-		$scope.loadCarousel();
+		//$scope.loadCarousel();
 	});
 	
 	
-	//CAROUSEL
-	
-	$scope.loadCarousel = function(){
-		//setup carousel
-		// # of slides, 3 reviews per slide
-		var slides = Math.ceil($scope.productreviews.length / 3);
-		
-		//if no reviews made, make dummy review
-		if(slides == 0){
-			var r = {
-					id:-1,
-					rating: 0,
-					description: "No product reviews made."
-			};
-			$scope.carousel.first.push(r);
-		} else{
-			for(var i = 0; i < 3; i++){
-				if(i == $scope.productreviews.length){
-					break;
-				}
-				
-				$scope.carousel.first.push($scope.productreviews[i]);
-				$scope.carousel.slides.push(i);
-			}
-			
-			for(var j = 1; j < slides; j++){
-				var product_review_set = [];
-				for(var k = 0; k < 3; k++){
-					if(j*3 + k == $scope.productreviews.length){
-						break;
-					}
-					product_review_set.push($scope.productreviews[j*3 + k]);
-					$scope.carousel.slides.push(j*3 + k);
-				}
-				$scope.carousel.others.push(product_review_set);
-			}
-		}
-		console.log($scope.carousel);
-	};
+//	//CAROUSEL
+//	
+//	$scope.loadCarousel = function(){
+//		//setup carousel
+//		// # of slides, 3 reviews per slide
+//		var slides = Math.ceil($scope.productreviews.length / 3);
+//		
+//		//if no reviews made, make dummy review
+//		if(slides == 0){
+//			var r = {
+//					id:-1,
+//					rating: 0,
+//					description: "No product reviews made."
+//			};
+//			$scope.carousel.first.push(r);
+//		} else{
+//			for(var i = 0; i < 3; i++){
+//				if(i == $scope.productreviews.length){
+//					break;
+//				}
+//				
+//				$scope.carousel.first.push($scope.productreviews[i]);
+//				$scope.carousel.slides.push(i);
+//			}
+//			
+//			for(var j = 1; j < slides; j++){
+//				var product_review_set = [];
+//				for(var k = 0; k < 3; k++){
+//					if(j*3 + k == $scope.productreviews.length){
+//						break;
+//					}
+//					product_review_set.push($scope.productreviews[j*3 + k]);
+//					$scope.carousel.slides.push(j*3 + k);
+//				}
+//				$scope.carousel.others.push(product_review_set);
+//			}
+//		}
+//		console.log($scope.carousel);
+//	};
 	
 	
 	//submit product review
