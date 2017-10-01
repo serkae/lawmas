@@ -379,9 +379,8 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 	$scope.searchItem = "";
 
 	$scope.edit = 0;
-	
-	
-	$scope.disco = "No";
+	$scope.discountYes = 0;
+	$scope.discountNo = 0;
 	
 	
 	inventory.id = -1;
@@ -410,15 +409,24 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 		inventory.quantity = data.quantity;
 		inventory.description = data.description;	
 		$scope.edit = 1;
+		if(inventory.discountid != -1){
+			$scope.discountYes = 1;
+		}
+		else{
+			$scope.discountNo = 1;
+		}
 		
 	}
 	$scope.reset = function(){
 		$scope.edit = 0;
+		$scope.discountYes = 0;
+		$scope.discountNo = 0;
 	}
 	
 	var resetData = function(){
 		$http.get("rest/inventoryitem/getAll").success(function(data){
-			$scope.itemlist = data;			
+			$scope.itemlist = data;		
+
 		});
 	}
 	
@@ -427,23 +435,20 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 	$scope.discountList = [];
 	
 	$http.get("rest/inventoryitem/getAll").success(function(data){
-		console.log(data);
-		for(var i = 0; i < data.length; i++){
-			if(data[i].discountid != -1){
-				data[i].discountid = "Yes";
-			}
-			else
-				data[i].discountid = "No";
-		}
 		$scope.itemlist = data;
+		console.log(data);
+		
 	})
 	
-	
+
 	
 
 	$scope.editItem = function(){
 		
+		
+		
 		if($scope.percentDiscount != null || $scope.flatDiscount != null){
+			$scope.testDiscount = 0;
 			if($scope.percentDiscount != null){
 				inventory.discountType = 1;
 				inventory.discountAmount = ($scope.percentDiscount/100);
@@ -456,7 +461,6 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 					return;
 				}
 			}
-			
 			$scope.date = new Date();
 			inventory.startDate = $scope.date
 			inventory.disDescription = $scope.pDiscountReason;
@@ -470,53 +474,93 @@ adminApp.controller("addremoveCtrl", function($scope,$http,$state){
 			}
 			$http.post("rest/discount/create", discount.item).success(function(data){
 				console.log("New discount created?");
+				inventory.discountid = data.discountID;
+				console.log(inventory.discountid);
+				if($scope.newName != null){
+					inventory.name = $scope.newName;
+				}
+				if($scope.newUnitPrice != null){
+					if($scope.newUnitPrice < 0){
+						$scope.newUnitPrice = 0;
+					}
+					inventory.unitPrice = $scope.newUnitPrice;
+				}
+				if(inventory.discountType == 0){
+					inventory.unitPrice = inventory.unitPrice - $scope.flatDiscount;
+				}
+				if(inventory.discountType == 1){
+					inventory.unitPrice = inventory.unitPrice - (inventory.unitPrice * inventory.discountAmount);
+				}
+				if(inventory.discountType == -1){
+					inventory.unitPrice = inventory.unitPrice + originalPrice;
+					console.log(inventory.unitPrice);
+				}
+				if($scope.newQuantity != null){
+					if($scope.newQuantity < 0){
+						$scope.newQuantity = 0;
+					}
+					console.log($scope.newQuantity);
+					inventory.quantity = $scope.newQuantity;
+				}
+				if($scope.newDescription != null){
+					inventory.description = $scope.newDescription;
+				}
+				inventory.item = {
+						id: inventory.id,
+						name: inventory.name,
+						description: inventory.description,
+						unitPrice: inventory.unitPrice,
+						quantity: inventory.quantity,
+						departmentid: inventory.departmentid,
+						discountid: inventory.discountid,
+						image: inventory.image	
+				}
+				console.log(inventory.item);
+				$http.post("rest/inventoryitem/update", inventory.item).success(function(data){
+					console.log(data);
+					console.log("Item updated successfully?")
+					$scope.reset();
+					resetData();
+				})
 			})
-			
+		}
+
+		
+		if($scope.removeDiscount == true){
+			var originalPrice;
+			$http.get("rest/discount/getAll").success(function(data){
+				for(var i = 0; i < data.length; i++){
+					if(inventory.discountid == data[i].discountid){
+						if(data[i].discountid == 0){
+							originalPrice = data[i].amount;
+						}
+						if(data[i].discountid == 1){
+							originalPrice = (data[i].amount * 100);
+						}
+					}
+					console.log(originalPrice);
+					
+				}
+			});
+			$scope.date = new Date();
+			inventory.endDate = $scope.date
+			inventory.discountType = -1;
+			var discount = this;
+			discount.item = {
+				discountID: inventory.discountid,
+				discount_Type: inventory.discountType,
+				amount: inventory.discountAmount,
+				description: inventory.disDescription,
+				endDate: inventory.endDate
+			}
+			$http.post("rest/discount/update", discount.item).success(function(){
+				console.log("Discount REMOVED?");
+			})
 		}
 		
 		
-		if($scope.newName != null){
-			inventory.name = $scope.newName;
-		}
-		if($scope.newUnitPrice != null){
-			if($scope.newUnitPrice < 0){
-				$scope.newUnitPrice = 0;
-			}
-			inventory.unitPrice = $scope.newUnitPrice;
-		}
-		if(inventory.discountType == 0){
-			inventory.unitPrice = inventory.unitPrice - $scope.flatDiscount;
-		}
-		if(inventory.discountType == 1){
-			inventory.unitPrice = inventory.unitPrice - (inventory.unitPrice * inventory.discountAmount);
-		}
-		if($scope.newQuantity != null){
-			if($scope.newQuantity < 0){
-				$scope.newQuantity = 0;
-			}
-			console.log($scope.newQuantity);
-			inventory.quantity = $scope.newQuantity;
-		}
-		if($scope.newDescription != null){
-			inventory.description = $scope.newDescription;
-		}
-		inventory.item = {
-				id: inventory.id,
-				name: inventory.name,
-				description: inventory.description,
-				unitPrice: inventory.unitPrice,
-				quantity: inventory.quantity,
-				departmentid: inventory.departmentid,
-				discountid: inventory.discountType,
-				image: inventory.image	
-		}
-		console.log(inventory.item);
-		$http.post("rest/inventoryitem/update", inventory.item).success(function(data){
-			console.log(data);
-			console.log("Item updated successfully?")
-			$scope.reset();
-			resetData();
-		})
+		
+
 		
 	}
 
