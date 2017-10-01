@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ims.beans.Department;
+import com.ims.beans.Order;
 import com.ims.services.DepartmentService;
 
 @RestController
@@ -42,6 +43,13 @@ public class DepartmentController {
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<Department> updateDepartment(@RequestBody Department d){
 		return new ResponseEntity<Department>(departmentService.createOrUpdate(d), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/get",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<Department> getDepartment(int id){
+		return new ResponseEntity<Department>(departmentService.getDepartment(id), HttpStatus.OK);
+		
 	}
 	
 	@RequestMapping(value="/remove",method=(RequestMethod.POST),

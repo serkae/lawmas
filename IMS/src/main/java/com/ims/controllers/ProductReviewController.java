@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ims.beans.Discount;
 import com.ims.beans.InventoryItem;
 import com.ims.beans.ProductReview;
 import com.ims.dtos.ProductReviewDto;
@@ -71,4 +72,10 @@ public class ProductReviewController {
 		return new ResponseEntity<List<ProductReview>>(productReviewService.getAll(), HttpStatus.OK);
 	}
 
+	@RequestMapping(value="/getByItem",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<List<ProductReview>> getAllByItemId(int id){
+		return new ResponseEntity<List<ProductReview>>(productReviewService.getByItemId(id), HttpStatus.OK);
+		
+	}
 }
