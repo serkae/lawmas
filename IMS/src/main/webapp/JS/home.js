@@ -43,10 +43,10 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 	let itemsToShow = [];
 	let allInvItems;
 	let allDepts;
-	$http.get('rest/inventoryitem/getAll').success(function(data) {
-		allInvItems = data;
-		$http.get('rest/department/getAll').success(function(data) {
-			allDepts = data;
+	$http.get('rest/inventoryitem/getAll').then(function(data) {
+		allInvItems = data.data;
+		$http.get('rest/department/getAll').then(function(response) {
+			allDepts = response.data;
 			allInvItems.forEach(function(item) {
 				allDepts.forEach(function(dept) {
 					if (item.departmentid === dept.id) {
