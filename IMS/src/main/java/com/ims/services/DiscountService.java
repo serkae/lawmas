@@ -33,5 +33,9 @@ public class DiscountService {
 	public void remove(Discount i) {
 		discountDao.removeDiscount(i);
 	}
+
+	public Discount getDiscount(int id) {
+		return discountDao.getDiscountById(id);
+	}
 	
 }
