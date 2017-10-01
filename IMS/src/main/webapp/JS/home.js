@@ -45,11 +45,6 @@ storeApp.service('ItemsService', function() {
 				return this.itemsToShow[i];
 			}
 		}
-//		this.itemsToShow.forEach(function(item) {
-//			if (item.id === id) {
-//				return item;
-//			}
-//		});
 	}
 
 	this.setItemsToShow = function(items) {
@@ -100,6 +95,8 @@ storeApp.service('ItemsService', function() {
 			return promise;
 		});
 	};
+	
+	
 });
 
 storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
@@ -146,23 +143,26 @@ storeApp.controller('CartController', function(ItemsService, $http, $scope, $sta
 
 	$scope.addItemToCart = function(id) {
 		let item = ItemsService.getItemByID(id);
-		//let lineItem = ItemsService.setLineItem(-1, item.id);
 		itemToAdd = {
 			id: item.id,
 			name: item.name,
 			unitPrice: item.unitPrice,
 			quantity: 1
 		};
-		if (ItemsService.getCart().length === 0) {
+		let cart = ItemsService.getCart();
+		if (cart.length === 0) {
 			ItemsService.addToCart(itemToAdd);
 		} else {
-			ItemsService.getCart().forEach(function(currentItem) {
-				if (currentItem.id === itemToAdd.id) {
-					currentItem.quantity++;
-				} else {
-					ItemsService.addToCart(itemToAdd);
+			let itemInCart = false;
+			for (i = 0; i < cart.length; i++) {
+				if (cart[i].id === itemToAdd.id) {
+					itemInCart = true;
+					cart[i].quantity++;
 				}
-			});
+			}
+			if (!itemInCart) {
+				ItemsService.addToCart(itemToAdd);
+			}
 		}
 	};
 
@@ -177,11 +177,19 @@ storeApp.controller('CartController', function(ItemsService, $http, $scope, $sta
 		return total;
 	};
 	
+	$scope.getNumberOfItemsInCart = function() {
+		let numberOfItems = 0;
+		for (i = 0; i < $scope.cart.length; i++) {
+			numberOfItems += $scope.cart[i].quantity;
+		}
+		return numberOfItems;
+	}
+	
 	$scope.removeFromCart = function(item) {
 		for (i = 0; i < $scope.cart.length; i++) {
 			if ($scope.cart[i].id === item.id) {
 				$scope.cart[i].quantity--;
-				if ($scope.cart[i].quantity === 0) {
+				if ($scope.cart[i].quantity < 1) {
 					$scope.cart.splice(i, 1);
 					$state.go("cart");
 				}
