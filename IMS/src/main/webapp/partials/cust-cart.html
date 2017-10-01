@@ -4,7 +4,7 @@
 
 		<h3>
 			<span class="glyphicon glyphicon-shopping-cart"></span> Your cart has
-			{{items.length}} items
+			{{cart.length}} items
 		</h3>
 	</div>
 	<div class="panel-body">
@@ -21,7 +21,7 @@
 			</tr>
 			<tr>
 				<th>Total</th>
-				<!-- <td>{{getTotal() | currency}}</td> -->
+				<td>{{getTotal() | currency}}</td>
 			</tr>
 		</table>
 		<a class="btn btn-green">Checkout</a><a class="btn btn-orange">Keep

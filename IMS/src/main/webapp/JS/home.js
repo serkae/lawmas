@@ -168,37 +168,14 @@ storeApp.controller('CartController', function(ItemsService, $http, $scope) {
 
 	$scope.cart = ItemsService.getCart();
 
-//	$scope.items = [
-//	{
-//	name: "Blue Beanie",
-//	price: 9.99,
-//	quantity: 1
-//	},
-//	{
-//	name: "Candlemass T-Shirt",
-//	price: 19.99,
-//	quantity: 1
-//	},
-//	{
-//	name: "Black Denim Jacket",
-//	price: 39.99,
-//	quantity: 1
-//	},
-//	{
-//	name: "Raven Feather Necklace",
-//	price: 9.99,
-//	quantity: 1
-//	}
-//	]
-
-//	$scope.getTotal = function() {
-//	var total = 0;
-//	for(var i = 0; i < $scope.items.length; i++) {
-//	var product = $scope.items[i];
-//	total += (product.price * product.quantity);
-//	}
-//	return total;
-//	}
+	$scope.getTotal = function() {
+	var total = 0;
+	for(var i = 0; i < $scope.cart.length; i++) {
+	var lineItem = $scope.cart[i];
+	total += (lineItem.unitPrice * lineItem.quantity);
+	}
+	return total;
+	}
 });
 
 storeApp.service("CustomerService", function($http, $q){
