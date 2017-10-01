@@ -53,4 +53,15 @@ public class InventoryItemController {
 		inventoryItemService.remove(i);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 	}
+	
+	@RequestMapping("/countByDept")
+	public List<Object> findByItemsByDept() {
+		return inventoryItemService.findDeptCount();
+	}
+	
+	@RequestMapping("/countDiscountsByDept")
+	public List<Object> findByDiscountedItemsByDept() {
+		return inventoryItemService.findByDiscountedItemsByDept();
+	}
+	
 }

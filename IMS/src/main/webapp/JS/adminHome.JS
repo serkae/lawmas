@@ -15,9 +15,9 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 			controller: "AdminCtrl as auth"
 		})
 		.state("adminMainPage", {
-		url: "/adminMainPage",
-		templateUrl: "partials/adminMainPage.html",
-		controller: "MainPageCtrl as adminMainPage"
+		url: "/managerDashboard",
+		templateUrl: "partials/manager_dashboard.html"
+		//controller: "MainPageCtrl as adminMainPage"
 		})
 		.state("manageInventoryHome",{
 			url: "/manageInventoryHome",

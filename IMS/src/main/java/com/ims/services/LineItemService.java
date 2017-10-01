@@ -8,12 +8,16 @@ import org.springframework.stereotype.Service;
 import com.ims.beans.LineItem;
 import com.ims.beans.Order;
 import com.ims.daos.LineItemDao;
+import com.ims.repositories.LineItemRepository;
 
 @Service
 public class LineItemService {
 
 	@Autowired
 	LineItemDao dao;
+	
+	@Autowired
+	LineItemRepository lineItemRepository;
 
 	public void setDao(LineItemDao dao) {
 		this.dao = dao;
@@ -37,5 +41,13 @@ public class LineItemService {
 	
 	public void deleteLineItem(LineItem i) {
 		dao.removeLineItem(i);
+	}
+
+	public List<Object> findBySoldByDate() {
+		return lineItemRepository.findBySoldByDate();
+	}
+	
+	public List<Object> findBySoldByDept() {
+		return lineItemRepository.findBySoldByDept();
 	}
 }
