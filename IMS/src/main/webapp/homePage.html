@@ -24,31 +24,43 @@
 </head>
 
 <!-- Applies the angular app, customerRouting, to the homePage -->
-<body class="container">
-<div class="row">  	
-  	<div class="col float-right">
-	  	<ul class="nav navbar-nav">
-	  		<li><h1 class="display-3">World Tree Store</h1></li>
-	  		<li><button class="btn" ui-sref="mainStorePage"><span class="glyphicon glyphicon-home"></span> Home</button></li>
-	  		<li><button class="btn" ui-sref="cart" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet">
-	  			<span><i class="fa fa-shopping-cart" aria-hidden="true"></i></i></span> View Your Cart</button></li>
-	  		<li ng-hide="authenticated==true"><button class="btn" ui-sref="login"><span class="glyphicon glyphicon-log-in"></span> Login</button></li>
-	  		<li ng-show="authenticated==true"><button class="btn" ui-sref="customerInfo"><span class="glyphicon glyphicon-cog"></span> User Info</button></li>
-	  		<li ng-show="authenticated==true"><button class="btn" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</button></li>
-	  	</ul>	
+<body class="container-fluid">
 
-  		<form class="form-inline">
-    		<input class="form-control mr-sm-2" type="text" placeholder="Search" ng-model="searchTerms">
-    		<button class="btn" type="submit" ui-sref="mainStorePage">
-    			<span class="glyphicon glyphicon-search"></span></button>
-  		</form>
-  	</div>
-</div>
-<!-- Here is where the partials will go -->
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-dark">
+<div class="col">
+<a class="navbar-brand text-light float-left" href="#"><em><i class="fa fa-tree fa-3" aria-hidden="true"></i> World Tree</em></a>
+<form class="form-inline my-2 my-lg-0 float-left">
+      <input class="form-control float-right" type="text" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa fa-search fa-2" aria-hidden="true"></i></button>
+ </form>
+ </div>
+ <div class="col">
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+
+  <div class="collapse navbar-collapse float-right" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+	
+      <div class="btn-group">
+      <button class="btn btn-light nav-link" ui-sref="mainStorePage"><i class="fa fa-home" aria-hidden="true"></i> Home</button></li>
+      <button class="btn btn-light nav-link" ui-sref="cart" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet">
+	  			<span><i class="fa fa-shopping-cart" aria-hidden="true"></i></i></span> Cart</button>
+	  <button ng-hide="authenticated" class="btn btn-light nav-link" ui-sref="login">Login <i class="fa fa-sign-in" aria-hidden="true"></i></button></li>	  			
+	  <button ng-hide="!authenticated" class="btn btn-light nav-link" ui-sref="customerInfo"><i class="fa fa-user" aria-hidden="true"></i> User Info</button></li>
+	  <button ng-hide="!authenticated" class="btn btn-light nav-link" ng-click="logout()">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></button></li>
+	  </div>
+    </ul>
+  </div>
+  </div>
+</nav>
+
+  	<!-- Here is where the partials will go -->
+<div class="container">
 <div class="row">
     <div class="col border border-dark m-2" ui-view></div>
 </div>
-
+</div>
 </body>
 
 </html>

@@ -89,8 +89,6 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 		ItemService.setItem(item);
 		$state.go("viewItem");
 	};
-
-
 	//logout functionality
 	$rootScope.logout = function () {
 		console.log("within logout");
@@ -148,7 +146,6 @@ storeApp.service("CustomerService", function($http, $q){
 		service.customer.lastname   = data.lastname;
 		service.customer.email      = data.email;
 		service.customer.password   = data.password;
-		service.authenticated       = data.authenticated;
 		service.customer.address    = data.address;
 		service.customer.city       = data.city;
 		service.customer.state      = data.state;
