@@ -18,6 +18,7 @@
 				<td>{{item.name}}</td>
 				<td>{{item.unitPrice | currency}}</td>
 				<td>{{item.quantity}}</td>
+				<td><a ng-click="removeFromCart(item)" class="btn"><span class="glyphicon glyphicon-trash"></span> Remove from Cart</a></td>
 			</tr>
 			<tr>
 				<th>Total</th>

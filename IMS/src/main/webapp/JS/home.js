@@ -142,7 +142,7 @@ storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
 	});
 });
 
-storeApp.controller('CartController', function(ItemsService, $http, $scope) {
+storeApp.controller('CartController', function(ItemsService, $http, $scope, $state) {
 
 	$scope.addItemToCart = function(id) {
 		let item = ItemsService.getItemByID(id);
@@ -169,12 +169,24 @@ storeApp.controller('CartController', function(ItemsService, $http, $scope) {
 	$scope.cart = ItemsService.getCart();
 
 	$scope.getTotal = function() {
-	var total = 0;
-	for(var i = 0; i < $scope.cart.length; i++) {
-	var lineItem = $scope.cart[i];
-	total += (lineItem.unitPrice * lineItem.quantity);
-	}
-	return total;
+		var total = 0;
+		for(var i = 0; i < $scope.cart.length; i++) {
+			var lineItem = $scope.cart[i];
+			total += (lineItem.unitPrice * lineItem.quantity);
+		}
+		return total;
+	};
+	
+	$scope.removeFromCart = function(item) {
+		for (i = 0; i < $scope.cart.length; i++) {
+			if ($scope.cart[i].id === item.id) {
+				$scope.cart[i].quantity--;
+				if ($scope.cart[i].quantity === 0) {
+					$scope.cart.splice(i, 1);
+					$state.go("cart");
+				}
+			}
+		}
 	}
 });
 
