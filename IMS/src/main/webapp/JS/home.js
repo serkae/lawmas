@@ -85,7 +85,7 @@ storeApp.service('ItemsService', function($http) {
 	this.createOrder = function(order) {
 		let promise = $http.post('rest/order/create', order).then(
 			function(response) {
-				return response.data;
+				return response;
 			},
 			function(error) {
 				return error;
@@ -221,8 +221,9 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 			customer: CustomerService.getCustomer(),
 			order_Date: new Date().getTime()
 		}
-		let order = ItemsService.createOrder(newOrder);
-		ItemsService.createLineItems(order);
+		let createOrderPromise = ItemsService.createOrder(newOrder).then(function(response) {
+			ItemsService.createLineItems(response.data);
+		});
 	}
 });
 
