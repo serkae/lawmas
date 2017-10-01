@@ -32,7 +32,7 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	});
 });
 
-storeApp.service('ItemsService', function() {
+storeApp.service('ItemsService', function($http) {
 	this.itemsToShow;
 
 	this.getItemsToShow = function() {
@@ -81,10 +81,29 @@ storeApp.service('ItemsService', function() {
 	this.addToCart = function(lineItem) {
 		this.cart.push(lineItem);
 	}
-
-	this.createLineItems = function() {
-		this.cart.forEach(function(lineItem) {
-			let promise = $http.post('rest/lineitem/create', lineItem).then(
+	
+	this.createOrder = function(order) {
+		let promise = $http.post('rest/order/create', order).then(
+			function(response) {
+				return response.data;
+			},
+			function(error) {
+				return error;
+			}
+		);
+		return promise;
+	}
+	
+	this.createLineItems = function(order) {
+		let promise;
+		this.cart.forEach(function(item) {
+			let lineItem = {
+				id: -1,
+				orderid: order.id,
+				quantity: item.quantity,
+				inventoryitemid: item.id
+			}
+			promise = $http.post('rest/lineitem/create', lineItem).then(
 				function(response) {
 					return response;
 				},
@@ -92,10 +111,9 @@ storeApp.service('ItemsService', function() {
 					return error;
 				}
 			);
-			return promise;
 		});
-	};
-	
+		return promise;
+	}
 	
 });
 
@@ -139,7 +157,7 @@ storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
 	});
 });
 
-storeApp.controller('CartController', function(ItemsService, $http, $scope, $state) {
+storeApp.controller('CartController', function(ItemsService, CustomerService, $http, $scope, $state) {
 
 	$scope.addItemToCart = function(id) {
 		let item = ItemsService.getItemByID(id);
@@ -195,6 +213,16 @@ storeApp.controller('CartController', function(ItemsService, $http, $scope, $sta
 				}
 			}
 		}
+	}
+	
+	$scope.checkout = function() {
+		let newOrder = {
+			id: -1,
+			customer: CustomerService.getCustomer(),
+			order_Date: new Date().getTime()
+		}
+		let order = ItemsService.createOrder(newOrder);
+		ItemsService.createLineItems(order);
 	}
 });
 
@@ -271,37 +299,7 @@ storeApp.service("CustomerService", function($http, $q){
 	};
 });
 
-storeApp.service("OrderService", function($http) {
-	this.order = {
-			id: -1,
-			customer: null,
-			order_Date: 0
-	}
-
-	this.getOrder = function() {
-		return this.order;
-	}
-
-	this.setOrder = function(customer) {
-		this.order.id = -1;
-		this.order.customer = customer;
-		this.order.order_Date = new Date().getTime();
-	}
-
-	this.createOrder = function(order) {
-		let promise = $http.post('rest/order/create', order).then(
-				function(response) {
-					return response;
-				},
-				function(error) {
-					return error;
-				}
-		);
-		return promise;
-	}
-});
-
-storeApp.controller("LoginCtrl", function(CustomerService, OrderService, $rootScope, $state){
+storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 	console.log("in loginctrl");
 
 	var login = this;
