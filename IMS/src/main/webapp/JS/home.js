@@ -54,12 +54,15 @@ storeApp.service('ItemsService', function() {
 		return this.lineItem;
 	};
 
-	this.setLineItem = function(data) {
+	this.setLineItem = function(orderid, itemid) {
 		this.lineItem.id = -1,
-		this.lineItem.orderid = data.orderid,
-		this.lineItem.quantity += 1,
-		this.lineItem.inventoryitemid = data.id
+		this.lineItem.orderid = orderid,
+		this.lineItem.inventoryitemid = itemid
 	};
+
+	this.incrementQuantity = function() {
+		this.lineItem.quatity += 1;
+	}
 
 	this.cart = [];
 
@@ -74,12 +77,12 @@ storeApp.service('ItemsService', function() {
 	this.createLineItems = function() {
 		this.cart.forEach(function(lineItem) {
 			let promise = $http.post('rest/lineitem/create', lineItem).then(
-				function(response) {
-					return response;
-				},
-				function(error) {
-					return error;
-				}
+					function(response) {
+						return response;
+					},
+					function(error) {
+						return error;
+					}
 			);
 			return promise;
 		});
@@ -121,42 +124,60 @@ storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
 storeApp.controller('CartController', function(ItemsService, $http, $scope) {
 
 	$scope.addItemToCart = function($index) {
-		ItemsService.addToCart(ItemsService.itemsToShow[$index]);
+		let item = ItemsService.itemsToShow[$index];
+		//let lineItem = ItemsService.setLineItem(-1, item.id);
+		item = {
+			id: item.id,
+			name: item.name,
+			unitPrice: item.unitPrice,
+			quantity: 1
+		};
+		if (ItemsService.getCart().length === 0) {
+			ItemsService.addToCart(item);
+		} else {
+			ItemsService.getCart().forEach(function(currentItem) {
+				if (currentItem.id === item.id) {
+					currentItem.quantity++;
+				} else {
+					ItemsService.addToCart(item);
+				}
+			});
+		}
 	};
-	
+
 	$scope.cart = ItemsService.getCart();
 
-//		$scope.items = [
-//		{
-//		name: "Blue Beanie",
-//		price: 9.99,
-//		quantity: 1
-//		},
-//		{
-//		name: "Candlemass T-Shirt",
-//		price: 19.99,
-//		quantity: 1
-//		},
-//		{
-//		name: "Black Denim Jacket",
-//		price: 39.99,
-//		quantity: 1
-//		},
-//		{
-//		name: "Raven Feather Necklace",
-//		price: 9.99,
-//		quantity: 1
-//		}
-//		]
+//	$scope.items = [
+//	{
+//	name: "Blue Beanie",
+//	price: 9.99,
+//	quantity: 1
+//	},
+//	{
+//	name: "Candlemass T-Shirt",
+//	price: 19.99,
+//	quantity: 1
+//	},
+//	{
+//	name: "Black Denim Jacket",
+//	price: 39.99,
+//	quantity: 1
+//	},
+//	{
+//	name: "Raven Feather Necklace",
+//	price: 9.99,
+//	quantity: 1
+//	}
+//	]
 
-		$scope.getTotal = function() {
-		var total = 0;
-		for(var i = 0; i < $scope.items.length; i++) {
-		var product = $scope.items[i];
-		total += (product.price * product.quantity);
-		}
-		return total;
-		}
+//	$scope.getTotal = function() {
+//	var total = 0;
+//	for(var i = 0; i < $scope.items.length; i++) {
+//	var product = $scope.items[i];
+//	total += (product.price * product.quantity);
+//	}
+//	return total;
+//	}
 });
 
 storeApp.service("CustomerService", function($http, $q){
