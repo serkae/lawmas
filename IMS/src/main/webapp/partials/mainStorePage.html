@@ -1,12 +1,13 @@
 <table class="table">
 	<tr ng-repeat="item in itemsToShow | orderBy:sortType:sortReverse | filter:searchTerms">
+		<td>{{item.id}}</td>
 		<td>{{item.name}}</td>
 		<td>{{item.unitPrice | currency}}</td>
 		<td>{{item.quantity}} in stock</td>
 		<td>{{item.department}}</td>
 		<td>{{item.description}}</td>
 		<td><img ng-src="{{item.image}}"></td>
-		<td><a ng-click="addItemToCart($index)" class="btn"><span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart</a></td>
+		<td><a ng-click="addItemToCart(item.id)" class="btn"><span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart</a></td>
 	</tr>
 </table>
 

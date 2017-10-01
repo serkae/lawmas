@@ -38,6 +38,19 @@ storeApp.service('ItemsService', function() {
 	this.getItemsToShow = function() {
 		return this.itemsToShow;
 	}
+	
+	this.getItemByID = function(id) {
+		for (i = 0; i < this.itemsToShow.length; i++) {
+			if (this.itemsToShow[i].id === id) {
+				return this.itemsToShow[i];
+			}
+		}
+//		this.itemsToShow.forEach(function(item) {
+//			if (item.id === id) {
+//				return item;
+//			}
+//		});
+	}
 
 	this.setItemsToShow = function(items) {
 		this.itemsToShow = items;
@@ -77,12 +90,12 @@ storeApp.service('ItemsService', function() {
 	this.createLineItems = function() {
 		this.cart.forEach(function(lineItem) {
 			let promise = $http.post('rest/lineitem/create', lineItem).then(
-					function(response) {
-						return response;
-					},
-					function(error) {
-						return error;
-					}
+				function(response) {
+					return response;
+				},
+				function(error) {
+					return error;
+				}
 			);
 			return promise;
 		});
@@ -90,7 +103,6 @@ storeApp.service('ItemsService', function() {
 });
 
 storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
-	$scope.sortType = "department";
 	$scope.sortReverse = false;
 	let itemsToShow = [];
 	let allInvItems;
@@ -114,6 +126,15 @@ storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
 					}
 				});
 			});
+			itemsToShow.sort(function(a, b) {
+				if (a.department < b.department) {
+					return -1;
+				}
+				if (a.department > b.department) {
+					return 1;
+				}
+				return 0;
+			});
 			$scope.itemsToShow = itemsToShow;
 			ItemsService.setItemsToShow(itemsToShow);
 			console.log($scope.itemsToShow);
@@ -123,23 +144,23 @@ storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
 
 storeApp.controller('CartController', function(ItemsService, $http, $scope) {
 
-	$scope.addItemToCart = function($index) {
-		let item = ItemsService.itemsToShow[$index];
+	$scope.addItemToCart = function(id) {
+		let item = ItemsService.getItemByID(id);
 		//let lineItem = ItemsService.setLineItem(-1, item.id);
-		item = {
+		itemToAdd = {
 			id: item.id,
 			name: item.name,
 			unitPrice: item.unitPrice,
 			quantity: 1
 		};
 		if (ItemsService.getCart().length === 0) {
-			ItemsService.addToCart(item);
+			ItemsService.addToCart(itemToAdd);
 		} else {
 			ItemsService.getCart().forEach(function(currentItem) {
-				if (currentItem.id === item.id) {
+				if (currentItem.id === itemToAdd.id) {
 					currentItem.quantity++;
 				} else {
-					ItemsService.addToCart(item);
+					ItemsService.addToCart(itemToAdd);
 				}
 			});
 		}
