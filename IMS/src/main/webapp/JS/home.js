@@ -336,7 +336,12 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 			sum = sum + $scope.productreviews[i].rating;
 		}
 		$scope.productreviewAvg = (sum / $scope.productreviews.length).toFixed(1);
-		$scope.roundedreviewAvg = Math.floor($scope.productreviewAvg);
+		if($scope.productreviewAvg >= 0){
+			$scope.roundedreviewAvg = Math.floor($scope.productreviewAvg);
+		}
+		else{
+			$scope.productreviewAvg = 0;
+		}
 		//start carousel function
 		$scope.loadCarousel();
 	});
