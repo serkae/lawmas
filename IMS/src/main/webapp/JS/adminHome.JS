@@ -560,6 +560,14 @@ adminApp.controller("addremoveCtrl", function(AddRemoveService, $scope,$http,$st
 
 	$scope.removeItem = function(inv,dis){
 
+		if(dis.discount_Type == 0){
+			inv.unitPrice = inv.unitPrice + dis.amount;
+		}
+		if(dis.discount_Type == 1){
+			inv.unitPrice = inv.unitPrice + (inv.unitPrice * dis.amount);
+		}
+		
+		
 		$http.post("rest/inventoryitem/removeDiscount", inv,dis).then(function(response){
 			console.log(inv);
 			console.log(dis);

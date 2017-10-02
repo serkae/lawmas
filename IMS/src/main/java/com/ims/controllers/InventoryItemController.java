@@ -194,13 +194,13 @@ public ResponseEntity<InventoryItemDto> updateItem(@RequestBody InventoryItemDto
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 public ResponseEntity<InventoryItemDto> removeDiscount(@RequestBody InventoryItemDto iDto, Discount di){
 	Department d = dService.getById(iDto.getDepartmentid());
-	
-	if(di.getDiscount_Type() == 1) {
-		iDto.setUnitPrice(iDto.getUnitPrice()+ iDto.getUnitPrice()*di.getAmount());
-	}
-	else {
-		iDto.setUnitPrice(iDto.getUnitPrice()+di.getAmount());
-	}
+	//di.setDiscountID(iDto.getDiscountid());
+//	if(di.getDiscount_Type() == 1) {
+//		iDto.setUnitPrice(iDto.getUnitPrice()+ iDto.getUnitPrice()*di.getAmount());
+//	}
+//	else {
+//		iDto.setUnitPrice(iDto.getUnitPrice()+di.getAmount());
+//	}
 	di = null;
 	InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
 	i.setDepartment(d);
