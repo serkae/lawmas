@@ -1,6 +1,5 @@
-
-<div class="panel panel-info" ng-app="custShowInfoApp"
-	ng-controller="custShowInfoController">
+<div class="container" ng-app="custShowInfoApp" ng-controller="custShowInfoController">
+<div class="panel panel-info"> <!-- Originally had ng-app & ng-controller -->
 	<div class="panel-heading">
 		<h3>
 			<span class="glyphicon glyphicon-user"></span> Welcome,
@@ -10,107 +9,112 @@
 	<div class="panel-body">
 		<h4>Email: {{custInfo.email}}</h4>
 		<h4>Address: {{custInfo.address + ", " + custInfo.city + ", " +
-			custInfo.state + " " + custInfo.zipcode}}</h4>
+			custInfo.state.name + " " + custInfo.zipcode}}</h4>
 		<h4>Phone: {{custInfo.phone}}</h4>
-	</div>
-	<button data-toggle="modal" data-target="#editMyInfo"
-		class="btn btn-info">Edit My Info</button>
-	<button data-toggle="modal" data-target="#changeMyPassword"
-		class="btn btn-info">Change My Password</button>
-</div>
-
-<!-- Modal for editing info -->
-<div class="modal fade" id="editMyInfo" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">Edit My Info</h2>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal">
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="text" class="form-control" placeholder="First Name"
-								required value={{custInfo.firstName}}>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="text" class="form-control" placeholder="Last Name"
-								required value={{custInfo.lastName}}>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="text" class="form-control"
-								placeholder="Street Address" required value={{custInfo.address}}>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="text" class="form-control" placeholder="City"
-								required value={{custInfo.city}}>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="text" class="form-control" placeholder="State"
-								required value={{custInfo.state}}>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="text" class="form-control" placeholder="Zipcode"
-								required value={{custInfo.zipcode}}>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="text" class="form-control" placeholder="Phone"
-								required value={{custInfo.phone}}>
-						</div>
-					</div>
-					<button type="submit" class="btn btn-green">Submit Changes</button>
-					<button type="button" class="btn btn-orange" data-dismiss="modal">Cancel</button>
-				</form>
-			</div>
-		</div>
+		<h4 ng-hide="cardlf==null">Card Number: {{cardlf}}</h4>
+		<h4 ng-hide="cardlf==null">Card Expiration Date: {{custInfo.card.expiration}}</h4>
 	</div>
 </div>
-
-<!-- Modal for changing password -->
-<div class="modal fade" id="changeMyPassword" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">Change My Password</h2>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal">
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="password" class="form-control"
-								placeholder="New Password" required>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="password" class="form-control"
-								placeholder="Confirm New Password" required>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-10">
-							<input type="password" class="form-control"
-								placeholder="Current Password" required>
-						</div>
-					</div>
-					<button type="submit" class="btn btn-green">Submit Changes</button>
-					<button type="button" class="btn btn-orange" data-dismiss="modal">Cancel</button>
-				</form>
-			</div>
+	<br>
+	<div class="row m-1">
+		<div class="col"><button class="btn btn-primary m-2 float-left" ng-click="updateCustShow = !updateCustShow">Update Info</button></div>
+		<div class="col"><div class="alert {{messageClass}}">{{message}}</div></div>
+		<div class="col"><button class="btn btn-primary m-2 float-right" ng-click="passShow = !passShow">Update Pass</button></div>
+	</div>
+	<br>
+	<div class="row m-1">
+		<div class="col" ng-hide="cardlf!=null"><button class="btn btn-primary m-2 float-left" ng-click="createCardShow = !createCardShow">Register Card</button></div>
+		<div class="col"><div class="alert {{cardmessageClass}}">{{cardmessage}}</div></div>
+		<div class="col" ng-hide="cardlf==null"><button class="btn btn-primary m-2 float-right" ng-click="cardCustShow = !cardCustShow">Update Card</button></div>
+	</div>
+	<br>
+	<div class="row m-1">
+		<div class="col m-1">
+		<div ng-show="updateCustShow">
+			<form ng-submit="updateInfo()">
+				<label for="inputFn">First Name</label>
+    			<input type="text" class="form-control" id="inputFn" ng-model="custInfo.firstName" placeholder="Enter firstname">
+    			<br>
+    			<label for="inputLn">Last Name</label>
+    			<input type="text" class="form-control" id="inputLn" ng-model="custInfo.lastName" placeholder="Enter lastname">
+    			<br>
+    			<label for="inputEmail">Email</label>
+    			<input type="email" class="form-control" id="inputEmail" ng-model="custInfo.email" placeholder="Enter email">
+    			<br>
+    			<label for="inputAddress">Address</label>
+    			<input type="text" class="form-control" id="inputAddress" ng-model="custInfo.address" placeholder="Enter address">
+    			<br>
+    			<label for="inputCity">City</label>
+    			<input type="text" class="form-control" id="inputCity" ng-model="custInfo.city" placeholder="Enter city">
+    			<br>
+    			<label for="inputState">State</label>
+    			<select ng-model="chosenState" ng-options="state.name for state in states"></select>
+    			<br>
+    			<label for="inputZipcode">Zipcode</label>
+    			<input type="text" class="form-control" id="inputZipcode" ng-model="custInfo.zipcode" placeholder="Enter zipcode">
+    			<br>
+    			<label for="inputPhone">Phone Number</label>
+    			<input type="text" class="form-control" id="inputPhone" ng-model="custInfo.phone" placeholder="Enter phone number">
+    			<br>
+    			<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
 		</div>
+		</div>
+		<div class="col m-1">
+		<div ng-show="passShow">
+			<form ng-submit="updatePass()">
+				<label for="inputPass1">New Password</label>
+    			<input type="password" class="form-control" id="inputPass1" ng-model="pass1" placeholder="Enter new password" required>
+    			<br>
+    			<label for="inputPass2">Re-enter New Password</label>
+    			<input type="password" class="form-control" id="inputPass2" ng-model="pass2" placeholder="Re-enter password" required>
+    			<br>
+    			<label for="inputCurr">Current Password</label>
+    			<input type="password" class="form-control" id="inputCurr" ng-model="currPass" placeholder="Current password" required>
+    			<br>
+    			<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div>
+		</div>
+	</div>
+	<div class="row m-1">
+	<div class="col m-1">
+		<div ng-show="createCardShow">
+			<form ng-submit="createCard()">
+				<label for="cardnumber">Card Number</label>
+    			<input type="text" class="form-control" id="ncardnum" ng-model="ncardnum" placeholder="Enter card number" required>
+    			<br>
+    			<label for="nameoncard">Name On Card</label>
+    			<input type="text" class="form-control" id="ncardname" ng-model="ncardname" placeholder="Enter card name" required>
+    			<br>
+    			<label for="expiration">Expiration Date</label>
+    			<input type="text" class="form-control" id="nexpdate" ng-model="nexpdate" placeholder="Enter expiration date" required>
+    			<br>
+    			<label for="security">Security Code</label>
+    			<input type="text" class="form-control" id="nscode" ng-model="nscode" placeholder="Enter security code" required>
+    			<br>
+    			<button type="submit" class="btn btn-primary">Register Card</button>
+			</form>
+		</div>
+	</div>
+	<div class="col m-1">
+		<div ng-show="cardCustShow">
+			<form ng-submit="updateCard()">
+				<label for="cardnumber">New Card Number</label>
+    			<input type="text" class="form-control" id="cardnum" ng-model="cardnum" placeholder="Enter new card number" required>
+    			<br>
+    			<label for="nameoncard">New Name On Card</label>
+    			<input type="text" class="form-control" id="cardname" ng-model="cardname" placeholder="Enter new card name" required>
+    			<br>
+    			<label for="expiration">New Expiration Date</label>
+    			<input type="text" class="form-control" id="expdate" ng-model="expdate" placeholder="Enter new expiration date" required>
+    			<br>
+    			<label for="security">New Security Code</label>
+    			<input type="text" class="form-control" id="scode" ng-model="scode" placeholder="Enter new security code" required>
+    			<br>
+    			<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div>
+	</div>
 	</div>
 </div>

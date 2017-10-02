@@ -23,7 +23,8 @@ public class AdminService {
 		//add to Db
 		admin = adminDao.saveAdmin(admin);
 		//create dto
-		AdminDto adminDto = new AdminDto(admin.getId(),admin.getEmail(),admin.getPassword(),true);
+		AdminDto adminDto = new AdminDto(admin.getId(),admin.getFirstname(),admin.getLastname(),
+										 admin.getEmail(),admin.getPassword(),true);
 		return adminDto;
 	}
 	
@@ -32,6 +33,8 @@ public class AdminService {
 		if(admin != null) {
 			adminDto.setAuthenticated(true);
 			adminDto.setId(admin.getId());
+			adminDto.setFirstname(admin.getFirstname());
+			adminDto.setLastname(admin.getLastname());
 		}
 		return adminDto;
 	}

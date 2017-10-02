@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ims.beans.Discount;
+import com.ims.beans.Order;
 import com.ims.services.DiscountService;
 
 @RestController
@@ -45,6 +46,13 @@ public class DiscountController {
 	@RequestMapping(value="/getAll",method=(RequestMethod.GET),produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<List<Discount>> getAllDepartments(){
 		return new ResponseEntity<List<Discount>>(discountService.getAll(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/get",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<Discount> getDiscount(int id){
+		return new ResponseEntity<Discount>(discountService.getDiscount(id), HttpStatus.OK);
+		
 	}
 	
 	@RequestMapping(value="/remove",method=(RequestMethod.POST),

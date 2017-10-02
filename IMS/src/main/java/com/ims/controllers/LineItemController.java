@@ -9,12 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ims.beans.Customer;
 import com.ims.beans.InventoryItem;
 import com.ims.beans.LineItem;
 import com.ims.beans.Order;
+import com.ims.dtos.LineItemDto;
 import com.ims.services.CustomerService;
 import com.ims.services.InventoryItemService;
 import com.ims.services.LineItemService;
@@ -51,59 +52,81 @@ public class LineItemController {
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<LineItem> createLineItem(@RequestBody LineItem i){
-		InventoryItem a = iiservice.getById(i.getInventoryItem().getId());
-		Order o = oservice.getOrder(i.getOrder().getId());
-		Customer c = cservice.getById(o.getCustomer().getId());
-		return new ResponseEntity<LineItem>(liservice.createOrUpdateLineItem(i), HttpStatus.OK);
+	public ResponseEntity<LineItemDto> createLineItem(@RequestBody LineItemDto dto){
+		
+		//get inventory and order objects from id's givenin dto
+		InventoryItem a = iiservice.getById(dto.getInventoryitemid());
+		Order o = oservice.getOrder(dto.getOrderid());
+		
+		//setup line item to insert and execute
+		LineItem i = new LineItem(dto.getId(),o,dto.getQuantity(),a);
+		dto = liservice.createOrUpdateLineItem(i);
+		return new ResponseEntity<LineItemDto>(dto, HttpStatus.OK);
 		
 	}
 	
 	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<LineItem> updateLineItem(@RequestBody LineItem i){
-		InventoryItem a = iiservice.getById(i.getInventoryItem().getId());
-		Order o = oservice.getOrder(i.getOrder().getId());
-		Customer c = cservice.getById(o.getCustomer().getId());
-		return new ResponseEntity<LineItem>(liservice.createOrUpdateLineItem(i), HttpStatus.OK);
+	public ResponseEntity<LineItemDto> updateLineItem(@RequestBody LineItemDto dto){
+		
+		//get inventory and order objects from id's givenin dto
+		InventoryItem a = iiservice.getById(dto.getInventoryitemid());
+		Order o = oservice.getOrder(dto.getOrderid());
+		
+		//setup line item to insert and execute
+		LineItem i = new LineItem(dto.getId(),o,dto.getQuantity(),a);
+		dto = liservice.createOrUpdateLineItem(i);
+		return new ResponseEntity<LineItemDto>(dto, HttpStatus.OK);
 		
 	}
 	
 	@RequestMapping(value="/getAll",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<List<LineItem>> getAllLineItems(){
+	public ResponseEntity<List<LineItemDto>> getAllLineItems(){
 		System.out.println("Listing orders: ");
-		return new ResponseEntity<List<LineItem>>(liservice.getAllLineItems(), HttpStatus.OK);
+		return new ResponseEntity<List<LineItemDto>>(liservice.getAllLineItems(), HttpStatus.OK);
 		
 	}
 	
-	@RequestMapping(value="/getAllByOrder",method=(RequestMethod.POST),
-			consumes=(MediaType.APPLICATION_JSON_VALUE),
+	@RequestMapping(value="/getAllByOrder",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<List<LineItem>> getLineItemsByOrder(@RequestBody Order o){
-		Customer c = cservice.getById(o.getCustomer().getId());
+	public ResponseEntity<List<LineItem>> getLineItemsByOrder(Order o){
+		//Order o = oservice.getOrder(orderId);
 		return new ResponseEntity<List<LineItem>>(liservice.getAllLineItemsByOrder(o), HttpStatus.OK);
-		
+	}
+	
+	@RequestMapping(value="/getAllByOrderId",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<List<LineItem>> getLineItemsByOrderId(Integer id){
+		//Order o = oservice.getOrder(orderId);
+		return new ResponseEntity<List<LineItem>>(liservice.getAllLineItemsByOrderId(id), HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/getLine",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<LineItem> getLineId(int id){
-		return new ResponseEntity<LineItem>(liservice.getLineItem(id), HttpStatus.OK);
-		
+	public ResponseEntity<LineItemDto> getLineId(int id){
+		return new ResponseEntity<LineItemDto>(liservice.getLineItemDto(id), HttpStatus.OK);
 	}
-
 
 	@RequestMapping(value="/delete",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<String> removeLineItem(@RequestBody LineItem i){
-		InventoryItem a = iiservice.getById(i.getInventoryItem().getId());
-		Order o = oservice.getOrder(i.getOrder().getId());
-		Customer c = cservice.getById(o.getCustomer().getId());
+	public ResponseEntity<String> removeLineItem(@RequestBody LineItemDto dto){
+		LineItem i = liservice.getLineItem(dto.getId());
 		liservice.deleteLineItem(i);
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping("/soldByDate")
+	public List<Object> findBySoldByDate() {
+		return liservice.findBySoldByDate();
+	}
+
+	@RequestMapping("/soldByDept")
+	public List<Object> findBySoldByDept() {
+		return liservice.findBySoldByDept();
+	}
+
 }

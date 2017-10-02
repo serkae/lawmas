@@ -7,12 +7,16 @@ import org.springframework.stereotype.Service;
 
 import com.ims.beans.InventoryItem;
 import com.ims.daos.InventoryItemDao;
+import com.ims.repositories.InventoryItemRepository;
 
 @Service
 public class InventoryItemService {
 
 	@Autowired
 	private InventoryItemDao inventoryItemDao;
+	
+	@Autowired
+	private InventoryItemRepository inventoryItemRepository;
 
 	public void setInventoryItemDao(InventoryItemDao inventoryItemDao) {
 		this.inventoryItemDao = inventoryItemDao;
@@ -33,6 +37,12 @@ public class InventoryItemService {
 	public void remove(InventoryItem i) {
 		inventoryItemDao.removeInventoryItem(i);
 	}
+
+	public List<Object> findDeptCount() {
+		return inventoryItemRepository.findByItemsByDept();
+	}
 	
-	
+	public List<Object> findByDiscountedItemsByDept() {
+		return inventoryItemRepository.findByDiscountedItemsByDept();
+	}
 }

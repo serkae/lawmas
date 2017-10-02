@@ -5,115 +5,62 @@
 <link rel="shortcut icon" href="/" />
 <title>WorldTree Home Page</title>
 <link rel = "stylesheet" href="mainPage.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<!-- This loads JS (angular & ui-router) -->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<!-- Bootstrap scripts -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+<!-- font awesome glyphicons -->
+<script src="https://use.fontawesome.com/83d38ddcd9.js"></script>
+
+<!-- This loads JS (angular & ui-router & carousel angualr) -->
 <script src="http://code.angularjs.org/1.2.13/angular.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
-<!-- Importing fonts to use for the site -->
-<link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+
+<!-- custom scripts -->
+<link rel="stylesheet" type="text/css" href="css/stars.css">
 <script src="JS/home.js"></script>
-<style>
-.jumbotron {
-	padding-top: 10px;
-	padding-bottom: 5px;
-	background-color: #d9ffb3;
-}
-.navbar {
-	margin-bottom: 0px;
-}
-.navbar-nav > li {
-	padding-top: 10px;
-	padding-right: 30px;
-    padding-left: 30px;
-}
-h1, h2 {
-	font-family: Sacramento;
-}
-p {
-	font-family: Opened Sans Condensed;
-}
-label {
-	font-family: Opened Sans Condensed;
-}
-.btn {
-	background-color: #d9ffb3;
-	font-family: Opened Sans Condensed;
-}
-.glyphicon {
-	color: #ffbf80;
-}
-.modal-header {
-	background-color: #d9ffb3;
-}
-.modal-body {
-	background-color: #ffbf80;
-}
-</style>
 </head>
 
 <!-- Applies the angular app, customerRouting, to the homePage -->
-<body>
+<body class="container-fluid">
 
-<nav class="navbar navbar-light" style="background-color: #b3ffd9;">
-  <div class="container-fluid">
-  	<ul class="nav navbar-nav">
-  		<li><button class="btn"><a ui-sref="mainStorePage"><span class="glyphicon glyphicon-home"></span></a></button></li>
-  		<li><form class="form-inline">
-    		<input class="form-control mr-sm-2" type="text" placeholder="Search" ng-model="searchTerms">
-    		<button class="btn" type="submit" ui-sref="mainStorePage">
-    			<span class="glyphicon glyphicon-search"></span> Search
-    		</button>
-  			</form>
-  		</li>
-  		<li><button class="btn" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet"><a ui-sref="cart"><span class="glyphicon glyphicon-shopping-cart"></span></a></button></li>
-  		<li><button class="btn" data-toggle="modal" data-target="#login"><span class="glyphicon glyphicon-user"></span></button></li>
-  	</ul>
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-dark">
+<div class="col">
+<a class="navbar-brand text-light float-left" href="#"><em><i class="fa fa-tree fa-3" aria-hidden="true"></i> World Tree</em></a>
+<form class="form-inline my-2 my-lg-0 float-left">
+      <input class="form-control float-right" type="text" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa fa-search fa-2" aria-hidden="true"></i></button>
+ </form>
+ </div>
+ <div class="col">
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+
+  <div class="collapse navbar-collapse float-right" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+	
+      <div class="btn-group">
+      <button class="btn btn-light nav-link" ui-sref="mainStorePage"><i class="fa fa-home" aria-hidden="true"></i> Home</button></li>
+      <button class="btn btn-light nav-link" ui-sref="cart" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet">
+	  			<span><i class="fa fa-shopping-cart" aria-hidden="true"></i></i></span> Cart</button>
+	  <button ng-hide="authenticated" class="btn btn-light nav-link" ui-sref="login">Login <i class="fa fa-sign-in" aria-hidden="true"></i></button></li>	  			
+	  <button ng-hide="!authenticated" class="btn btn-light nav-link" ui-sref="customerInfo"><i class="fa fa-user" aria-hidden="true"></i> User Info</button></li>
+	  <button ng-hide="!authenticated" class="btn btn-light nav-link" ng-click="logout()">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></button></li>
+	  </div>
+    </ul>
+  </div>
   </div>
 </nav>
 
-<div class="jumbotron jumbotron-fluid">
- <div class="container">
-   <h1 class="display-3" id ="storeJumbo">World Tree Store</h1>
-   <p class="lead">Welcome to the WorldTree Store.</p>
- </div>
-</div>
-
-<!-- Here is where the partials will go -->
+  	<!-- Here is where the partials will go -->
 <div class="container">
-    <div ui-view></div>
+<div class="row">
+    <div class="col border border-dark m-2" ui-view></div>
 </div>
-
-<!-- Modal -->
-<div class="modal fade" id="login" role="dialog">
-	<div class="modal-dialog modal-sm">
-
-	<!-- Modal content -->
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">&times;</button>
-			<h2 class="modal-title">Customer Login</h2>
-		</div>
-		<div class="modal-body">
-			<form class="form-horizontal">
-    			<div class="form-group">
-        			<div class="col-xs-10">
-            			<input type="text" class="form-control" name="email" id="email" placeholder="Email" required>
-       				 </div>
-    			</div>
-    			<div class="form-group">
-        			<div class="col-xs-10">
-            			<input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-       				 </div>
-    			</div>
-    			<button type="submit" class="btn btn-default" align="center">Login</button>
-    		</form>
-    	</div>
-	</div>
-	</div>
 </div>
-
 </body>
 </html>

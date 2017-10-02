@@ -21,15 +21,22 @@ public class CustomerService {
 		this.customerDao = customerDao;
 	}
 
-	public Customer createOrUpdate(Customer c) {
-		return customerDao.createOrUpdateCustomer(c);
+	public CustomerDto createOrUpdate(CustomerDto c) {
+		Customer cust = new Customer(c.getId(),c.getFirstname(),c.getLastname(),c.getEmail(),c.getPassword(),
+												c.getAddress(),c.getCity(),c.getState(),c.getZipcode(),c.getPhone(),
+												c.getCard());
+		cust = customerDao.createOrUpdateCustomer(cust);
+		c.setId(c.getId());
+		c.setAuthenticated(true);
+		return c;
 	}
 	
 	public CustomerDto authenticateUser(CustomerDto customerDto) {
-		Customer customer = customerDao.getCustomerByUsernameAndPassword(customerDto.getEmail(),customerDto.getPassword());
-		if(customer != null) {
-			customerDto.setAuthenticated(true);
-			customerDto.setId(customer.getId());
+		Customer c = customerDao.getCustomerByUsernameAndPassword(customerDto.getEmail(),customerDto.getPassword());
+		if(c != null) {
+			customerDto = new CustomerDto(c.getId(),c.getFirstname(),c.getLastname(),c.getEmail(),c.getPassword(),
+												c.getAddress(),c.getCity(),c.getState(),c.getZipcode(),c.getPhone(),
+												c.getCard(),true);
 		}
 		return customerDto;
 	}
