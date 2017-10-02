@@ -40,15 +40,23 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,$state) {
 	$scope.sortType = "department";
 	$scope.sortReverse = false;
-	let itemsToShow = [];
+	$rootScope.departments = [];
 	let allInvItems;
-	let allDepts;
 	$http.get('rest/inventoryitem/getAll').then(function(data) {
 		allInvItems = data.data;
 		$http.get('rest/department/getAll').then(function(response) {
-			allDepts = response.data;
+			$rootScope.departments = response.data;
+			$rootScope.departments.forEach(function(dept) {
+				dept.items = [];
+				dept.show = [];
+				dept.index = -1;
+				dept.count = 0;
+				dept.increaseIndex = function(){if(dept.index + 1 != dept.items.length){dept.index++;console.log(dept.index);}};
+				dept.reduceIndex = function(){if(dept.index - 1 != -1){dept.index--;console.log(dept.index);}};
+			});
+			console.log($rootScope.departments);
 			allInvItems.forEach(function(item) {
-				allDepts.forEach(function(dept) {
+				$rootScope.departments.forEach(function(dept) {
 					if (item.departmentid === dept.id) {
 						
 						//manage image sizes to 250 x 250
@@ -66,7 +74,15 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 						}
 						
 						//push item
-						itemsToShow.push({
+						dept.count++;
+						if(dept.count % 3 == 1){
+							//add new item row
+							dept.items.push([]);
+							dept.show.push([]);
+							dept.index++;
+						}
+						dept.show[dept.index].push(true);
+						dept.items[dept.index].push({
 							id: item.id,
 							name: item.name,
 							unitPrice: item.unitPrice,
@@ -81,9 +97,12 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 					}
 				});
 			});
+			console.log($rootScope.departments);
+			$rootScope.departments.forEach(function(dept) {
+				dept.index = 0;
+			});
 		});
 	});
-	$scope.itemsToShow = itemsToShow;
 
 	$scope.viewPage = function(item){
 		ItemService.setItem(item);
@@ -298,19 +317,20 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 	$scope.showReviewWarning = false;
 	$scope.finishedReview = false;
 	$scope.quantities = [];
-	$scope.carousel = {};
-	$scope.carousel.first = [];
-	$scope.carousel.others = [];
-	$scope.carousel.slides = [];
+//	$scope.carousel = {};
+//	$scope.carousel.first = [];
+//	$scope.carousel.others = [];
+//	$scope.carousel.slides = [];
 	//set discount info
 	if($scope.item.discountid != -1){
-		$http.get('rest/discount/get?id='+$scope.item.discountid).then(function(data){
-			if(data.discount_Type == 0){
-				$scope.discountOffer = "$" + data.amount + " off!";
-				$scope.discountMessage = data.description;
+		$http.get('rest/discount/get?id='+$scope.item.discountid).then(function(response){
+			console.log(response.data);
+			if(response.data.discount_Type == 0){
+				$scope.discountOffer = "$" + response.data.amount + " off!";
+				$scope.discountMessage = response.data.description;
 			} else{
-				$scope.discountOffer = data.amount + "% off!";
-				$scope.discountMessage = data.description;
+				$scope.discountOffer = response.data.amount + "% off!";
+				$scope.discountMessage = response.data.description;
 			}
 		}) 
 		$scope.discountShow = true;
@@ -340,49 +360,49 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 			$scope.productreviewAvg = 0;
 		}
 		//start carousel function
-		$scope.loadCarousel();
+		//$scope.loadCarousel();
 	});
 	
 	
-	//CAROUSEL
-	
-	$scope.loadCarousel = function(){
-		//setup carousel
-		// # of slides, 3 reviews per slide
-		var slides = Math.ceil($scope.productreviews.length / 3);
-		
-		//if no reviews made, make dummy review
-		if(slides == 0){
-			var r = {
-					id:-1,
-					rating: 0,
-					description: "No product reviews made."
-			};
-			$scope.carousel.first.push(r);
-		} else{
-			for(var i = 0; i < 3; i++){
-				if(i == $scope.productreviews.length){
-					break;
-				}
-				
-				$scope.carousel.first.push($scope.productreviews[i]);
-				$scope.carousel.slides.push(i);
-			}
-			
-			for(var j = 1; j < slides; j++){
-				var product_review_set = [];
-				for(var k = 0; k < 3; k++){
-					if(j*3 + k == $scope.productreviews.length){
-						break;
-					}
-					product_review_set.push($scope.productreviews[j*3 + k]);
-					$scope.carousel.slides.push(j*3 + k);
-				}
-				$scope.carousel.others.push(product_review_set);
-			}
-		}
-		console.log($scope.carousel);
-	};
+//	//CAROUSEL
+//	
+//	$scope.loadCarousel = function(){
+//		//setup carousel
+//		// # of slides, 3 reviews per slide
+//		var slides = Math.ceil($scope.productreviews.length / 3);
+//		
+//		//if no reviews made, make dummy review
+//		if(slides == 0){
+//			var r = {
+//					id:-1,
+//					rating: 0,
+//					description: "No product reviews made."
+//			};
+//			$scope.carousel.first.push(r);
+//		} else{
+//			for(var i = 0; i < 3; i++){
+//				if(i == $scope.productreviews.length){
+//					break;
+//				}
+//				
+//				$scope.carousel.first.push($scope.productreviews[i]);
+//				$scope.carousel.slides.push(i);
+//			}
+//			
+//			for(var j = 1; j < slides; j++){
+//				var product_review_set = [];
+//				for(var k = 0; k < 3; k++){
+//					if(j*3 + k == $scope.productreviews.length){
+//						break;
+//					}
+//					product_review_set.push($scope.productreviews[j*3 + k]);
+//					$scope.carousel.slides.push(j*3 + k);
+//				}
+//				$scope.carousel.others.push(product_review_set);
+//			}
+//		}
+//		console.log($scope.carousel);
+//	};
 	
 	
 	//submit product review
