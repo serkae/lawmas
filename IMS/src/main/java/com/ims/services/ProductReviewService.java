@@ -37,4 +37,8 @@ public class ProductReviewService {
 		return productReviewDao.getAll();
 	}
 
+	public List<ProductReview> getByItemId(int id) {
+		return productReviewDao.getReviewByItemId(id);
+	}
+
 }
