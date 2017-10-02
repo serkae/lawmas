@@ -31,8 +31,8 @@
 	</table>
 </div>
 
-<div ng-hide = "hide == 0">
 
+<div ng-hide = "hide == 0">
 	<table class="table">
 		<thead>
 			<tr>
@@ -43,7 +43,7 @@
 			</tr>
 		</thead>
 		<tr
-			ng-repeat="x in lineitem  | orderBy:sortType:sortReverse | filter:searchItem">
+			ng-repeat="x in lineitem | orderBy:sortType:sortReverse | filter:searchItem">
 			<td>{{x.order.id}}</td>
 			<td>{{x.id}}</td>
 			<td>{{x.quantity}}</td>
@@ -53,7 +53,7 @@
 	</table>
 
 
-
-
 </div>
+
+
 

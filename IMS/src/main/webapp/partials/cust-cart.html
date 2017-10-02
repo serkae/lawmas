@@ -4,7 +4,7 @@
 
 		<h3>
 			<span class="glyphicon glyphicon-shopping-cart"></span> Your cart has
-			{{items.length}} items
+			{{getNumberOfItemsInCart()}} items
 		</h3>
 	</div>
 	<div class="panel-body">
@@ -14,18 +14,19 @@
 				<th>Price</th>
 				<th>Quantity</th>
 			</tr>
-			<tr ng-repeat="item in items">
+			<tr ng-repeat="item in cart track by $index">
 				<td>{{item.name}}</td>
-				<td>{{item.price | currency}}</td>
+				<td>{{item.unitPrice | currency}}</td>
 				<td>{{item.quantity}}</td>
+				<td><a ng-click="removeFromCart(item)" class="btn"><span class="glyphicon glyphicon-trash"></span> Remove from Cart</a></td>
 			</tr>
 			<tr>
 				<th>Total</th>
 				<td>{{getTotal() | currency}}</td>
 			</tr>
 		</table>
-		<a class="btn btn-green">Checkout</a><a class="btn btn-orange">Keep
-			Shopping</a>
+		<button class="btn btn-green" ng-click="checkout()" ng-disabled="{{getNumberOfItemsInCart() < 1}}">Checkout</button>
+		<button class="btn btn-orange" ui-sref="mainStorePage">Keep Shopping</button>
 	</div>
 </div>
 

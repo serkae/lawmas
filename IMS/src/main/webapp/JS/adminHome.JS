@@ -1,4 +1,3 @@
-
 /**
  * BASIC LOGIN STUFF
  */
@@ -73,10 +72,19 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl: "partials/viewCurrentInventory.html",
 		controller: "invCtrl"
 	})
+	.state("managerLogout", {
+		url: "/managerLogin",
+		templateUrl: "partials/viewCurrentInventory.html",
+		controller: "invCtrl"
+	})
 	.state("customers",{
 		url: "/man-show-all-custs",
 		templateUrl: "partials/man-show-all-custs.html",
 		controller: "showAllCustsController"
+	})
+	.state("dashboard",{
+		url: "/dashboard",
+		templateUrl: "partials/manager_dashboard.html"
 	})
 	.state("adminInfo",{
 		url: "/man-show-info",
@@ -88,11 +96,6 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl: "partials/manSales.html",
 		controller: "salesCtrl"
 	});
-
-
-
-
-
 
 	console.log("IN HERE");
 
@@ -139,6 +142,8 @@ adminApp.service("AdminService", function($http, $q) {
 
 	service.admin = {
 			id: -1,
+			firstname : "",
+			lastname : "",
 			email: "",
 			password: "",
 			authenticated: false
@@ -152,6 +157,8 @@ adminApp.service("AdminService", function($http, $q) {
 
 	service.setAdmin= function(data) {
 		service.admin.id = data.id;
+		service.admin.firstname = data.firstname;
+		service.admin.lastname = data.lastname;
 		service.admin.email = data.email;
 		service.admin.password = data.password;
 		service.admin.authenticated = data.authenticated;
@@ -159,6 +166,17 @@ adminApp.service("AdminService", function($http, $q) {
 
 	console.log("after set admin = " + service.admin);
 
+	service.resetAdmin = function(){
+		service.admin={
+				id: -1,
+				firstname: "",
+				lastname: "",
+				email : "",
+				password : "",
+				authenticated : false
+		}
+	};
+	
 	service.loginAdmin = function() {
 		console.log("in loginAdmin");
 		var promise;
@@ -177,7 +195,7 @@ adminApp.service("AdminService", function($http, $q) {
 	};
 });
 
-adminApp.controller("AdminCtrl", function(AdminService,$state) {
+adminApp.controller("AdminCtrl", function(AdminService,$state,$rootScope) {
 	console.log("in AdminCtrl");
 
 	var login = this;
@@ -191,8 +209,9 @@ adminApp.controller("AdminCtrl", function(AdminService,$state) {
 		promise.then(
 				function(response) {
 					console.log("Response: "+ response);
-					if(login.admin!= null){
+					if(response.data.id !== -1){
 						login.admin.authenticated = true;
+						$rootScope.authenticated = true;
 						AdminService.setAdmin(response.data);
 						console.log("setting user in login ctrl")
 						console.log(AdminService.getAdmin());
@@ -287,7 +306,6 @@ adminApp.service("InventoryService", function($http, $q){
 adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, fileUpload){
 	console.log("in manageCtrl");
 
-
 	$scope.name = "";
 	$scope.description = "";
 	$scope.unitPrice;
@@ -320,6 +338,8 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 
 	var inventory = this;
 
+
+
 	inventory.addDepartment = function(){
 		var department = {
 				"id" : -1,
@@ -331,7 +351,6 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 			console.log("department "+response.data.name+" added");
 		})
 	}
-
 	inventory.addItem = function(){
 
 		//if file wants to be included
@@ -387,9 +406,7 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 		}
 	}
 
-
 });
-
 
 
 
@@ -401,6 +418,18 @@ adminApp.controller("invCtrl", function($scope,$http){
 
 	$http.get('rest/inventoryitem/getAll').success(function(data){
 		$scope.itemlist = data;
+		$http.get('rest/department/getAll').success(function(data){
+			var departments = data;
+			$scope.itemlist.forEach(function(item){
+				departments.forEach(function(d){
+					if(d.id == item.departmentid){
+						item.department = d;
+						
+					}
+				});
+			});
+		});
+		console.log(data);
 	})
 
 });
@@ -447,7 +476,6 @@ adminApp.controller("addremoveCtrl", function(AddRemoveService, $scope,$http,$st
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
-
 	$scope.edit = 0;
 	$scope.discountYes = 0;
 	$scope.discountNo = 0;
@@ -509,7 +537,19 @@ adminApp.controller("addremoveCtrl", function(AddRemoveService, $scope,$http,$st
 		console.log(data);
 
 	})
-
+	
+	$scope.showReview = function(item){
+		console.log("called");
+		$http.get('rest/productreview/getAllByInventoryItemId?id=' + item.id).then(function(response){
+			console.log(response);
+			item.productreviews = response.data;
+			item.show = true;
+		});
+		$http.get('rest/productreview/getAverageReviewFromItemId?id=' + item.id).then(function(response){
+			console.log(response);
+			item.averagereview = response.data;
+		});
+	}
 
 
 	var something;
@@ -694,63 +734,7 @@ adminApp.controller("addremoveCtrl", function(AddRemoveService, $scope,$http,$st
 
 
 
-//	var discount = this;
-//	discount.item = {
 
-//	}
-//	$http.post("rest/discount/update", discount.item).success(function(){
-//	console.log("Discount REMOVED?");
-//	})
-//	}
-
-
-
-//	if($scope.newName != null){
-//	inventory.name = $scope.newName;
-//	}
-//	if($scope.newUnitPrice != null){
-//	if($scope.newUnitPrice < 0){
-//	$scope.newUnitPrice = 0;
-//	}
-//	inventory.unitPrice = $scope.newUnitPrice;
-//	}
-//	if(inventory.discountType == 0){
-//	inventory.unitPrice = inventory.unitPrice - $scope.flatDiscount;
-//	}
-//	if(inventory.discountType == 1){
-//	inventory.unitPrice = inventory.unitPrice - (inventory.unitPrice * inventory.discountAmount);
-//	}
-//	if(inventory.discountType == -1){
-//	inventory.unitPrice = inventory.unitPrice + originalPrice;
-//	console.log(inventory.unitPrice);
-//	}
-//	if($scope.newQuantity != null){
-//	if($scope.newQuantity < 0){
-//	$scope.newQuantity = 0;
-//	}
-//	console.log($scope.newQuantity);
-//	inventory.quantity = $scope.newQuantity;
-//	}
-//	if($scope.newDescription != null){
-//	inventory.description = $scope.newDescription;
-//	}
-//	inventory.item = {
-//	id: inventory.id,
-//	name: inventory.name,
-//	description: inventory.description,
-//	unitPrice: inventory.unitPrice,
-//	quantity: inventory.quantity,
-//	departmentid: inventory.departmentid,
-//	discountid: discountInfo.discountID,
-//	image: inventory.image	
-//	}
-//	console.log(inventory.item);
-//	$http.post("rest/inventoryitem/update", inventory.item).success(function(data){
-//	console.log(data);
-//	console.log("Item updated successfully?")
-//	$scope.reset();
-//	resetData();
-//	})
 
 
 
@@ -779,15 +763,81 @@ adminApp.controller('showAllCustsController', function($scope,$http) {
  * ADMIN INFO
  */
 
-adminApp.controller('manShowInfoController', function($scope) {
+
+adminApp.controller('manShowInfoController', function($scope,$http,AdminService) {
+	admin = AdminService.getAdmin();
+	$scope.updateShow = false;
+	$scope.message = "";
+	$scope.messageClass = "";
 	$scope.manInfo = {
-			firstName: "Michael",
-			lastName: "Scott",
-			email: "mscott@mailinator.com"
+			firstName: admin.firstname,
+			lastName: admin.lastname,
+			email: admin.email
 	}
+	$scope.updateInfo = function(){
+		admin.firstname = $scope.manInfo.firstName;
+		admin.lastname = $scope.manInfo.lastName;
+		admin.email = $scope.manInfo.email;
+		
+		AdminService.setAdmin(admin);
+		
+		$http.post('rest/admin/update', admin).then(function(response){
+			$scope.message = "Info Updated."
+			$scope.messageClass = "alert-success";
+			$scope.updateShow = false;
+		});
+	};
+	
+	$scope.updatePass = function(){
+		if($scope.pass1 != $scope.pass2){
+			$scope.message = "New Passwords must match!";
+			$scope.messageClass = "alert-danger";
+		}
+		else if($scope.currPass != admin.password){
+			$scope.message = "Incorrect current password!"
+			$scope.messageClass = "alert-danger";
+		}
+		else{
+			admin.password = $scope.pass1;
+			$http.post('rest/admin/update', admin).then(function(response){
+				AdminService.setAdmin(admin);
+				$scope.passShow = false;
+				$scope.message = "Password Updated."
+				$scope.messageClass = "alert-success";
+			});
+		}
+	};
+	
 });
 
-/**
- * BASIC LOGIN STUFF
- */
+adminApp.controller("salesCtrl", function($http, $scope){
+	$scope.sortType = "id";
+	$scope.sortReverse = false;
+	$scope.searchItem = "";
+	$scope.hide = 0;
+	
+	var order = this;
+	
+	$http.get("rest/order/getAll").success(function(data){
 
+		$scope.orderList = data;	
+	});
+	
+	$scope.change = function(data){
+		$scope.hide = 1;
+		order.id = data.id;
+		console.log(order.id);
+		$http.get("rest/lineitem/getAllByOrder?id =" + order.id).success(function(response){
+			$scope.itemlist = response;
+			
+		});
+
+	};
+	
+	$scope.goBack = function(){
+		$scope.hide = 0;
+
+
+	}
+	
+});

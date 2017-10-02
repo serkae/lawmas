@@ -1,7 +1,3 @@
-/**
- * 
- */
-
 var storeApp = angular.module("storeApp", ["ui.router"]);
 
 storeApp.config(function($stateProvider, $urlRouterProvider) {
@@ -34,10 +30,19 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 		url:"/login",
 		templateUrl:"partials/login.html",
 		controller: "LoginCtrl as login"
+	})
+	.state("confirmCheckout", {
+		url: "/confirmCheckout",
+		templateUrl: "partials/confirm-checkout.html"
+	})
+	.state("getPastOrders",{
+		url: "/getOrders",
+		templateUrl:"partials/cust-getOrders.html",
+		controller: "getOrdersCtrl"
 	});
 });
 
-storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,$state) {
+storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,ItemsService,$state) {
 	$scope.sortType = "department";
 	$scope.sortReverse = false;
 	$rootScope.departments = [];
@@ -58,7 +63,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 			allInvItems.forEach(function(item) {
 				$rootScope.departments.forEach(function(dept) {
 					if (item.departmentid === dept.id) {
-						
+
 						//manage image sizes to 250 x 250
 						var i = new Image();
 						var w = 0;
@@ -72,7 +77,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 							w = i.width;
 							h = i.height;
 						}
-						
+
 						//push item
 						dept.count++;
 						if(dept.count % 3 == 1){
@@ -92,7 +97,8 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 							discountid: item.discountid,
 							image: item.image,
 							imageWidth: w,
-							imageHeight: h
+							imageHeight: h,
+							inCart: false
 						});
 					}
 				});
@@ -115,9 +121,145 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 		CustomerService.resetCustomer();
 		console.log(CustomerService.getCustomer());
 		$state.go("mainStorePage");
+	};
+	
+
+	//------------------------------------------Cart
+	$rootScope.addItemToCart = function(item,quantity) {
+		item.inCart = true;
+		itemToAdd = {
+				id: item.id,
+				name: item.name,
+				unitPrice: item.unitPrice,
+				quantity: quantity
+		};
+		let cart = ItemsService.getCart();
+		if (cart.length === 0) {
+			ItemsService.addToCart(itemToAdd);
+		} else {
+			let itemInCart = false;
+			for (i = 0; i < cart.length; i++) {
+				if (cart[i].id === itemToAdd.id) {
+					itemInCart = true;
+					cart[i].quantity++;
+				}
+			}
+			if (!itemInCart) {
+				ItemsService.addToCart(itemToAdd);
+			}
+		}
+	};
+
+	$scope.cart = ItemsService.getCart();
+
+	$scope.getTotal = function() {
+		var total = 0;
+		for(var i = 0; i < $scope.cart.length; i++) {
+			var lineItem = $scope.cart[i];
+			total += (lineItem.unitPrice * lineItem.quantity);
+		}
+		return total;
+	};
+
+	$scope.getNumberOfItemsInCart = function() {
+		let numberOfItems = 0;
+		for (i = 0; i < $scope.cart.length; i++) {
+			numberOfItems += $scope.cart[i].quantity;
+		}
+		return numberOfItems;
+	}
+
+	$scope.removeFromCart = function(item) {
+		for (i = 0; i < $scope.cart.length; i++) {
+			if ($scope.cart[i].id === item.id) {
+				$scope.cart[i].quantity--;
+				if ($scope.cart[i].quantity < 1) {
+					$scope.cart.splice(i, 1);
+					$state.go("cart");
+					//$state.go($state.$current, null, {reload: true});
+				}
+			}
+		}
+	}
+
+	$scope.checkout = function() {
+		let customer = CustomerService.getCustomer();
+		if (customer.id < 0) {
+			$state.go("login");
+		} else {
+			let newOrder = {
+					id: -1,
+					customer: customer,
+					order_Date: new Date().getTime()
+			}
+			let createOrderPromise = ItemsService.createOrder(newOrder).then(function(response) {
+				ItemsService.createLineItems(response.data);
+			});
+			ItemsService.emptyCart();
+			$scope.cart = ItemsService.getCart();
+			$state.go("confirmCheckout");
+		}
 	}
 });
 
+
+storeApp.service('ItemsService', function($http) {
+
+	this.getItemByID = function(id) {
+		$http.get('rest/inventoryitem/get?id='+id).then(function(response){
+			return response.data;
+		});
+	}
+
+	this.cart = [];
+
+	this.emptyCart = function() {
+		this.cart = [];
+	}
+
+	this.getCart = function() {
+		return this.cart;
+	};
+
+	this.addToCart = function(lineItem) {
+		this.cart.push(lineItem);
+	}
+
+	this.createOrder = function(order) {
+		let promise = $http.post('rest/order/create', order).then(
+				function(response) {
+					return response;
+				},
+				function(error) {
+					return error;
+				}
+		);
+		return promise;
+	}
+
+	this.createLineItems = function(order) {
+		let promise;
+		this.cart.forEach(function(item) {
+			let lineItem = {
+					id: -1,
+					orderid: order.id,
+					quantity: item.quantity,
+					inventoryitemid: item.id
+			}
+			promise = $http.post('rest/lineitem/create', lineItem).then(
+					function(response) {
+						return response;
+					},
+					function(error) {
+						return error;
+					}
+			);
+		});
+		return promise;
+	}
+});
+
+// Service that handles all things relating to Customer
 storeApp.service("CustomerService", function($http, $q){
 	console.log("in customerService");
 
@@ -174,26 +316,6 @@ storeApp.service("CustomerService", function($http, $q){
 		service.customer.authenticated = data.authenticated;
 	};
 
-	/*service.createCustomer = function () {
-		var promise;
-		service.customer = CustomerService.setCustomer();
-		console.log("in create item");
-		console.log(service.customer);
-
-		promise = $http.post("rest/customer/create", service.item).then(
-				function(response){
-					console.log(response);
-					return response;
-				},
-				function(error){
-					console.log("ERROR")
-					return error;
-				}
-
-		);
-		return promise;
-	}*/
-
 	service.authenticateUser = function(){
 		var promise = $http.post(
 				'rest/customer/auth', service.customer)
@@ -210,9 +332,41 @@ storeApp.service("CustomerService", function($http, $q){
 	};
 });
 
-storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
-	console.log("in loginctrl");
+//Service that handles all things relating to Card
+storeApp.service("CardService", function($http, $q){
+	console.log("in cardService");
 
+	var cardservice = this;
+
+	cardservice.card={
+			id: -1,
+			cardnumber: "",
+			nameoncard: "",
+			expiration: "",
+			securitycode: ""
+	};
+
+	cardservice.getCard= function(){
+		return cardservice.card;
+	};
+	
+	cardservice.setCard = function(data){
+		cardservice.card.id           = data.id;
+		cardservice.card.cardnumber   = data.cardnumber;
+		cardservice.card.nameoncard   = data.nameoncard;
+		cardservice.card.expiration   = data.expiration;
+		cardservice.card.securitycode = data.securtiycode;
+	};
+	
+});
+
+// Takes in login information and handles creating a new Customer
+storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $state, $http){
+	console.log("in loginctrl");
+	$scope.createCust = false;
+	$scope.message = "";
+	$scope.messageClass = "";
+	
 	var login = this;
 	login.customer = CustomerService.getCustomer();
 
@@ -235,58 +389,248 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 				});
 
 	};
-});
-
-
-storeApp.controller('cartController', function($scope) {
-	$scope.items = [
-		{
-			name: "Blue Beanie",
-			price: 9.99,
-			quantity: 1
-		},
-		{
-			name: "Candlemass T-Shirt",
-			price: 19.99,
-			quantity: 1
-		},
-		{
-			name: "Black Denim Jacket",
-			price: 39.99,
-			quantity: 1
-		},
-		{
-			name: "Raven Feather Necklace",
-			price: 9.99,
-			quantity: 1
-		}
-		]
-
-	$scope.getTotal = function() {
-		var total = 0;
-		for(var i = 0; i < $scope.items.length; i++) {
-			var product = $scope.items[i];
-			total += (product.price * product.quantity);
-		}
-		return total;
+	
+	$http.get("rest/state/getAll").then(function(response){
+		$scope.states = response.data;
+		console.log($scope.states);
+	})
+	console.log($scope.states);
+	
+	$scope.createInfo = function() {
+		var ncust = CustomerService.getCustomer();
+		
+			ncust.firstname = $scope.custInfo.firstName;
+			ncust.lastname = $scope.custInfo.lastName;
+			ncust.email = $scope.custInfo.email;
+			ncust.password = $scope.custInfo.password;
+			ncust.address = $scope.custInfo.address;
+			ncust.city = $scope.custInfo.city;
+			ncust.state = $scope.chosenState;
+			ncust.zipcode = $scope.custInfo.zipcode;
+			ncust.phone = $scope.custInfo.phone;
+			ncust.card = null;
+			
+			console.log($scope.custInfo);
+			console.log($scope.chosenState.id + " " + $scope.chosenState.name);
+			console.log(ncust);
+			
+			$http.post('rest/customer/create', ncust).then(function(response){
+				CustomerService.setCustomer(response.data);
+				$scope.message = "Customer Created."
+				$scope.messageClass = "alert-success";
+			});
 	}
+	
 });
 
-storeApp.controller('custShowInfoController', function($scope, $state, CustomerService) {
+
+storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
+	$scope.orders = [];
+
+	var customer = CustomerService.getCustomer();
+	$http.get('rest/order/getAllByCustomerId?id=' + customer.id).then( function(response){
+		console.log(response.data);
+		var orders = response.data;
+		for(var i = 0; i < orders.length; i ++){
+			var order = orders[i];
+			var date = new Date(order.order_Date);
+			order.order_Date = date.toLocaleDateString();
+			order.show = false;
+			order.lineitems = [];
+			$scope.orders.push(order);
+		}
+	});
+
+	$scope.showOrder = function(order){
+		console.log("called");
+		$http.get('rest/lineitem/getAllByOrderId?id=' + order.id).then(function(response){
+			console.log(response);
+			order.lineitems = response.data;
+			order.show = true;
+		});
+	}
+
+});
+
+// Displays the Customer information and handles editing the customer information
+storeApp.controller('custShowInfoController', function($http, $scope, CustomerService, CardService) {
+
 	console.log("this is custshow");
 	var customer = CustomerService.getCustomer();
+	
+	$scope.updateCustShow = false;
+	
 	$scope.custInfo = {
-			firstName: customer.firstname,
-			lastName: customer.lastname,
-			email: customer.email,
-			address: customer.address,
-			city: customer.city,
-			state: customer.state.name,
-			zipcode: customer.zipcode,
-			phone: customer.phone
+		firstName: customer.firstname,
+		lastName: customer.lastname,
+		email: customer.email,
+		address: customer.address,
+		city: customer.city,
+		state: customer.state,
+		zipcode: customer.zipcode,
+		phone: customer.phone,
+		card: customer.card
 	}
+	
+	if($scope.custInfo.card != null) {
+		$scope.cardlf = $scope.custInfo.card.cardnumber.substr($scope.custInfo.card.cardnumber.length - 4);
+	}
+	
+	$http.get("rest/state/getAll").then(function(response){
+		$scope.states = response.data;
+	})
+	
+	$scope.updateInfo = function(){
+		customer.firstname = $scope.custInfo.firstName;
+		customer.lastname = $scope.custInfo.lastName;
+		customer.email = $scope.custInfo.email;
+		customer.city = $scope.custInfo.city;
+		customer.state = $scope.chosenState;
+		customer.zipcode = $scope.custInfo.zipcode;
+		customer.phone = $scope.custInfo.phone;
+		
+		CustomerService.setCustomer(customer);
+		
+		$http.post('rest/customer/update', customer).then(function(response){
+			$scope.message = "Info Updated."
+			$scope.messageClass = "alert-success";
+			$scope.updateCustShow = false;
+		});
+	};
+	
+	$scope.updatePass = function(){
+		if($scope.pass1 != $scope.pass2){
+			$scope.message = "New Passwords must match!";
+			$scope.messageClass = "alert-danger";
+		}
+		else if($scope.currPass != customer.password){
+			$scope.message = "Incorrect current password!";
+			$scope.messageClass = "alert-danger";
+		}
+		else{
+			customer.password = $scope.pass1;
+			$http.post('rest/customer/update', customer).then(function(response){
+				CustomerService.setCustomer(customer);
+				$scope.passShow = false;
+				$scope.message = "Password Updated."
+				$scope.messageClass = "alert-success";
+			});
+		}
+	};
+	
+	$scope.createCard = function() {
+		var ncard = CardService.getCard();
+		
+		var dateStr = String($scope.nexpdate);
+		var date = dateStr.split("/");
+		var month = parseInt(date[0]);
+		var year = parseInt(date[1]);
+		
+		if(String($scope.ncardnum).length !== 16) {
+			$scope.cardmessage = "Card Number must contain 16 numbers!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if($scope.ncardname == "") {
+			$scope.cardmessage = "Card Name cannot be empty!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(date.length !== 2) {
+			$scope.cardmessage = "Card Expiration must be MM/YY!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(month > 12 | month == 0) {
+			$scope.cardmessage = "Card Expiration Month must be Between 01 - 12!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(year < 14) {
+			$scope.cardmessage = "Card Expiration Year must be Greater than 14!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(String($scope.nscode).length < 3) {
+			$scope.cardmessage = "Card Security Code must Contain more than 2 Numbers!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else {
+			ncard.cardnumber   = $scope.ncardnum;
+			ncard.nameoncard   = $scope.ncardname;
+			ncard.expiration   = $scope.nexpdate;
+			ncard.securitycode = $scope.nscode;
+			
+			$scope.cardlf = String(ncard.cardnumber).substr(String(ncard.cardnumber).length - 4);
+			
+			customer.card = {
+					cardnumber: -1,
+					nameoncard: "",
+					expiration: "",
+					securitycode: ""
+			}
+			
+			customer.card.cardnumber   = ncard.cardnumber;
+			customer.card.nameoncard   = ncard.nameoncard;
+			customer.card.expiration   = ncard.expiration;
+			customer.card.securitycode = ncard.securitycode;
+			
+			$http.post('rest/card/create', ncard).then(function(response){
+				CardService.setCard(ncard);
+				$http.post('rest/customer/update', customer).then(function(response){
+					CustomerService.setCustomer(customer);
+				})
+				
+				$scope.cardCustShow = false;
+				$scope.cardmessage = "Card Created."
+				$scope.cardmessageClass = "alert-success";
+			});
+		}
+	};
+	
+	$scope.updateCard = function(){
+		var dateStr = String($scope.expdate);
+		var date = dateStr.split("/");
+		var month = parseInt(date[0]);
+		var year = parseInt(date[1]);
+		
+		if(String($scope.cardnum).length !== 16) {
+			$scope.cardmessage = "Card Number must contain 16 numbers!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if($scope.cardname == "") {
+			$scope.cardmessage = "Card Name cannot be empty!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(date.length !== 2) {
+			$scope.cardmessage = "Card Expiration must be MM/YY!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(month > 12 | month == 0) {
+			$scope.cardmessage = "Card Expiration Month must be Between 01 - 12!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(year < 14) {
+			$scope.cardmessage = "Card Expiration Year must be Greater than 14!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(String($scope.scode).length < 3) {
+			$scope.cardmessage = "Card Security Code must Contain more than 2 Numbers!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else {
+			customer.card.cardnumber = $scope.cardnum;
+			customer.card.nameoncard = $scope.cardname;
+			customer.card.expiration = $scope.expdate;
+			customer.card.securitycode = $scope.scode;
+			
+			$scope.cardlf = String($scope.cardnum).substr(String($scope.cardnum).length - 4);
+			
+			$http.post('rest/customer/update', customer).then(function(response){
+				CustomerService.setCustomer(customer);
+				$scope.cardCustShow = false;
+				$scope.cardmessage = "Card Info Updated."
+				$scope.cardmessageClass = "alert-success";
+			});
+		}
+	};
+	
 });
-
 
 storeApp.service("ItemService", function($http, $q){
 	var service = this;
@@ -300,27 +644,14 @@ storeApp.service("ItemService", function($http, $q){
 });
 
 storeApp.controller('viewItemController', function($scope,$state,$http,CustomerService,ItemService){
-	/*
-		id: item.id,
-		name: item.name,
-		unitPrice: item.unitPrice,
-		quantity: item.quantity,
-		department: dept.name,
-		description: item.description,
-		image: item.image
-	 */
-	
+
 	$scope.item = ItemService.getItem();
-	
+
 	$scope.discountShow = false;
 	$scope.showQuantityWarning = false;
 	$scope.showReviewWarning = false;
 	$scope.finishedReview = false;
 	$scope.quantities = [];
-//	$scope.carousel = {};
-//	$scope.carousel.first = [];
-//	$scope.carousel.others = [];
-//	$scope.carousel.slides = [];
 	//set discount info
 	if($scope.item.discountid != -1){
 		$http.get('rest/discount/get?id='+$scope.item.discountid).then(function(response){
@@ -335,14 +666,14 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 		}) 
 		$scope.discountShow = true;
 	}
-	
+
 	//set quantity list
 	for(var i = 1; i <= $scope.item.quantity; i++){
 		$scope.quantities.push(i);
 	}
-	
-	
-	//set product reviews info and carousel
+
+
+	//set product reviews info 
 	$scope.productreviews = [];
 	$scope.productreviewAvg = 0;
 
@@ -359,64 +690,21 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 		else{
 			$scope.productreviewAvg = 0;
 		}
-		//start carousel function
-		//$scope.loadCarousel();
 	});
-	
-	
-//	//CAROUSEL
-//	
-//	$scope.loadCarousel = function(){
-//		//setup carousel
-//		// # of slides, 3 reviews per slide
-//		var slides = Math.ceil($scope.productreviews.length / 3);
-//		
-//		//if no reviews made, make dummy review
-//		if(slides == 0){
-//			var r = {
-//					id:-1,
-//					rating: 0,
-//					description: "No product reviews made."
-//			};
-//			$scope.carousel.first.push(r);
-//		} else{
-//			for(var i = 0; i < 3; i++){
-//				if(i == $scope.productreviews.length){
-//					break;
-//				}
-//				
-//				$scope.carousel.first.push($scope.productreviews[i]);
-//				$scope.carousel.slides.push(i);
-//			}
-//			
-//			for(var j = 1; j < slides; j++){
-//				var product_review_set = [];
-//				for(var k = 0; k < 3; k++){
-//					if(j*3 + k == $scope.productreviews.length){
-//						break;
-//					}
-//					product_review_set.push($scope.productreviews[j*3 + k]);
-//					$scope.carousel.slides.push(j*3 + k);
-//				}
-//				$scope.carousel.others.push(product_review_set);
-//			}
-//		}
-//		console.log($scope.carousel);
-//	};
-	
-	
+
+
 	//submit product review
 	$scope.submitReview = function(){
 		if($scope.chosenRating == null){
 			$scope.showReviewWarning = true;
 			return;
 		}
-		
+
 		var productreview = {
-				  id: -1,
-				  inventoryItem: $scope.item,
-				  rating: $scope.chosenRating,
-				  description: $scope.userReviewDescription
+				id: -1,
+				inventoryItem: $scope.item,
+				rating: $scope.chosenRating,
+				description: $scope.userReviewDescription
 		};
 		console.log(productreview);
 		$http.post('rest/productreview/create',productreview).then(function(response){
@@ -424,14 +712,14 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 			$scope.finishedReview = true;
 		});
 	};
-	
+
 	//create and add line item to cart
 	$scope.addToCart = function(){
 		if($scope.chosenQuantity == null){
 			$scope.showQuantityWarning = true;
 			return;
 		}
-		
+
 		var lineitem = {
 				id: -1,
 				orderid: -1,
@@ -441,7 +729,7 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 		console.log(lineitem);
 		//CartService.addLineItem(lineitem);
 	}
-	
+
 	console.log($scope.item);
-	
+
 });
