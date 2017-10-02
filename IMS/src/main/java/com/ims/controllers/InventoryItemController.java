@@ -178,4 +178,14 @@ public class InventoryItemController {
 		
 		
 	}
+	
+	@RequestMapping("/countByDept")
+	public List<Object> findByItemsByDept() {
+		return inventoryItemService.findDeptCount();
+	}
+	
+	@RequestMapping("/countDiscountsByDept")
+	public List<Object> findByDiscountedItemsByDept() {
+		return inventoryItemService.findByDiscountedItemsByDept();
+	}
 }

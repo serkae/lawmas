@@ -445,3 +445,4 @@ adminApp.controller('manShowInfoController', function($scope,$http,AdminService)
 	};
 	
 });
+
