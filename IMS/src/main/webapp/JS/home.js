@@ -25,6 +25,10 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 		url: "/cart",
 		templateUrl: "partials/cust-cart.html"
 	})
+	.state("confirmCheckout", {
+		url: "/confirmCheckout",
+		templateUrl: "partials/confirm-checkout.html"
+	})
 	.state("login", {
 		url:"/login",
 		templateUrl:"partials/login.html",
@@ -231,7 +235,7 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 		});
 		ItemsService.emptyCart();
 		$scope.cart = ItemsService.getCart();
-		$state.go("cart");
+		$state.go("confirmCheckout");
 	}
 });
 
