@@ -11,30 +11,116 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	$urlRouterProvider.otherwise('/mainStorePage');
 
 	$stateProvider
-		.state("mainStorePage", {
-			url:"/mainStorePage",
-			templateUrl:"partials/mainStorePage.html", //html
-			controller: "MainCtrl as main",
-		})
-		.state("customerInfo", {
-			url:"/cust-show-info",
-			templateUrl:"partials/cust-show-info.html",
-			controller: "custShowInfoController"
-		})
-		.state("cart", {
-			url: "/cart",
-			templateUrl: "partials/cust-cart.html"
-		})
-		.state("login", {
-			url:"/login",
-			templateUrl:"partials/login.html",
-			controller: "LoginCtrl as login"
-		})
-		.state("getPastOrders",{
-			url: "/getOrders",
-			templateUrl:"partials/cust-getOrders.html",
-			controller: "getOrdersCtrl"
-		})
+	.state("mainStorePage", {
+		url:"/mainStorePage",
+		templateUrl:"partials/mainStorePage.html", //html
+		controller: "MainCtrl as main",
+	})
+	.state("customerInfo", {
+		url:"/cust-show-info",
+		templateUrl:"partials/cust-show-info.html",
+		controller: "custShowInfoController"
+	})
+	.state("cart", {
+		url: "/cart",
+		templateUrl: "partials/cust-cart.html"
+	})
+	.state("viewItem", {
+		url: "/item",
+		templateUrl: "partials/view-item.html",
+		controller: "viewItemController"
+	})
+	.state("login", {
+		url:"/login",
+		templateUrl:"partials/login.html",
+		controller: "LoginCtrl as login"
+	})
+	.state("getPastOrders",{
+		url: "/getOrders",
+		templateUrl:"partials/cust-getOrders.html",
+		controller: "getOrdersCtrl"
+	});
+});
+
+storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,$state) {
+	$scope.sortType = "department";
+	$scope.sortReverse = false;
+	$rootScope.departments = [];
+	let allInvItems;
+	$http.get('rest/inventoryitem/getAll').then(function(data) {
+		allInvItems = data.data;
+		$http.get('rest/department/getAll').then(function(response) {
+			$rootScope.departments = response.data;
+			$rootScope.departments.forEach(function(dept) {
+				dept.items = [];
+				dept.show = [];
+				dept.index = -1;
+				dept.count = 0;
+				dept.increaseIndex = function(){if(dept.index + 1 != dept.items.length){dept.index++;console.log(dept.index);}};
+				dept.reduceIndex = function(){if(dept.index - 1 != -1){dept.index--;console.log(dept.index);}};
+			});
+			console.log($rootScope.departments);
+			allInvItems.forEach(function(item) {
+				$rootScope.departments.forEach(function(dept) {
+					if (item.departmentid === dept.id) {
+						
+						//manage image sizes to 250 x 250
+						var i = new Image();
+						var w = 0;
+						var h = 0;
+						if(item.image != null){
+							i.src = item.image;
+							while(i.width > 250 || i.height > 250){
+								i.width *= .75;
+								i.height *= .75;
+							}
+							w = i.width;
+							h = i.height;
+						}
+						
+						//push item
+						dept.count++;
+						if(dept.count % 3 == 1){
+							//add new item row
+							dept.items.push([]);
+							dept.show.push([]);
+							dept.index++;
+						}
+						dept.show[dept.index].push(true);
+						dept.items[dept.index].push({
+							id: item.id,
+							name: item.name,
+							unitPrice: item.unitPrice,
+							quantity: item.quantity,
+							department: dept,
+							description: item.description,
+							discountid: item.discountid,
+							image: item.image,
+							imageWidth: w,
+							imageHeight: h
+						});
+					}
+				});
+			});
+			console.log($rootScope.departments);
+			$rootScope.departments.forEach(function(dept) {
+				dept.index = 0;
+			});
+		});
+	});
+
+	$scope.viewPage = function(item){
+		ItemService.setItem(item);
+		$state.go("viewItem");
+	};
+	//logout functionality
+	$rootScope.logout = function () {
+		console.log("within logout");
+		$rootScope.authenticated = false;
+		CustomerService.resetCustomer();
+		console.log(CustomerService.getCustomer());
+		$state.go("mainStorePage");
+	}
 });
 
 storeApp.service("CustomerService", function($http, $q){
@@ -77,7 +163,7 @@ storeApp.service("CustomerService", function($http, $q){
 				authenticated : false
 		};
 	}
-	
+
 	service.setCustomer = function(data){
 		service.customer.id         = data.id;
 		service.customer.firstname  = data.firstname;
@@ -92,6 +178,26 @@ storeApp.service("CustomerService", function($http, $q){
 		service.customer.card       = data.card;
 		service.customer.authenticated = data.authenticated;
 	};
+
+	/*service.createCustomer = function () {
+		var promise;
+		service.customer = CustomerService.setCustomer();
+		console.log("in create item");
+		console.log(service.customer);
+
+		promise = $http.post("rest/customer/create", service.item).then(
+				function(response){
+					console.log(response);
+					return response;
+				},
+				function(error){
+					console.log("ERROR")
+					return error;
+				}
+
+		);
+		return promise;
+	}*/
 
 	service.authenticateUser = function(){
 		var promise = $http.post(
@@ -111,14 +217,14 @@ storeApp.service("CustomerService", function($http, $q){
 
 storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 	console.log("in loginctrl");
-	
+
 	var login = this;
 	login.customer = CustomerService.getCustomer();
-	
+
 	login.doLogin = function(){
 		console.log("about to authenticate user");
 		var promise = CustomerService.authenticateUser();
-		
+
 		promise.then(
 				function(response){
 					if(response.data.id !== -1){
@@ -132,19 +238,10 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 				},function(error){
 					console.log(error);
 				});
-	
+
 	};
 });
 
-//merging of Will's getInvItemsCtrl and my MainCtrl
-storeApp.controller("MainCtrl", function($http, $scope) {
-	
-	$scope.sortType = "id";
-	$scope.sortReverse = false;
-	$http.get('rest/inventoryitem/getAll').success(function(data) {
-		$scope.allInvItems = data;
-	});
-});
 
 
 storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
@@ -209,26 +306,176 @@ storeApp.controller('cartController', function($scope) {
 	}
 });
 
-storeApp.controller('custShowInfoController', function($scope, $rootScope, $state,CustomerService) {
+storeApp.controller('custShowInfoController', function($scope, $state, CustomerService) {
 	console.log("this is custshow");
 	var customer = CustomerService.getCustomer();
 	$scope.custInfo = {
-		firstName: customer.firstname,
-		lastName: customer.lastname,
-		email: customer.email,
-		address: customer.address,
-		city: customer.city,
-		state: customer.state.name,
-		zipcode: customer.zipcode,
-		phone: customer.phone
+			firstName: customer.firstname,
+			lastName: customer.lastname,
+			email: customer.email,
+			address: customer.address,
+			city: customer.city,
+			state: customer.state.name,
+			zipcode: customer.zipcode,
+			phone: customer.phone
+	}
+});
+
+
+storeApp.service("ItemService", function($http, $q){
+	var service = this;
+	var current_item;
+	service.setItem = function(item){
+		current_item = item;
+	};
+	service.getItem = function(){
+		return current_item;
+	};
+});
+
+storeApp.controller('viewItemController', function($scope,$state,$http,CustomerService,ItemService){
+	/*
+		id: item.id,
+		name: item.name,
+		unitPrice: item.unitPrice,
+		quantity: item.quantity,
+		department: dept.name,
+		description: item.description,
+		image: item.image
+	 */
+	
+	$scope.item = ItemService.getItem();
+	
+	$scope.discountShow = false;
+	$scope.showQuantityWarning = false;
+	$scope.showReviewWarning = false;
+	$scope.finishedReview = false;
+	$scope.quantities = [];
+//	$scope.carousel = {};
+//	$scope.carousel.first = [];
+//	$scope.carousel.others = [];
+//	$scope.carousel.slides = [];
+	//set discount info
+	if($scope.item.discountid != -1){
+		$http.get('rest/discount/get?id='+$scope.item.discountid).then(function(response){
+			console.log(response.data);
+			if(response.data.discount_Type == 0){
+				$scope.discountOffer = "$" + response.data.amount + " off!";
+				$scope.discountMessage = response.data.description;
+			} else{
+				$scope.discountOffer = response.data.amount + "% off!";
+				$scope.discountMessage = response.data.description;
+			}
+		}) 
+		$scope.discountShow = true;
 	}
 	
-	$scope.logout = function () {
-		console.log("within logout");
-		$rootScope.authenticated = false;
-		CustomerService.resetCustomer();
-		console.log(CustomerService.getCustomer());
-		$state.go("mainStorePage");
+	//set quantity list
+	for(var i = 1; i <= $scope.item.quantity; i++){
+		$scope.quantities.push(i);
 	}
+	
+	
+	//set product reviews info and carousel
+	$scope.productreviews = [];
+	$scope.productreviewAvg = 0;
+
+	$http.get('rest/productreview/getByItem?id='+$scope.item.id).then(function(response){
+		$scope.productreviews = response.data;
+		var sum = 0;
+		for(var i = 0; i < $scope.productreviews.length; i++){
+			sum = sum + $scope.productreviews[i].rating;
+		}
+		$scope.productreviewAvg = (sum / $scope.productreviews.length).toFixed(1);
+		if($scope.productreviewAvg >= 0){
+			$scope.roundedreviewAvg = Math.floor($scope.productreviewAvg);
+		}
+		else{
+			$scope.productreviewAvg = 0;
+		}
+		//start carousel function
+		//$scope.loadCarousel();
+	});
+	
+	
+//	//CAROUSEL
+//	
+//	$scope.loadCarousel = function(){
+//		//setup carousel
+//		// # of slides, 3 reviews per slide
+//		var slides = Math.ceil($scope.productreviews.length / 3);
+//		
+//		//if no reviews made, make dummy review
+//		if(slides == 0){
+//			var r = {
+//					id:-1,
+//					rating: 0,
+//					description: "No product reviews made."
+//			};
+//			$scope.carousel.first.push(r);
+//		} else{
+//			for(var i = 0; i < 3; i++){
+//				if(i == $scope.productreviews.length){
+//					break;
+//				}
+//				
+//				$scope.carousel.first.push($scope.productreviews[i]);
+//				$scope.carousel.slides.push(i);
+//			}
+//			
+//			for(var j = 1; j < slides; j++){
+//				var product_review_set = [];
+//				for(var k = 0; k < 3; k++){
+//					if(j*3 + k == $scope.productreviews.length){
+//						break;
+//					}
+//					product_review_set.push($scope.productreviews[j*3 + k]);
+//					$scope.carousel.slides.push(j*3 + k);
+//				}
+//				$scope.carousel.others.push(product_review_set);
+//			}
+//		}
+//		console.log($scope.carousel);
+//	};
+	
+	
+	//submit product review
+	$scope.submitReview = function(){
+		if($scope.chosenRating == null){
+			$scope.showReviewWarning = true;
+			return;
+		}
+		
+		var productreview = {
+				  id: -1,
+				  inventoryItem: $scope.item,
+				  rating: $scope.chosenRating,
+				  description: $scope.userReviewDescription
+		};
+		console.log(productreview);
+		$http.post('rest/productreview/create',productreview).then(function(response){
+			$scope.productreviews.push(productreview);
+			$scope.finishedReview = true;
+		});
+	};
+	
+	//create and add line item to cart
+	$scope.addToCart = function(){
+		if($scope.chosenQuantity == null){
+			$scope.showQuantityWarning = true;
+			return;
+		}
+		
+		var lineitem = {
+				id: -1,
+				orderid: -1,
+				quantity: $scope.chosenQuantity,
+				inventoryitemid: $scope.item.id
+		}
+		console.log(lineitem);
+		//CartService.addLineItem(lineitem);
+	}
+	
+	console.log($scope.item);
 	
 });

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.ims.beans.Customer;
 import com.ims.beans.LineItem;
 import com.ims.beans.Order;
@@ -37,16 +38,14 @@ public class OrderController {
 	@Autowired
 	CustomerService cservice;
 	@Autowired
-	LineItemService liservice;
+	private LineItemService lservice;
 	
-	public void setOrderServiceImpl(OrderService orderService) {
+	public void setOrderService(OrderService orderService) {
 		this.orderService = orderService;
 	}
-	public void setCservice(CustomerService cservice) {
-		this.cservice = cservice;
+	public void setLservice(LineItemService lservice) {
+		this.lservice = lservice;
 	}
-	
-	
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
@@ -89,6 +88,26 @@ public class OrderController {
 	public ResponseEntity<Order> getOrder(int id){
 		System.out.println("Listing orders: ");
 		return new ResponseEntity<Order>(orderService.getOrder(id), HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value="/getPrice",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<Integer> getPrice(int id){
+		
+		//get order obj
+		Order o = orderService.getOrder(id);
+		//get all line items by order
+		List<LineItem> items = lservice.getAllLineItemsByOrder(o);
+		
+		//calculate price
+		int price = 0;
+		for(LineItem i : items) {
+			//price = price + unitprice * quantity
+			price += (i.getInventoryItem().getUnitPrice() * i.getQuantity());
+		}
+		
+		return new ResponseEntity<Integer>(price, HttpStatus.OK);
 		
 	}
 
@@ -148,7 +167,7 @@ public class OrderController {
 			// Set Subject: header field
 			message.setSubject("WorldTree Order Confirmation");
 
-			List<LineItem> items = liservice.getAllLineItemsByOrderId(o.getId());
+			List<LineItem> items = lservice.getAllLineItemsByOrderId(o.getId());
 			List<String> itemnames = new ArrayList<String>();
 			for(LineItem l : items) {
 				System.out.println(l.getInventoryItem().getName());

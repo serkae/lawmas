@@ -1,3 +1,4 @@
+
 package com.ims.services;
 
 import java.util.ArrayList;
@@ -40,10 +41,6 @@ public class LineItemService {
 	public List<LineItem> getAllLineItemsByOrder(Order o){
 		return dao.getAllByOrder(o);
 	}
-	
-	public List<LineItem> getAllLineItemsByOrderId(int id){
-		return dao.getAllByOrderId(id);
-	}
 
 	public LineItemDto getLineItemDto(int id){
 		LineItem i = dao.getLineItemById(id);
@@ -57,4 +54,9 @@ public class LineItemService {
 	public void deleteLineItem(LineItem i) {
 		dao.removeLineItem(i);
 	}
+	
+	public List<LineItem> getAllLineItemsByOrderId(int id){
+		return dao.getAllByOrderId(id);
+	}
 }
+

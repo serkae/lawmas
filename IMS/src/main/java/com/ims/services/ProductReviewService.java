@@ -45,4 +45,8 @@ public class ProductReviewService {
 		return productReviewDao.getAverage(id);
 	}
 
+	public List<ProductReview> getByItemId(int id) {
+		return productReviewDao.getReviewByItemId(id);
+	}
+
 }
