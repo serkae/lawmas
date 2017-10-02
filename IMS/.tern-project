@@ -13,10 +13,5 @@
   "libs": [
     "ecma5",
     "browser"
-  ],
-  "ide": {
-    "scriptPaths": [
-      
-    ]
-  }
+  ]
 }
