@@ -1,4 +1,5 @@
-<div>
+
+<div style="width-left: 25%" ng-hide="edit == 1">
 	<nav class="navbar navbar-default">
 		<form class="navbar-form navbar-left" role="search">
 			<div class="form-group">
@@ -6,36 +7,96 @@
 					<input type="text" class="form-control" placeholder="Search"
 						ng-model="searchItem">
 				</div>
+
 				<div style="float: right"></div>
 			</div>
 		</form>
 	</nav>
 	Edit your Existing Inventory
 	<!-- <p ng-repeat = "x in itemlist">{{x}}</p> -->
-	<div class="alert alert-info">Sort Type: {{sortType}} Sort
-		Reverse: {{sortReverse}} Search Query: {{searchInventory}}</div>
+
 	<table class="table">
 		<thead>
 			<tr>
+				<th></th>
 				<th>id</th>
 				<th>department</th>
 				<th>name</th>
 				<th>unit price</th>
+				<th>discount</th>
 				<th>quantity</th>
 				<th>description</th>
 				<th>image</th>
+				<th>average rating</th>
 			</tr>
 		</thead>
 		<tr
-			ng-repeat="x in itemlist  | orderBy:sortType:sortReverse | filter:searchItem">
+			ng-repeat="x in items  | orderBy:sortType:sortReverse | filter:searchItem">
+
+			<td><button type="button" ng-click="change(x)">Edit
+					Stock</button></td>
 			<td>{{x.id}}</td>
-			<td>{{x.department.id}}</td>
+			<td>{{x.departmentid}}</td>
 			<td>{{x.name}}</td>
-			<td>{{x.unitPrice}}</td>
+			<td>{{x.unitPrice | currency}}</td>
+			<td>{{x.discountid}}</td>
 			<td>{{x.quantity}}</td>
-			<td>{{x.description}}</td>
-			<td>{{x.image}}</td>
-			<td></td>
+			<td>{{x.description}}</td> 
+			<td><img ng-src="{{x.image}}" height=250 width=250 /></td>
+			<td><button type="button" "class="btn btn-primary"
+					ng-click="showReview(x)">Show Reviews</button>
+				<div ng-show="x.show">
+					<div ng-repeat="i in x.productreviews">{{i.rating}}</div>
+					<div>Average: {{x.averagereview}}</div>
+				</div></td>
+			<td></td> 
+			<td><img ng-src="{{x.image}}" /></td> 
 		</tr>
 	</table>
+</div>
+<div ng-hide="edit == 0">
+	<table>
+		<thead>
+			<tr>
+				<th>Current Inventory Information</th>
+				<th>New Inventory Information</th>
+			</tr>
+		</thead>
+		<tr>
+			<td><input ng-value="AR.name" disabled><br /> <input
+				ng-value="AR.unitPrice" disabled><br /> <input
+				ng-value="AR.quantity" disabled><br /> <input
+				ng-value="AR.description" disabled><br />
+				<button ng-click="reset()">Go Back</button></td>
+			<td><input placeholder="New Name" ng-model="newName"><br />
+				<input placeholder="New Unit Price" ng-model="newUnitPrice"
+				ng-hide="removeDiscount"><br /> <input
+				placeholder="New Quantity" ng-model="newQuantity"><br /> <input
+				placeholder="New Description" ng-model="newDescription"><br />
+				<input placeholder="% discount" ng-model="percentDiscount"
+				ng-show="perDiscount" required> <input
+				placeholder="Flat discount" ng-model="flatDiscount"
+				ng-show="fDiscount" required><br /> <input
+				placeholder="Discount Reason" ng-model="pDiscountReason"
+				ng-show="perDiscount || fDiscount" required> <br />
+				<button type="submit" ng-click="applyItem()">Submit New
+					Information</button></td>
+			<td ng-hide="discountYes == 0">Remove Discount? <input
+				type="checkbox" ng-model="removeDiscount">
+			</td>
+			<td ng-hide="discountNo == 0">Apply Discount? <input
+				type="checkbox" ng-model="showDiscount">
+				<p ng-show="showDiscount">
+					Discount Percentage? <input type="checkbox" ng-model="perDiscount">
+				</p>
+				<p ng-show="showDiscount">
+					Discount flat rate? <input type="checkbox" ng-model="fDiscount">
+				</p>
+
+
+			</td>
+		</tr>
+	</table>
+
+
 </div>

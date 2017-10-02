@@ -10,7 +10,9 @@ import com.ims.beans.LineItem;
 import com.ims.beans.Order;
 import com.ims.daos.LineItemDao;
 import com.ims.dtos.LineItemDto;
+
 import com.ims.repositories.LineItemRepository;
+
 
 @Service
 public class LineItemService {
@@ -58,6 +60,11 @@ public class LineItemService {
 		dao.removeLineItem(i);
 	}
 	
+
+	public List<LineItem> getAllLineItemsByOrderId(int id){
+		return dao.getAllByOrderId(id);
+	}
+
 	public List<Object> findBySoldByDate() {
 		return lineItemRepository.findBySoldByDate();
 	}
@@ -66,3 +73,4 @@ public class LineItemService {
 		return lineItemRepository.findBySoldByDept();
 	}
 }
+

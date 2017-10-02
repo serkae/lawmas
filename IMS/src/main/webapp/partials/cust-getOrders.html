@@ -1,0 +1,11 @@
+<div ng-repeat="order in orders">
+	<div class="list-group-item">
+		OrderID : {{order.id}} <br> Order Date: {{order.order_Date}} <br>
+		<button type="button" "class="btn btn-primary"
+			ng-click="showOrder(order)">Show Items Bought</button>
+		<div ng-show="order.show">
+			<div ng-repeat="item in order.lineitems">
+				{{item.inventoryItem.name}} : {{item.quantity}}</div>
+		</div>
+	</div>
+</div>

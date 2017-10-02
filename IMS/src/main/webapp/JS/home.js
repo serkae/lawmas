@@ -34,6 +34,11 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 		url:"/login",
 		templateUrl:"partials/login.html",
 		controller: "LoginCtrl as login"
+	})
+	.state("getPastOrders",{
+		url: "/getOrders",
+		templateUrl:"partials/cust-getOrders.html",
+		controller: "getOrdersCtrl"
 	});
 });
 
@@ -237,6 +242,35 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 	};
 });
 
+
+
+storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
+$scope.orders = [];
+	
+	var customer = CustomerService.getCustomer();
+	$http.get('rest/order/getAllByCustomerId?id=' + customer.id).then( function(response){
+		console.log(response.data);
+		var orders = response.data;
+		for(var i = 0; i < orders.length; i ++){
+			var order = orders[i];
+			var date = new Date(order.order_Date);
+			order.order_Date = date.toLocaleDateString();
+			order.show = false;
+			order.lineitems = [];
+			$scope.orders.push(order);
+		}
+	});
+	
+	$scope.showOrder = function(order){
+		console.log("called");
+		$http.get('rest/lineitem/getAllByOrderId?id=' + order.id).then(function(response){
+			console.log(response);
+			order.lineitems = response.data;
+			order.show = true;
+		});
+	}
+
+});
 
 storeApp.controller('cartController', function($scope) {
 	$scope.items = [
