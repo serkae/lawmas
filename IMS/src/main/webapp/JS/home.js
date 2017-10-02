@@ -73,6 +73,10 @@ storeApp.service('ItemsService', function($http) {
 	}
 
 	this.cart = [];
+	
+	this.emptyCart = function() {
+		this.cart = [];
+	}
 
 	this.getCart = function() {
 		return this.cart;
@@ -210,6 +214,7 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 				if ($scope.cart[i].quantity < 1) {
 					$scope.cart.splice(i, 1);
 					$state.go("cart");
+					//$state.go($state.$current, null, {reload: true});
 				}
 			}
 		}
@@ -224,6 +229,9 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 		let createOrderPromise = ItemsService.createOrder(newOrder).then(function(response) {
 			ItemsService.createLineItems(response.data);
 		});
+		ItemsService.emptyCart();
+		$scope.cart = ItemsService.getCart();
+		$state.go("cart");
 	}
 });
 
