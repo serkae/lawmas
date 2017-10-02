@@ -124,6 +124,17 @@ adminApp.service("AdminService", function($http, $q) {
 
 	console.log("after set admin = " + service.admin);
 
+	service.resetAdmin = function(){
+		service.admin={
+				id: -1,
+				firstname: "",
+				lastname: "",
+				email : "",
+				password : "",
+				authenticated : false
+		}
+	};
+	
 	service.loginAdmin = function() {
 		console.log("in loginAdmin");
 		var promise;
@@ -156,8 +167,9 @@ adminApp.controller("AdminCtrl", function(AdminService,$state) {
 		promise.then(
 				function(response) {
 					console.log("Response: "+ response);
-					if(login.admin!= null){
+					if(response.data.id !== -1){
 						login.admin.authenticated = true;
+						$rootScope.authenticated = true;
 						AdminService.setAdmin(response.data);
 						console.log("setting user in login ctrl")
 						console.log(AdminService.getAdmin());
@@ -743,4 +755,3 @@ adminApp.controller('manShowInfoController', function($scope,$http,AdminService)
 	};
 	
 });
-

@@ -289,6 +289,7 @@ storeApp.service('ItemsService', function($http) {
 	}
 });
 
+// Service that handles all things relating to Customer
 storeApp.service("CustomerService", function($http, $q){
 	console.log("in customerService");
 
@@ -361,9 +362,41 @@ storeApp.service("CustomerService", function($http, $q){
 	};
 });
 
-storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
-	console.log("in loginctrl");
+//Service that handles all things relating to Card
+storeApp.service("CardService", function($http, $q){
+	console.log("in cardService");
 
+	var cardservice = this;
+
+	cardservice.card={
+			id: -1,
+			cardnumber: "",
+			nameoncard: "",
+			expiration: "",
+			securitycode: ""
+	};
+
+	cardservice.getCard= function(){
+		return cardservice.card;
+	};
+	
+	cardservice.setCard = function(data){
+		cardservice.card.id           = data.id;
+		cardservice.card.cardnumber   = data.cardnumber;
+		cardservice.card.nameoncard   = data.nameoncard;
+		cardservice.card.expiration   = data.expiration;
+		cardservice.card.securitycode = data.securtiycode;
+	};
+	
+});
+
+// Takes in login information and handles creating a new Customer
+storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $state, $http){
+	console.log("in loginctrl");
+	$scope.createCust = false;
+	$scope.message = "";
+	$scope.messageClass = "";
+	
 	var login = this;
 	login.customer = CustomerService.getCustomer();
 
@@ -386,8 +419,39 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 				});
 
 	};
+	
+	$http.get("rest/state/getAll").then(function(response){
+		$scope.states = response.data;
+		console.log($scope.states);
+	})
+	console.log($scope.states);
+	
+	$scope.createInfo = function() {
+		var ncust = CustomerService.getCustomer();
+		
+			ncust.firstname = $scope.custInfo.firstName;
+			ncust.lastname = $scope.custInfo.lastName;
+			ncust.email = $scope.custInfo.email;
+			ncust.password = $scope.custInfo.password;
+			ncust.address = $scope.custInfo.address;
+			ncust.city = $scope.custInfo.city;
+			ncust.state = $scope.chosenState;
+			ncust.zipcode = $scope.custInfo.zipcode;
+			ncust.phone = $scope.custInfo.phone;
+			ncust.card = null;
+			
+			console.log($scope.custInfo);
+			console.log($scope.chosenState.id + " " + $scope.chosenState.name);
+			console.log(ncust);
+			
+			$http.post('rest/customer/create', ncust).then(function(response){
+				CustomerService.setCustomer(response.data);
+				$scope.message = "Customer Created."
+				$scope.messageClass = "alert-success";
+			});
+	}
+	
 });
-
 
 
 storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
@@ -418,22 +482,185 @@ storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
 
 });
 
+// Displays the Customer information and handles editing the customer information
+storeApp.controller('custShowInfoController', function($http, $scope, CustomerService, CardService) {
 
-storeApp.controller('custShowInfoController', function($scope, $state, CustomerService) {
 	console.log("this is custshow");
 	var customer = CustomerService.getCustomer();
+	
+	$scope.updateCustShow = false;
+	
 	$scope.custInfo = {
-			firstName: customer.firstname,
-			lastName: customer.lastname,
-			email: customer.email,
-			address: customer.address,
-			city: customer.city,
-			state: customer.state.name,
-			zipcode: customer.zipcode,
-			phone: customer.phone
+		firstName: customer.firstname,
+		lastName: customer.lastname,
+		email: customer.email,
+		address: customer.address,
+		city: customer.city,
+		state: customer.state,
+		zipcode: customer.zipcode,
+		phone: customer.phone,
+		card: customer.card
 	}
+	
+	if($scope.custInfo.card != null) {
+		$scope.cardlf = $scope.custInfo.card.cardnumber.substr($scope.custInfo.card.cardnumber.length - 4);
+	}
+	
+	$http.get("rest/state/getAll").then(function(response){
+		$scope.states = response.data;
+	})
+	
+	$scope.updateInfo = function(){
+		customer.firstname = $scope.custInfo.firstName;
+		customer.lastname = $scope.custInfo.lastName;
+		customer.email = $scope.custInfo.email;
+		customer.city = $scope.custInfo.city;
+		customer.state = $scope.chosenState;
+		customer.zipcode = $scope.custInfo.zipcode;
+		customer.phone = $scope.custInfo.phone;
+		
+		CustomerService.setCustomer(customer);
+		
+		$http.post('rest/customer/update', customer).then(function(response){
+			$scope.message = "Info Updated."
+			$scope.messageClass = "alert-success";
+			$scope.updateCustShow = false;
+		});
+	};
+	
+	$scope.updatePass = function(){
+		if($scope.pass1 != $scope.pass2){
+			$scope.message = "New Passwords must match!";
+			$scope.messageClass = "alert-danger";
+		}
+		else if($scope.currPass != customer.password){
+			$scope.message = "Incorrect current password!";
+			$scope.messageClass = "alert-danger";
+		}
+		else{
+			customer.password = $scope.pass1;
+			$http.post('rest/customer/update', customer).then(function(response){
+				CustomerService.setCustomer(customer);
+				$scope.passShow = false;
+				$scope.message = "Password Updated."
+				$scope.messageClass = "alert-success";
+			});
+		}
+	};
+	
+	$scope.createCard = function() {
+		var ncard = CardService.getCard();
+		
+		var dateStr = String($scope.nexpdate);
+		var date = dateStr.split("/");
+		var month = parseInt(date[0]);
+		var year = parseInt(date[1]);
+		
+		if(String($scope.ncardnum).length !== 16) {
+			$scope.cardmessage = "Card Number must contain 16 numbers!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if($scope.ncardname == "") {
+			$scope.cardmessage = "Card Name cannot be empty!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(date.length !== 2) {
+			$scope.cardmessage = "Card Expiration must be MM/YY!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(month > 12 | month == 0) {
+			$scope.cardmessage = "Card Expiration Month must be Between 01 - 12!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(year < 14) {
+			$scope.cardmessage = "Card Expiration Year must be Greater than 14!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(String($scope.nscode).length < 3) {
+			$scope.cardmessage = "Card Security Code must Contain more than 2 Numbers!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else {
+			ncard.cardnumber   = $scope.ncardnum;
+			ncard.nameoncard   = $scope.ncardname;
+			ncard.expiration   = $scope.nexpdate;
+			ncard.securitycode = $scope.nscode;
+			
+			$scope.cardlf = String(ncard.cardnumber).substr(String(ncard.cardnumber).length - 4);
+			
+			customer.card = {
+					cardnumber: -1,
+					nameoncard: "",
+					expiration: "",
+					securitycode: ""
+			}
+			
+			customer.card.cardnumber   = ncard.cardnumber;
+			customer.card.nameoncard   = ncard.nameoncard;
+			customer.card.expiration   = ncard.expiration;
+			customer.card.securitycode = ncard.securitycode;
+			
+			$http.post('rest/card/create', ncard).then(function(response){
+				CardService.setCard(ncard);
+				$http.post('rest/customer/update', customer).then(function(response){
+					CustomerService.setCustomer(customer);
+				})
+				
+				$scope.cardCustShow = false;
+				$scope.cardmessage = "Card Created."
+				$scope.cardmessageClass = "alert-success";
+			});
+		}
+	};
+	
+	$scope.updateCard = function(){
+		var dateStr = String($scope.expdate);
+		var date = dateStr.split("/");
+		var month = parseInt(date[0]);
+		var year = parseInt(date[1]);
+		
+		if(String($scope.cardnum).length !== 16) {
+			$scope.cardmessage = "Card Number must contain 16 numbers!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if($scope.cardname == "") {
+			$scope.cardmessage = "Card Name cannot be empty!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(date.length !== 2) {
+			$scope.cardmessage = "Card Expiration must be MM/YY!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(month > 12 | month == 0) {
+			$scope.cardmessage = "Card Expiration Month must be Between 01 - 12!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(year < 14) {
+			$scope.cardmessage = "Card Expiration Year must be Greater than 14!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else if(String($scope.scode).length < 3) {
+			$scope.cardmessage = "Card Security Code must Contain more than 2 Numbers!";
+			$scope.cardmessageClass = "alert-danger";
+		}
+		else {
+			customer.card.cardnumber = $scope.cardnum;
+			customer.card.nameoncard = $scope.cardname;
+			customer.card.expiration = $scope.expdate;
+			customer.card.securitycode = $scope.scode;
+			
+			$scope.cardlf = String($scope.cardnum).substr(String($scope.cardnum).length - 4);
+			
+			$http.post('rest/customer/update', customer).then(function(response){
+				CustomerService.setCustomer(customer);
+				$scope.cardCustShow = false;
+				$scope.cardmessage = "Card Info Updated."
+				$scope.cardmessageClass = "alert-success";
+			});
+		}
+	};
+	
 });
-
 
 storeApp.service("ItemService", function($http, $q){
 	var service = this;
