@@ -23,7 +23,7 @@
 			 <p class="card-text">{{department.items[department.index][0].description}}</p>
 			 <hr>
 			 <button class="btn btn-primary" ng-click="viewPage(department.items[department.index][0])">See more</button>
-			 <button class="btn btn-info" ng-click="addToCart(department.items[department.index][0]),1)" ng-disabled="department.items[department.index][0].inCart">
+			 <button class="btn btn-info" ng-click="addItemToCart(department.items[department.index][0],1)" ng-disabled="department.items[department.index][0].inCart">
 			 <span ng-hide="department.items[department.index][0].inCart"><i class="fa fa-cart-plus" aria-hidden="true"></i>Add To Cart</span>
 			 <span ng-hide="!department.items[department.index][0].inCart"><i class="fa fa-plus" aria-hidden="true"></i>In Cart</span>
 			 </button>
@@ -41,7 +41,7 @@
 			 <p class="card-text">{{department.items[department.index][1].description}}</p>
 			 <hr>
 			 <button class="btn btn-primary" ng-click="viewPage(department.items[department.index][1])">See more</button>
-			 <button class="btn btn-info" ng-click="addToCart(department.items[department.index][1]),1)" ng-disabled="department.items[department.index][1].inCart">
+			 <button class="btn btn-info" ng-click="addItemToCart(department.items[department.index][1],1)" ng-disabled="department.items[department.index][1].inCart">
 			 <span ng-hide="department.items[department.index][1].inCart"><i class="fa fa-cart-plus" aria-hidden="true"></i>Add To Cart</span>
 			 <span ng-hide="!department.items[department.index][1].inCart"><i class="fa fa-plus" aria-hidden="true"></i>In Cart</span>
 			 </button>
@@ -59,7 +59,7 @@
 			 <p class="card-text">{{department.items[department.index][2].description}}</p>
 			 <hr>
 			 <button class="btn btn-primary" ng-click="viewPage(department.items[department.index][2])">See more</button>
-			 <button class="btn btn-info" ng-click="addToCart(department.items[department.index][2]),1)" ng-disabled="department.items[department.index][2].inCart">
+			 <button class="btn btn-info" ng-click="addItemToCart(department.items[department.index][2],1)" ng-disabled="department.items[department.index][2].inCart">
 			 <span ng-hide="department.items[department.index][2].inCart"><i class="fa fa-cart-plus" aria-hidden="true"></i>Add To Cart</span>
 			 <span ng-hide="!department.items[department.index][2].inCart"><i class="fa fa-plus" aria-hidden="true"></i>In Cart</span>
 			 </button>
