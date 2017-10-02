@@ -40,15 +40,23 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,$state) {
 	$scope.sortType = "department";
 	$scope.sortReverse = false;
-	let itemsToShow = [];
+	$rootScope.departments = [];
 	let allInvItems;
-	let allDepts;
 	$http.get('rest/inventoryitem/getAll').then(function(data) {
 		allInvItems = data.data;
 		$http.get('rest/department/getAll').then(function(response) {
-			allDepts = response.data;
+			$rootScope.departments = response.data;
+			$rootScope.departments.forEach(function(dept) {
+				dept.items = [];
+				dept.show = [];
+				dept.index = -1;
+				dept.count = 0;
+				dept.increaseIndex = function(){if(dept.index + 1 != dept.items.length){dept.index++;console.log(dept.index);}};
+				dept.reduceIndex = function(){if(dept.index - 1 != -1){dept.index--;console.log(dept.index);}};
+			});
+			console.log($rootScope.departments);
 			allInvItems.forEach(function(item) {
-				allDepts.forEach(function(dept) {
+				$rootScope.departments.forEach(function(dept) {
 					if (item.departmentid === dept.id) {
 						
 						//manage image sizes to 250 x 250
@@ -66,7 +74,15 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 						}
 						
 						//push item
-						itemsToShow.push({
+						dept.count++;
+						if(dept.count % 3 == 1){
+							//add new item row
+							dept.items.push([]);
+							dept.show.push([]);
+							dept.index++;
+						}
+						dept.show[dept.index].push(true);
+						dept.items[dept.index].push({
 							id: item.id,
 							name: item.name,
 							unitPrice: item.unitPrice,
@@ -81,9 +97,12 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 					}
 				});
 			});
+			console.log($rootScope.departments);
+			$rootScope.departments.forEach(function(dept) {
+				dept.index = 0;
+			});
 		});
 	});
-	$scope.itemsToShow = itemsToShow;
 
 	$scope.viewPage = function(item){
 		ItemService.setItem(item);
