@@ -118,4 +118,15 @@ public class LineItemController {
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping("/soldByDate")
+	public List<Object> findBySoldByDate() {
+		return liservice.findBySoldByDate();
+	}
+
+	@RequestMapping("/soldByDept")
+	public List<Object> findBySoldByDept() {
+		return liservice.findBySoldByDept();
+	}
+
 }

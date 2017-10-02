@@ -1,4 +1,3 @@
-
 /**
  * BASIC LOGIN STUFF
  */
@@ -73,6 +72,11 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl: "partials/viewCurrentInventory.html",
 		controller: "invCtrl"
 	})
+	.state("managerLogout", {
+		url: "/managerLogin",
+		templateUrl: "partials/viewCurrentInventory.html",
+		controller: "invCtrl"
+	})
 	.state("customers",{
 		url: "/man-show-all-custs",
 		templateUrl: "partials/man-show-all-custs.html",
@@ -83,11 +87,6 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl: "partials/man-show-info.html",
 		controller: "manShowInfoController"
 	});
-
-
-
-
-
 
 	console.log("IN HERE");
 
@@ -101,6 +100,8 @@ adminApp.service("AdminService", function($http, $q) {
 
 	service.admin = {
 			id: -1,
+			firstname : "",
+			lastname : "",
 			email: "",
 			password: "",
 			authenticated: false
@@ -114,6 +115,8 @@ adminApp.service("AdminService", function($http, $q) {
 
 	service.setAdmin= function(data) {
 		service.admin.id = data.id;
+		service.admin.firstname = data.firstname;
+		service.admin.lastname = data.lastname;
 		service.admin.email = data.email;
 		service.admin.password = data.password;
 		service.admin.authenticated = data.authenticated;
@@ -249,7 +252,6 @@ adminApp.service("InventoryService", function($http, $q){
 adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, fileUpload){
 	console.log("in manageCtrl");
 
-
 	$scope.name = "";
 	$scope.description = "";
 	$scope.unitPrice;
@@ -282,6 +284,8 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 
 	var inventory = this;
 
+
+
 	inventory.addDepartment = function(){
 		var department = {
 				"id" : -1,
@@ -293,7 +297,6 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 			console.log("department "+response.data.name+" added");
 		})
 	}
-
 	inventory.addItem = function(){
 
 		//if file wants to be included
@@ -349,9 +352,7 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 		}
 	}
 
-
 });
-
 
 
 
@@ -667,63 +668,7 @@ adminApp.controller("addremoveCtrl", function(AddRemoveService, $scope,$http,$st
 
 
 
-//	var discount = this;
-//	discount.item = {
 
-//	}
-//	$http.post("rest/discount/update", discount.item).success(function(){
-//	console.log("Discount REMOVED?");
-//	})
-//	}
-
-
-
-//	if($scope.newName != null){
-//	inventory.name = $scope.newName;
-//	}
-//	if($scope.newUnitPrice != null){
-//	if($scope.newUnitPrice < 0){
-//	$scope.newUnitPrice = 0;
-//	}
-//	inventory.unitPrice = $scope.newUnitPrice;
-//	}
-//	if(inventory.discountType == 0){
-//	inventory.unitPrice = inventory.unitPrice - $scope.flatDiscount;
-//	}
-//	if(inventory.discountType == 1){
-//	inventory.unitPrice = inventory.unitPrice - (inventory.unitPrice * inventory.discountAmount);
-//	}
-//	if(inventory.discountType == -1){
-//	inventory.unitPrice = inventory.unitPrice + originalPrice;
-//	console.log(inventory.unitPrice);
-//	}
-//	if($scope.newQuantity != null){
-//	if($scope.newQuantity < 0){
-//	$scope.newQuantity = 0;
-//	}
-//	console.log($scope.newQuantity);
-//	inventory.quantity = $scope.newQuantity;
-//	}
-//	if($scope.newDescription != null){
-//	inventory.description = $scope.newDescription;
-//	}
-//	inventory.item = {
-//	id: inventory.id,
-//	name: inventory.name,
-//	description: inventory.description,
-//	unitPrice: inventory.unitPrice,
-//	quantity: inventory.quantity,
-//	departmentid: inventory.departmentid,
-//	discountid: discountInfo.discountID,
-//	image: inventory.image	
-//	}
-//	console.log(inventory.item);
-//	$http.post("rest/inventoryitem/update", inventory.item).success(function(data){
-//	console.log(data);
-//	console.log("Item updated successfully?")
-//	$scope.reset();
-//	resetData();
-//	})
 
 
 
@@ -752,15 +697,50 @@ adminApp.controller('showAllCustsController', function($scope,$http) {
  * ADMIN INFO
  */
 
-adminApp.controller('manShowInfoController', function($scope) {
-	$scope.manInfo = {
-			firstName: "Michael",
-			lastName: "Scott",
-			email: "mscott@mailinator.com"
-	}
-});
 
-/**
- * BASIC LOGIN STUFF
- */
+adminApp.controller('manShowInfoController', function($scope,$http,AdminService) {
+	admin = AdminService.getAdmin();
+	$scope.updateShow = false;
+	$scope.message = "";
+	$scope.messageClass = "";
+	$scope.manInfo = {
+			firstName: admin.firstname,
+			lastName: admin.lastname,
+			email: admin.email
+	}
+	$scope.updateInfo = function(){
+		admin.firstname = $scope.manInfo.firstName;
+		admin.lastname = $scope.manInfo.lastName;
+		admin.email = $scope.manInfo.email;
+		
+		AdminService.setAdmin(admin);
+		
+		$http.post('rest/admin/update', admin).then(function(response){
+			$scope.message = "Info Updated."
+			$scope.messageClass = "alert-success";
+			$scope.updateShow = false;
+		});
+	};
+	
+	$scope.updatePass = function(){
+		if($scope.pass1 != $scope.pass2){
+			$scope.message = "New Passwords must match!";
+			$scope.messageClass = "alert-danger";
+		}
+		else if($scope.currPass != admin.password){
+			$scope.message = "Incorrect current password!"
+			$scope.messageClass = "alert-danger";
+		}
+		else{
+			admin.password = $scope.pass1;
+			$http.post('rest/admin/update', admin).then(function(response){
+				AdminService.setAdmin(admin);
+				$scope.passShow = false;
+				$scope.message = "Password Updated."
+				$scope.messageClass = "alert-success";
+			});
+		}
+	};
+	
+});
 

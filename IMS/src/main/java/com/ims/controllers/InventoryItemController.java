@@ -1,4 +1,3 @@
-
 package com.ims.controllers;
 
 import java.io.File;
@@ -48,7 +47,6 @@ public class InventoryItemController {
 	public void setInventoryItemService(InventoryItemService inventoryItemService) {
 		this.inventoryItemService = inventoryItemService;
 	}
-
 	public void setdService(DepartmentService dService) {
 		this.dService = dService;
 	}
@@ -76,6 +74,7 @@ public class InventoryItemController {
 		iDto.setId(i.getId());
 		return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
 	}
+
 	@RequestMapping(value="/getAll",method=(RequestMethod.GET),produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<List<InventoryItemDto>> getAllItems(){
 		List<InventoryItemDto> dtos = new ArrayList<InventoryItemDto>();
@@ -182,12 +181,11 @@ public class InventoryItemController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		System.out.println("file link: https://s3.amazonaws.com/"+bucketname+"/"+f.getOriginalFilename());
 		ResponseEntity<String> r = new ResponseEntity<String>("https://s3.amazonaws.com/"+bucketname+"/"+f.getOriginalFilename(),HttpStatus.OK);
 		System.out.println(r.getBody());
 		return new ResponseEntity<String>("https://s3.amazonaws.com/"+bucketname+"/"+f.getOriginalFilename(), HttpStatus.OK);
-
+	
 
 	}
 	@RequestMapping(value="/removeDiscount",method=(RequestMethod.POST),
@@ -211,5 +209,17 @@ public class InventoryItemController {
 		iDto.setDiscountid(-1);
 		return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
 
+		
+		
+	}
+	
+	@RequestMapping("/countByDept")
+	public List<Object> findByItemsByDept() {
+		return inventoryItemService.findDeptCount();
+	}
+	
+	@RequestMapping("/countDiscountsByDept")
+	public List<Object> findByDiscountedItemsByDept() {
+		return inventoryItemService.findByDiscountedItemsByDept();
 	}
 }
