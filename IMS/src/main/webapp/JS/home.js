@@ -62,7 +62,6 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 				dept.increaseIndex = function(){if(dept.index + 1 != dept.items.length){dept.index++;console.log(dept.index);}};
 				dept.reduceIndex = function(){if(dept.index - 1 != -1){dept.index--;console.log(dept.index);}};
 			});
-			console.log($rootScope.departments);
 			allInvItems.forEach(function(item) {
 				$rootScope.departments.forEach(function(dept) {
 					if (item.departmentid === dept.id) {
@@ -71,6 +70,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 						var i = new Image();
 						var w = 0;
 						var h = 0;
+						var now = new Date().getTime();
 						if(item.image != null){
 							i.src = item.image;
 							while(i.width > 250 || i.height > 250){
@@ -80,6 +80,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 							w = i.width;
 							h = i.height;
 						}
+						var shrink_speed = (new Date().getTime() - now);
 
 						//push item
 						dept.count++;
@@ -883,6 +884,7 @@ storeApp.controller('viewCartController', function($rootScope,$scope,$state,$htt
 	
 	$scope.processOrder = function(){
 		$scope.showProcessing = true;
+		$scope.progress = 100;
 		let newOrder = {
 				id: -1,
 				customer: $rootScope.customer,
@@ -890,14 +892,17 @@ storeApp.controller('viewCartController', function($rootScope,$scope,$state,$htt
 		}
 		ItemsService.createOrder(newOrder).then(function(response) {
 			console.log(response.data);
+			newOrder = response.data;
 			ItemsService.setCart = $scope.cart;
 			$scope.cart.forEach(function(item){
 				ItemsService.createLineItem(response.data,item);
 			});
-			$http.post('rest/order/sendEmail',newOrder);
 		});
 		ItemsService.emptyCart();
-		$timeout( function(){ $state.go('getPastOrders');} , 5000);
+		$timeout( function(){ 
+				$http.post('rest/order/sendEmail',newOrder);
+				$state.go('getPastOrders');	
+			} , 5000);
 	};
 });
 

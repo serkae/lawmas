@@ -1,6 +1,6 @@
 package com.ims.controllers;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Properties;
 
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.ims.beans.Customer;
 import com.ims.beans.LineItem;
 import com.ims.beans.Order;
 import com.ims.services.CustomerService;
@@ -165,15 +164,25 @@ public class OrderController {
 			message.setSubject("WorldTree Order Confirmation");
 
 			List<LineItem> items = lservice.getAllLineItemsByOrderId(o.getId());
-			List<String> itemnames = new ArrayList<String>();
-			for(LineItem l : items) {
-				System.out.println(l.getInventoryItem().getName());
-				itemnames.add(l.getInventoryItem().getName());
+			StringBuilder textMessage = new StringBuilder();
+			textMessage.append("Hello "+o.getCustomer().getFirstname() +", you have recently made an order on WorldTree!"+
+					" Order id: " +o.getId()+" and order date: " +o.getOrder_Date()+")."+ "\nYour items: \n\n");
+			float total = 0;
+			for(LineItem i : items) {
+				float price = i.getQuantity()*i.getInventoryItem().getUnitPrice();
+				total += price;
+				textMessage.append("$" + String.valueOf(price) + " : $"+i.getInventoryItem().getUnitPrice()+ " x " + String.valueOf(i.getQuantity())
+									+"    "+ i.getInventoryItem().getName()+"\n");
 			}
+			DecimalFormat df = new DecimalFormat();
+			df.setMaximumFractionDigits(2);
+			textMessage.append("Total: $" + df.format(total) + "\n\n");
+			textMessage.append("Thank you for shopping at World Tree!\n-----------------------------------------\n");
+			textMessage.append("http://ec2-34-207-186-87.compute-1.amazonaws.com:8080/WorldTree");
+			
+			
 			// Now set the actual message
-			message.setText("Hello, you have recently made an order on WorldTree!"+
-					" Order id: " +o.getId()+" and order date: " +o.getOrder_Date()+")."+ "Your items: " + itemnames.toString() +
-					" Thank you!");
+			message.setText(textMessage.toString());
 
 			// Send message
 			Transport.send(message);

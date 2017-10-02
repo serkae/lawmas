@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ims.beans.InventoryItem;
@@ -60,8 +59,9 @@ public class LineItemController {
 		
 		//setup line item to insert and execute
 		LineItem i = new LineItem(dto.getId(),o,dto.getQuantity(),a);
-
 		dto = liservice.createOrUpdateLineItem(i);
+		a.setQuantity(a.getQuantity()-dto.getQuantity());
+		iiservice.createOrUpdate(a);
 		return new ResponseEntity<LineItemDto>(dto, HttpStatus.OK);
 		
 	}
