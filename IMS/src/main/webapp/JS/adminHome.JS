@@ -65,7 +65,7 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 	.state("manageInventoryHome.add-remove",{
 		url: "/add-remove",
 		templateUrl: "partials/add-remove.html",
-		controller: "addremoveCtrl"
+		controller: "addremoveCtrl as AR"
 	})
 	.state("manageInventoryHome.viewCurrentInventory",{
 		url: "/viewCurrentInventory",
@@ -87,6 +87,7 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl: "partials/man-show-info.html",
 		controller: "manShowInfoController"
 	});
+
 	console.log("IN HERE");
 
 });
@@ -271,16 +272,20 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 			discountid: -1,
 			image: $scope.image
 	};
-	
+
 	var setDepartments = function(){
 		$http.get("rest/department/getAll").then(function(response){
 			$scope.departments = response.data;
 		})
+
 	}
 	setDepartments();
-	
+
+
 	var inventory = this;
-	
+
+
+
 	inventory.addDepartment = function(){
 		var department = {
 				"id" : -1,
@@ -292,7 +297,6 @@ adminApp.controller("manageCtrl", function(InventoryService, $scope, $http, file
 			console.log("department "+response.data.name+" added");
 		})
 	}
-	
 	inventory.addItem = function(){
 
 		//if file wants to be included
@@ -364,15 +368,308 @@ adminApp.controller("invCtrl", function($scope,$http){
 
 });
 
-adminApp.controller("addremoveCtrl", function($scope,$http){
+
+adminApp.service("AddRemoveService", function($http){
+	var service = this;
+
+
+
+	service.discount = {
+			discountID: -1,
+			discount_Type: -1,
+			amount: -1,
+			description: " ",
+			startDate: null,
+			endDate: null
+	}
+
+	service.getDiscount = function(){
+		console.log(service.discount);
+		return service.discount;
+	}
+	service.setDiscount = function(data){
+		service.discount.discountID = data.discountID;
+		service.discount.discount_Type = data.discount_Type;
+		service.discount.amount = data.amount;
+		service.discount.description = data.description;
+		service.discount.startDate = data.startDate;
+		service.discount.endDate = data.endDate;
+		console.log(service.discount);
+	}
+
+
+})
+
+adminApp.controller("addremoveCtrl", function(AddRemoveService, $scope,$http,$state){
+
+	$scope.discount;
 	console.log("in add-remove controller");
+
+	var inventory = this;
+
 	$scope.sortType = "id";
 	$scope.sortReverse = false;
 	$scope.searchItem = "";
+	$scope.edit = 0;
+	$scope.discountYes = 0;
+	$scope.discountNo = 0;
+
+
+	inventory.id = -1;
+	inventory.name = "";
+	inventory.description = "";
+	inventory.unitPrice = -1;
+	inventory.quantity = -1;
+	inventory.departmentid = -1;
+	inventory.discountid = -1;
+	inventory.image = null;
+
+
+
+
+
+	$scope.change = function(data){
+		console.log($scope.edit);
+		inventory.id = data.id;
+		console.log(inventory.id);
+		console.log($scope.edit);
+		inventory.name = data.name;
+		inventory.departmentid = data.departmentid;
+		inventory.discountid = data.discountid
+		inventory.image = data.image;
+		inventory.unitPrice = data.unitPrice;
+		inventory.quantity = data.quantity;
+		inventory.description = data.description;	
+		$scope.edit = 1;
+		if(inventory.discountid != -1){
+			$scope.discountYes = 1;
+		}
+		else{
+			$scope.discountNo = 1;
+		}
+
+	}
+	$scope.reset = function(){
+		$scope.edit = 0;
+		$scope.discountYes = 0;
+		$scope.discountNo = 0;
+	}
+
+	var resetData = function(){
+
+		$http.get("rest/inventoryitem/getAll").success(function(data){
+			$scope.itemlist = data;		
+
+		});
+	}
+
+	resetData();
+
 
 	$http.get("rest/inventoryitem/getAll").success(function(data){
 		$scope.itemlist = data;
+		console.log(data);
+
 	})
+	
+	$scope.showReview = function(item){
+		console.log("called");
+		$http.get('rest/productreview/getAllByInventoryItemId?id=' + item.id).then(function(response){
+			console.log(response);
+			item.productreviews = response.data;
+			item.show = true;
+		});
+		$http.get('rest/productreview/getAverageReviewFromItemId?id=' + item.id).then(function(response){
+			console.log(response);
+			item.averagereview = response.data;
+		});
+	}
+
+
+	var something;
+	$scope.applyItem = function(){
+		
+		if($scope.percentDiscount != null || $scope.flatDiscount != null){
+			$scope.testDiscount = 0;
+			var discount = this;
+			if($scope.percentDiscount != null){
+				discount.discountType = 1;
+				discount.discountAmount = ($scope.percentDiscount/100);
+			}
+			if($scope.flatDiscount != null){
+				discount.discountType = 0;
+				discount.discountAmount = $scope.flatDiscount;
+				if($scope.flatDiscount > inventory.unitPrice){
+					alert("Cannot have the discount be greater than the unit price");
+					return;
+				}
+			}
+			$scope.date = new Date();
+			discount.startDate = $scope.date
+			discount.disDescription = $scope.pDiscountReason;
+			$scope.discount = {
+					discountID: -1,
+					discount_Type: discount.discountType,
+					amount: discount.discountAmount,
+					description: discount.disDescription,
+					startDate: discount.startDate
+			}
+			var newDiscount = $scope.discount;
+			$scope.editItem(newDiscount);
+			return;
+		}
+		if($scope.removeDiscount === true){
+			console.log("We in removing");
+			var discount = this;
+			
+			console.log(inventory.discountid);
+
+			var originalPrice;
+			$http.get("rest/discount/getAll").success(function(data){
+			for(var i = 0; i < data.length; i++){
+				if(inventory.discountid == data[i].discountID){
+					var discountID = data[i].discountID;
+					var oldDiscount = data[i].amount;
+					var oldDescription = data[i].description;
+					var theID = data[i].discount_Type;
+					console.log(theID);
+					var startDate = data[i].startDate;
+
+				}
+	}
+			$scope.date = new Date();
+			discount.endDate = $scope.date
+			$scope.discount = {
+					discountID: discountID,
+					discount_Type: theID,
+					amount: oldDiscount,
+					description: oldDescription,
+					startDate: startDate,
+					endDate: discount.endDate
+			}
+			$scope.inventory = {
+					id: inventory.id,
+					name: inventory.name,
+					description: inventory.description,
+					unitPrice: inventory.unitPrice,
+					quantity: inventory.quantity,
+					departmentid: inventory.departmentid,
+					discountid: inventory.discountid,
+					image: inventory.image
+					
+			}
+			console.log($scope.inventory);
+			var revInventory = $scope.inventory;
+			var revDiscount = $scope.discount;
+			console.log(revDiscount);
+			$scope.removeItem(revInventory,revDiscount);
+			console.log(revInventory,revDiscount);
+			return;
+	});
+
+		}
+	}
+
+	$scope.removeItem = function(inv,dis){
+
+		if(dis.discount_Type == 0){
+			inv.unitPrice = inv.unitPrice + dis.amount;
+		}
+		if(dis.discount_Type == 1){
+			inv.unitPrice = inv.unitPrice + (inv.unitPrice * dis.amount);
+		}
+		
+		
+		$http.post("rest/inventoryitem/removeDiscount", inv,dis).then(function(response){
+			console.log(inv);
+			console.log(dis);
+			console.log(response);
+			
+			$scope.reset();
+			resetData();
+		});
+		
+		
+		
+	}
+	
+	$scope.editItem = function(data){
+		console.log(data);
+
+		console.log("New name: " + inventory.name);
+		console.log("New scope: " + inventory.unitPrice);
+		console.log("The discount id before URL is: " + data.discountID);
+
+		$http.post("rest/discount/create", data).then(function(response){
+
+			console.log(response);
+			console.log("New discount created?");
+			//AddRemoveSerivce.setDiscount(data);
+			data = response
+			console.log(data);
+			console.log(response.data.discountID);
+			console.log(response.data.amount);
+			console.log(response.data.discount_Type);
+			//console.log("In the Post: " + AddRemoveService.getDiscount());
+			if($scope.newName != null){
+				inventory.name = $scope.newName;
+			}
+			if($scope.newUnitPrice != null){
+				if($scope.newUnitPrice < 0){
+					$scope.newUnitPrice = 0;
+				}
+				inventory.unitPrice = $scope.newUnitPrice;
+			}
+			if(response.data.discount_Type == 0 && response.data.discountID != -1){
+				inventory.unitPrice = inventory.unitPrice - response.data.amount;
+				console.log(inventory.unitPrice);
+			}
+			if(response.data.discount_Type == 1 && response.data.discountID != -1){
+				inventory.unitPrice = inventory.unitPrice - (inventory.unitPrice * response.data.amount);
+			}
+			if($scope.newQuantity != null){
+				if($scope.newQuantity < 0){
+					$scope.newQuantity = 0;
+				}
+				console.log($scope.newQuantity);
+				inventory.quantity = $scope.newQuantity;
+			}
+			if($scope.newDescription != null){
+				inventory.description = $scope.newDescription;
+			}
+			inventory.item = {
+					id: inventory.id,
+					name: inventory.name,
+					description: inventory.description,
+					unitPrice: inventory.unitPrice,
+					quantity: inventory.quantity,
+					departmentid: inventory.departmentid,
+					discountid: response.data.discountID,
+					image: inventory.image	
+			}
+			console.log(inventory.item.discountid);
+			$http.post("rest/inventoryitem/update", inventory.item).then(function(data){
+				console.log(data);
+				console.log("Item updated successfully?")
+				$scope.reset();
+				resetData();
+				return;
+			}) 
+			console.log(inventory.item.discountid);
+			
+			
+		})
+		
+		
+	}
+
+
+
+
+
+
+
+
 
 
 });
@@ -399,6 +696,7 @@ adminApp.controller('showAllCustsController', function($scope,$http) {
 /*
  * ADMIN INFO
  */
+
 
 adminApp.controller('manShowInfoController', function($scope,$http,AdminService) {
 	admin = AdminService.getAdmin();
@@ -445,3 +743,4 @@ adminApp.controller('manShowInfoController', function($scope,$http,AdminService)
 	};
 	
 });
+

@@ -1,7 +1,3 @@
-/**
- * 
- */
-
 var storeApp = angular.module("storeApp", ["ui.router"]);
 
 storeApp.config(function($stateProvider, $urlRouterProvider) {
@@ -25,148 +21,108 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 		url: "/cart",
 		templateUrl: "partials/cust-cart.html"
 	})
-	.state("confirmCheckout", {
-		url: "/confirmCheckout",
-		templateUrl: "partials/confirm-checkout.html"
+	.state("viewItem", {
+		url: "/item",
+		templateUrl: "partials/view-item.html",
+		controller: "viewItemController"
 	})
 	.state("login", {
 		url:"/login",
 		templateUrl:"partials/login.html",
 		controller: "LoginCtrl as login"
+	})
+	.state("confirmCheckout", {
+		url: "/confirmCheckout",
+		templateUrl: "partials/confirm-checkout.html"
+	})
+	.state("getPastOrders",{
+		url: "/getOrders",
+		templateUrl:"partials/cust-getOrders.html",
+		controller: "getOrdersCtrl"
 	});
 });
 
-storeApp.service('ItemsService', function($http) {
-	this.itemsToShow;
-
-	this.getItemsToShow = function() {
-		return this.itemsToShow;
-	}
-
-	this.getItemByID = function(id) {
-		for (i = 0; i < this.itemsToShow.length; i++) {
-			if (this.itemsToShow[i].id === id) {
-				return this.itemsToShow[i];
-			}
-		}
-	}
-
-	this.setItemsToShow = function(items) {
-		this.itemsToShow = items;
-	}
-
-	this.lineItem = {
-			id: -1,
-			orderid: -1,
-			quantity: 0,
-			inventoryitemid: -1
-	};
-
-	this.getLineItem = function() {
-		return this.lineItem;
-	};
-
-	this.setLineItem = function(orderid, itemid) {
-		this.lineItem.id = -1,
-		this.lineItem.orderid = orderid,
-		this.lineItem.inventoryitemid = itemid
-	};
-
-	this.incrementQuantity = function() {
-		this.lineItem.quatity += 1;
-	}
-
-	this.cart = [];
-
-	this.emptyCart = function() {
-		this.cart = [];
-	}
-
-	this.getCart = function() {
-		return this.cart;
-	};
-
-	this.addToCart = function(lineItem) {
-		this.cart.push(lineItem);
-	}
-
-	this.createOrder = function(order) {
-		let promise = $http.post('rest/order/create', order).then(
-				function(response) {
-					return response;
-				},
-				function(error) {
-					return error;
-				}
-		);
-		return promise;
-	}
-
-	this.createLineItems = function(order) {
-		let promise;
-		this.cart.forEach(function(item) {
-			let lineItem = {
-					id: -1,
-					orderid: order.id,
-					quantity: item.quantity,
-					inventoryitemid: item.id
-			}
-			promise = $http.post('rest/lineitem/create', lineItem).then(
-					function(response) {
-						return response;
-					},
-					function(error) {
-						return error;
-					}
-			);
-		});
-		return promise;
-	}
-
-});
-
-storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
+storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,$state) {
+	$scope.sortType = "department";
 	$scope.sortReverse = false;
-	let itemsToShow = [];
+	$rootScope.departments = [];
 	let allInvItems;
-	let allDepts;
-	$http.get('rest/inventoryitem/getAll').success(function(data) {
-		allInvItems = data;
-		$http.get('rest/department/getAll').success(function(data) {
-			allDepts = data;
+	$http.get('rest/inventoryitem/getAll').then(function(data) {
+		allInvItems = data.data;
+		$http.get('rest/department/getAll').then(function(response) {
+			$rootScope.departments = response.data;
+			$rootScope.departments.forEach(function(dept) {
+				dept.items = [];
+				dept.show = [];
+				dept.index = -1;
+				dept.count = 0;
+				dept.increaseIndex = function(){if(dept.index + 1 != dept.items.length){dept.index++;console.log(dept.index);}};
+				dept.reduceIndex = function(){if(dept.index - 1 != -1){dept.index--;console.log(dept.index);}};
+			});
+			console.log($rootScope.departments);
 			allInvItems.forEach(function(item) {
-				allDepts.forEach(function(dept) {
+				$rootScope.departments.forEach(function(dept) {
 					if (item.departmentid === dept.id) {
-						itemsToShow.push({
+
+						//manage image sizes to 250 x 250
+						var i = new Image();
+						var w = 0;
+						var h = 0;
+						if(item.image != null){
+							i.src = item.image;
+							while(i.width > 250 || i.height > 250){
+								i.width *= .75;
+								i.height *= .75;
+							}
+							w = i.width;
+							h = i.height;
+						}
+
+						//push item
+						dept.count++;
+						if(dept.count % 3 == 1){
+							//add new item row
+							dept.items.push([]);
+							dept.show.push([]);
+							dept.index++;
+						}
+						dept.show[dept.index].push(true);
+						dept.items[dept.index].push({
 							id: item.id,
 							name: item.name,
 							unitPrice: item.unitPrice,
 							quantity: item.quantity,
-							department: dept.name,
+							department: dept,
 							description: item.description,
-							image: item.image
+							discountid: item.discountid,
+							image: item.image,
+							imageWidth: w,
+							imageHeight: h
 						});
 					}
 				});
 			});
-			itemsToShow.sort(function(a, b) {
-				if (a.department < b.department) {
-					return -1;
-				}
-				if (a.department > b.department) {
-					return 1;
-				}
-				return 0;
+			console.log($rootScope.departments);
+			$rootScope.departments.forEach(function(dept) {
+				dept.index = 0;
 			});
-			$scope.itemsToShow = itemsToShow;
-			ItemsService.setItemsToShow(itemsToShow);
-			console.log($scope.itemsToShow);
 		});
 	});
-});
 
-storeApp.controller('CartController', function(ItemsService, CustomerService, $http, $scope, $state) {
-
+	$scope.viewPage = function(item){
+		ItemService.setItem(item);
+		$state.go("viewItem");
+	};
+	//logout functionality
+	$rootScope.logout = function () {
+		console.log("within logout");
+		$rootScope.authenticated = false;
+		CustomerService.resetCustomer();
+		console.log(CustomerService.getCustomer());
+		$state.go("mainStorePage");
+	};
+	
+	//------------------------------------------Cart
 	$scope.addItemToCart = function(id) {
 		let item = ItemsService.getItemByID(id);
 		itemToAdd = {
@@ -230,9 +186,9 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 			$state.go("login");
 		} else {
 			let newOrder = {
-				id: -1,
-				customer: customer,
-				order_Date: new Date().getTime()
+					id: -1,
+					customer: customer,
+					order_Date: new Date().getTime()
 			}
 			let createOrderPromise = ItemsService.createOrder(newOrder).then(function(response) {
 				ItemsService.createLineItems(response.data);
@@ -241,6 +197,95 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 			$scope.cart = ItemsService.getCart();
 			$state.go("confirmCheckout");
 		}
+	}
+});
+
+
+storeApp.service('ItemsService', function($http) {
+	this.itemsToShow;
+
+	this.getItemsToShow = function() {
+		return this.itemsToShow;
+	}
+
+	this.getItemByID = function(id) {
+		for (i = 0; i < this.itemsToShow.length; i++) {
+			if (this.itemsToShow[i].id === id) {
+				return this.itemsToShow[i];
+			}
+		}
+	}
+
+	this.setItemsToShow = function(items) {
+		this.itemsToShow = items;
+	}
+
+	this.lineItem = {
+			id: -1,
+			orderid: -1,
+			quantity: 0,
+			inventoryitemid: -1
+	};
+
+	this.getLineItem = function() {
+		return this.lineItem;
+	};
+
+	this.setLineItem = function(orderid, itemid) {
+		this.lineItem.id = -1,
+		this.lineItem.orderid = orderid,
+		this.lineItem.inventoryitemid = itemid
+	};
+
+	this.incrementQuantity = function() {
+		this.lineItem.quantity += 1;
+	}
+
+	this.cart = [];
+
+	this.emptyCart = function() {
+		this.cart = [];
+	}
+
+	this.getCart = function() {
+		return this.cart;
+	};
+
+	this.addToCart = function(lineItem) {
+		this.cart.push(lineItem);
+	}
+
+	this.createOrder = function(order) {
+		let promise = $http.post('rest/order/create', order).then(
+				function(response) {
+					return response;
+				},
+				function(error) {
+					return error;
+				}
+		);
+		return promise;
+	}
+
+	this.createLineItems = function(order) {
+		let promise;
+		this.cart.forEach(function(item) {
+			let lineItem = {
+					id: -1,
+					orderid: order.id,
+					quantity: item.quantity,
+					inventoryitemid: item.id
+			}
+			promise = $http.post('rest/lineitem/create', lineItem).then(
+					function(response) {
+						return response;
+					},
+					function(error) {
+						return error;
+					}
+			);
+		});
+		return promise;
 	}
 });
 
@@ -291,7 +336,6 @@ storeApp.service("CustomerService", function($http, $q){
 		service.customer.lastname   = data.lastname;
 		service.customer.email      = data.email;
 		service.customer.password   = data.password;
-		service.authenticated       = data.authenticated;
 		service.customer.address    = data.address;
 		service.customer.city       = data.city;
 		service.customer.state      = data.state;
@@ -344,7 +388,38 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $state){
 	};
 });
 
-storeApp.controller('custShowInfoController', function($scope, $rootScope, $state,CustomerService) {
+
+
+storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
+	$scope.orders = [];
+
+	var customer = CustomerService.getCustomer();
+	$http.get('rest/order/getAllByCustomerId?id=' + customer.id).then( function(response){
+		console.log(response.data);
+		var orders = response.data;
+		for(var i = 0; i < orders.length; i ++){
+			var order = orders[i];
+			var date = new Date(order.order_Date);
+			order.order_Date = date.toLocaleDateString();
+			order.show = false;
+			order.lineitems = [];
+			$scope.orders.push(order);
+		}
+	});
+
+	$scope.showOrder = function(order){
+		console.log("called");
+		$http.get('rest/lineitem/getAllByOrderId?id=' + order.id).then(function(response){
+			console.log(response);
+			order.lineitems = response.data;
+			order.show = true;
+		});
+	}
+
+});
+
+
+storeApp.controller('custShowInfoController', function($scope, $state, CustomerService) {
 	console.log("this is custshow");
 	var customer = CustomerService.getCustomer();
 	$scope.custInfo = {
@@ -357,13 +432,107 @@ storeApp.controller('custShowInfoController', function($scope, $rootScope, $stat
 			zipcode: customer.zipcode,
 			phone: customer.phone
 	}
+});
 
-	$scope.logout = function () {
-		console.log("within logout");
-		$rootScope.authenticated = false;
-		CustomerService.resetCustomer();
-		console.log(CustomerService.getCustomer());
-		$state.go("mainStorePage");
+
+storeApp.service("ItemService", function($http, $q){
+	var service = this;
+	var current_item;
+	service.setItem = function(item){
+		current_item = item;
+	};
+	service.getItem = function(){
+		return current_item;
+	};
+});
+
+storeApp.controller('viewItemController', function($scope,$state,$http,CustomerService,ItemService){
+
+	$scope.item = ItemService.getItem();
+
+	$scope.discountShow = false;
+	$scope.showQuantityWarning = false;
+	$scope.showReviewWarning = false;
+	$scope.finishedReview = false;
+	$scope.quantities = [];
+	//set discount info
+	if($scope.item.discountid != -1){
+		$http.get('rest/discount/get?id='+$scope.item.discountid).then(function(response){
+			console.log(response.data);
+			if(response.data.discount_Type == 0){
+				$scope.discountOffer = "$" + response.data.amount + " off!";
+				$scope.discountMessage = response.data.description;
+			} else{
+				$scope.discountOffer = response.data.amount + "% off!";
+				$scope.discountMessage = response.data.description;
+			}
+		}) 
+		$scope.discountShow = true;
 	}
+
+	//set quantity list
+	for(var i = 1; i <= $scope.item.quantity; i++){
+		$scope.quantities.push(i);
+	}
+
+
+	//set product reviews info 
+	$scope.productreviews = [];
+	$scope.productreviewAvg = 0;
+
+	$http.get('rest/productreview/getByItem?id='+$scope.item.id).then(function(response){
+		$scope.productreviews = response.data;
+		var sum = 0;
+		for(var i = 0; i < $scope.productreviews.length; i++){
+			sum = sum + $scope.productreviews[i].rating;
+		}
+		$scope.productreviewAvg = (sum / $scope.productreviews.length).toFixed(1);
+		if($scope.productreviewAvg >= 0){
+			$scope.roundedreviewAvg = Math.floor($scope.productreviewAvg);
+		}
+		else{
+			$scope.productreviewAvg = 0;
+		}
+	});
+
+
+	//submit product review
+	$scope.submitReview = function(){
+		if($scope.chosenRating == null){
+			$scope.showReviewWarning = true;
+			return;
+		}
+
+		var productreview = {
+				id: -1,
+				inventoryItem: $scope.item,
+				rating: $scope.chosenRating,
+				description: $scope.userReviewDescription
+		};
+		console.log(productreview);
+		$http.post('rest/productreview/create',productreview).then(function(response){
+			$scope.productreviews.push(productreview);
+			$scope.finishedReview = true;
+		});
+	};
+
+	//create and add line item to cart
+	$scope.addToCart = function(){
+		if($scope.chosenQuantity == null){
+			$scope.showQuantityWarning = true;
+			return;
+		}
+
+		var lineitem = {
+				id: -1,
+				orderid: -1,
+				quantity: $scope.chosenQuantity,
+				inventoryitemid: $scope.item.id
+		}
+		console.log(lineitem);
+		//CartService.addLineItem(lineitem);
+	}
+
+	console.log($scope.item);
 
 });

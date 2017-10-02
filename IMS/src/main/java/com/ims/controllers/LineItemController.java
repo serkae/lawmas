@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ims.beans.InventoryItem;
@@ -60,10 +61,6 @@ public class LineItemController {
 		//setup line item to insert and execute
 		LineItem i = new LineItem(dto.getId(),o,dto.getQuantity(),a);
 		dto = liservice.createOrUpdateLineItem(i);
-		
-		// reduce inventory item stock
-		a.setQuantity(a.getQuantity() - dto.getQuantity());
-		iiservice.createOrUpdate(a);
 		return new ResponseEntity<LineItemDto>(dto, HttpStatus.OK);
 		
 	}
@@ -94,9 +91,16 @@ public class LineItemController {
 	
 	@RequestMapping(value="/getAllByOrder",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<List<LineItem>> getLineItemsByOrder(int orderId){
-		Order o = oservice.getOrder(orderId);
+	public ResponseEntity<List<LineItem>> getLineItemsByOrder(Order o){
+		//Order o = oservice.getOrder(orderId);
 		return new ResponseEntity<List<LineItem>>(liservice.getAllLineItemsByOrder(o), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getAllByOrderId",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<List<LineItem>> getLineItemsByOrderId(Integer id){
+		//Order o = oservice.getOrder(orderId);
+		return new ResponseEntity<List<LineItem>>(liservice.getAllLineItemsByOrderId(id), HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/getLine",method=(RequestMethod.GET),
@@ -114,4 +118,15 @@ public class LineItemController {
 		return new ResponseEntity<String>("true", HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping("/soldByDate")
+	public List<Object> findBySoldByDate() {
+		return liservice.findBySoldByDate();
+	}
+
+	@RequestMapping("/soldByDept")
+	public List<Object> findBySoldByDept() {
+		return liservice.findBySoldByDept();
+	}
+
 }

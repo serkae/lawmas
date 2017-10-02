@@ -20,21 +20,33 @@ public class ProductReviewService {
 		this.productReviewDao = productReviewDao;
 	}
 	
-	public ProductReviewDto createOrUpdateAdmin(ProductReview productReview) {
+	public ProductReview createOrUpdateProductReview(ProductReview productReview) {
 		//add to Db
-		productReview = productReviewDao.saveReview(productReview);
-		//create dto
-		ProductReviewDto productReviewDto = new ProductReviewDto(productReview.getId(),productReview.getRating(),productReview.getDescription());
-		return productReviewDto;
+		return productReviewDao.saveReview(productReview);
+//		//create dto
+//		ProductReviewDto productReviewDto = new ProductReviewDto(productReview.getId(),productReview.getRating(),productReview.getDescription());
+//		return productReviewDto;
 	}
 	
-	public void removeAdmin(ProductReview productReview) {
+	public void removeReview(ProductReview productReview) {
 		// remove from DB
 		productReviewDao.removeReview(productReview);
 	}
 	
 	public List<ProductReview> getAll() {
 		return productReviewDao.getAll();
+	}
+	
+	public List<ProductReview> getAllFromInventoryItemId(int id){
+		return productReviewDao.getAllByInventoryItemId(id);
+	}
+	
+	public float getAverage(int id) {
+		return productReviewDao.getAverage(id);
+	}
+
+	public List<ProductReview> getByItemId(int id) {
+		return productReviewDao.getReviewByItemId(id);
 	}
 
 }

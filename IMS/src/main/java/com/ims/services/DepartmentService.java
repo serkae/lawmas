@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ims.beans.Department;
+import com.ims.beans.Order;
 import com.ims.daos.DepartmentDao;
 
 @Service
@@ -31,6 +32,10 @@ public class DepartmentService {
 	}
 	
 	public Department getById(int id) {
+		return departmentDao.getDepartmentById(id);
+	}
+
+	public Department getDepartment(int id) {
 		return departmentDao.getDepartmentById(id);
 	}
 	
