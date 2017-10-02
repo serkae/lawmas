@@ -42,7 +42,7 @@ storeApp.service('ItemsService', function($http) {
 	this.getItemsToShow = function() {
 		return this.itemsToShow;
 	}
-	
+
 	this.getItemByID = function(id) {
 		for (i = 0; i < this.itemsToShow.length; i++) {
 			if (this.itemsToShow[i].id === id) {
@@ -77,7 +77,7 @@ storeApp.service('ItemsService', function($http) {
 	}
 
 	this.cart = [];
-	
+
 	this.emptyCart = function() {
 		this.cart = [];
 	}
@@ -89,40 +89,40 @@ storeApp.service('ItemsService', function($http) {
 	this.addToCart = function(lineItem) {
 		this.cart.push(lineItem);
 	}
-	
+
 	this.createOrder = function(order) {
 		let promise = $http.post('rest/order/create', order).then(
-			function(response) {
-				return response;
-			},
-			function(error) {
-				return error;
-			}
-		);
-		return promise;
-	}
-	
-	this.createLineItems = function(order) {
-		let promise;
-		this.cart.forEach(function(item) {
-			let lineItem = {
-				id: -1,
-				orderid: order.id,
-				quantity: item.quantity,
-				inventoryitemid: item.id
-			}
-			promise = $http.post('rest/lineitem/create', lineItem).then(
 				function(response) {
 					return response;
 				},
 				function(error) {
 					return error;
 				}
+		);
+		return promise;
+	}
+
+	this.createLineItems = function(order) {
+		let promise;
+		this.cart.forEach(function(item) {
+			let lineItem = {
+					id: -1,
+					orderid: order.id,
+					quantity: item.quantity,
+					inventoryitemid: item.id
+			}
+			promise = $http.post('rest/lineitem/create', lineItem).then(
+					function(response) {
+						return response;
+					},
+					function(error) {
+						return error;
+					}
 			);
 		});
 		return promise;
 	}
-	
+
 });
 
 storeApp.controller('MainCtrl', function(ItemsService, $http, $scope) {
@@ -170,10 +170,10 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 	$scope.addItemToCart = function(id) {
 		let item = ItemsService.getItemByID(id);
 		itemToAdd = {
-			id: item.id,
-			name: item.name,
-			unitPrice: item.unitPrice,
-			quantity: 1
+				id: item.id,
+				name: item.name,
+				unitPrice: item.unitPrice,
+				quantity: 1
 		};
 		let cart = ItemsService.getCart();
 		if (cart.length === 0) {
@@ -202,7 +202,7 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 		}
 		return total;
 	};
-	
+
 	$scope.getNumberOfItemsInCart = function() {
 		let numberOfItems = 0;
 		for (i = 0; i < $scope.cart.length; i++) {
@@ -210,7 +210,7 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 		}
 		return numberOfItems;
 	}
-	
+
 	$scope.removeFromCart = function(item) {
 		for (i = 0; i < $scope.cart.length; i++) {
 			if ($scope.cart[i].id === item.id) {
@@ -223,19 +223,24 @@ storeApp.controller('CartController', function(ItemsService, CustomerService, $h
 			}
 		}
 	}
-	
+
 	$scope.checkout = function() {
-		let newOrder = {
-			id: -1,
-			customer: CustomerService.getCustomer(),
-			order_Date: new Date().getTime()
+		let customer = CustomerService.getCustomer();
+		if (customer.id < 0) {
+			$state.go("login");
+		} else {
+			let newOrder = {
+				id: -1,
+				customer: customer,
+				order_Date: new Date().getTime()
+			}
+			let createOrderPromise = ItemsService.createOrder(newOrder).then(function(response) {
+				ItemsService.createLineItems(response.data);
+			});
+			ItemsService.emptyCart();
+			$scope.cart = ItemsService.getCart();
+			$state.go("confirmCheckout");
 		}
-		let createOrderPromise = ItemsService.createOrder(newOrder).then(function(response) {
-			ItemsService.createLineItems(response.data);
-		});
-		ItemsService.emptyCart();
-		$scope.cart = ItemsService.getCart();
-		$state.go("confirmCheckout");
 	}
 });
 
