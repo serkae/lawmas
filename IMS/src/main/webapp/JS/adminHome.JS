@@ -82,6 +82,11 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		url: "/man-show-info",
 		templateUrl: "partials/man-show-info.html",
 		controller: "manShowInfoController"
+	})
+	.state("sales",{
+		url: "/manSales",
+		templateUrl: "partials/manSales.html",
+		controller: "salesCtrl"
 	});
 
 
@@ -91,6 +96,39 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 
 	console.log("IN HERE");
 
+});
+
+
+adminApp.controller("salesCtrl", function($http, $scope){
+	$scope.sortType = "id";
+	$scope.sortReverse = false;
+	$scope.searchItem = "";
+	$scope.hide = 0;
+	
+	var order = this;
+	
+	$http.get("rest/order/getAll").success(function(data){
+
+		$scope.orderList = data;	
+	});
+	
+	$scope.change = function(data){
+		$scope.hide = 1;
+		order.id = data.id;
+		console.log(order.id);
+		$http.get("rest/lineitem/getAllByOrder?id =" + order.id).success(function(response){
+			$scope.itemlist = response;
+			
+		});
+
+	};
+	
+	$scope.goBack = function(){
+		$scope.hide = 0;
+
+
+	}
+	
 });
 
 adminApp.service("AdminService", function($http, $q) {
