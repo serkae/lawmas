@@ -50,7 +50,7 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 	})
 	.state("adminMainPage", {
 		url: "/adminMainPage",
-		templateUrl: "partials/adminMainPage.html",
+		templateUrl: "partials/manager_dashboard.html",
 		controller: "MainPageCtrl as adminMainPage"
 	})
 	.state("manageInventoryHome",{
