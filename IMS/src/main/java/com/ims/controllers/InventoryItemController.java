@@ -103,10 +103,16 @@ public class InventoryItemController {
 	public ResponseEntity<InventoryItemDto> updateItem(@RequestBody InventoryItemDto iDto){
 		Department d = dService.getById(iDto.getDepartmentid());
 		Discount di = null;
+		System.out.println(iDto.getDiscountid());
 		if(iDto.getDiscountid() != -1) {
 			di = discountService.getById(iDto.getDiscountid());
+			System.out.println(di);
+			iDto.setDiscountid(di.getDiscountID());
+			System.out.println(iDto.getDiscountid());
 		}
 		InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
+		i.setDepartment(d);
+		i.setDiscount(di);
 		i = inventoryItemService.createOrUpdate(i);
 		iDto.setId(i.getId());
 		return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
