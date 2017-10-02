@@ -31,7 +31,7 @@
 			</tr>
 		</thead>
 		<tr
-			ng-repeat="x in items  | orderBy:sortType:sortReverse | filter:searchItem">
+			ng-repeat="x in itemlist  | orderBy:sortType:sortReverse | filter:searchItem">
 
 			<td><button type="button" ng-click="change(x)">Edit
 					Stock</button></td>
@@ -49,8 +49,6 @@
 					<div ng-repeat="i in x.productreviews">{{i.rating}}</div>
 					<div>Average: {{x.averagereview}}</div>
 				</div></td>
-			<td></td> 
-			<td><img ng-src="{{x.image}}" /></td> 
 		</tr>
 	</table>
 </div>
