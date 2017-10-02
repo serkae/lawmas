@@ -94,11 +94,50 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 	.state("sales",{
 		url: "/manSales",
 		templateUrl: "partials/manSales.html",
-		controller: "salesCtrl"
+		controller: "sCtrl"
 	});
 
 	console.log("IN HERE");
 
+});
+
+
+adminApp.controller("sCtrl", function($http, $scope){
+	console.log("in salesCtrl");
+	$scope.sortType = "id";
+	$scope.sortReverse = false;
+	$scope.searchItem = "";
+	$scope.hide = 0;
+	
+	var order = this;
+	$scope.orders = [];
+	
+	$http.get('rest/order/getAll').success( function(data){
+		console.log(data);
+		$scope.orderList = data;
+//		for(var i = 0; i < orders.length; i ++){
+//			var order = orders[i];
+//			var date = new Date(order.order_Date);
+//			order.order_Date = date.toLocaleDateString();
+//			order.show = false;
+//			order.lineitems = [];
+//			$scope.orders.push(order);
+//		}
+	});
+
+	$scope.showOrder = function(order){
+		$scope.hide = 1;
+		order.id = order.id;
+		console.log("called");
+		$http.get('rest/lineitem/getAllByOrderId?id='+order.id).then(function(response){
+			console.log(response);
+			$scope.lineitems = response.data;
+			order.show = true;
+		});
+	}	
+	$scope.goBack = function(){
+		$scope.hide = 0;
+	}
 });
 
 adminApp.service("AdminService", function($http, $q) {

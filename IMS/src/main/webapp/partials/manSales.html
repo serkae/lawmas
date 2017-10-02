@@ -1,4 +1,11 @@
-<div >
+<div class = "w3-sidebar w3-bar-block" id = "managerSideNav" style = "width 25%">
+    <a ui-sref = "manageInventoryHome" class="w3-bar-item w3-button">Manage Inventory</a>
+  	<a ui-sref="sales" class="w3-bar-item w3-button">Check Sales</a>
+  	<a ui-sref= "customers" class="w3-bar-item w3-button">Check Customer Database</a>
+    <a ui-sref= "adminInfo" class="w3-bar-item w3-button">View/Edit Personal Information</a>
+    <a href="#" class="w3-bar-item w3-button">Logout</a>
+</div>
+<div style = "margin-left:25%">
 	<nav class="navbar navbar-default">
 		<form class="navbar-form navbar-left" role="search">
 			<div class="form-group">
@@ -25,14 +32,14 @@
 			ng-repeat="x in orderList | orderBy:sortType:sortReverse | filter:searchItem">
 			<td>{{x.id}}</td>
 			<td>{{x.customer.id}}</td>
-			<td>{{x.order_Date | date: 'yyyy-MM-dd'}}</td>
-			<td><button ng-click = "change(x)">More Info</button></td>
+			<td>{{x.order_Date | date:MM-dd-YY}}</td>
+			<td><button ng-click = "showOrder(x)">More Info</button></td>
 		</tr>
 	</table>
 </div>
-​
-<div ng-hide = "hide == 0">
-​
+
+
+<div ng-hide = "hide == 0" style = "margin-left:25%">
 	<table class="table">
 		<thead>
 			<tr>
@@ -43,7 +50,7 @@
 			</tr>
 		</thead>
 		<tr
-			ng-repeat="x in lineitem | orderBy:sortType:sortReverse | filter:searchItem">
+			ng-repeat="x in lineitems | orderBy:sortType:sortReverse | filter:searchItem">
 			<td>{{x.order.id}}</td>
 			<td>{{x.id}}</td>
 			<td>{{x.quantity}}</td>
@@ -51,8 +58,9 @@
 			<td><button ng-click = "goBack()">Go Back</button></td>
 		</tr>
 	</table>
-​
-​
-​
-​
+
+
 </div>
+
+
+
