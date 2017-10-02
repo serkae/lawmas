@@ -60,7 +60,7 @@ public class LineItemController {
 		
 		//setup line item to insert and execute
 		LineItem i = new LineItem(dto.getId(),o,dto.getQuantity(),a);
-		System.out.println(i);
+
 		dto = liservice.createOrUpdateLineItem(i);
 		return new ResponseEntity<LineItemDto>(dto, HttpStatus.OK);
 		

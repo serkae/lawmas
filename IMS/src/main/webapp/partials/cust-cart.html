@@ -109,7 +109,8 @@
          </div>
 </div>
 <div class="row m-1" ng-show="showCheckout">
-<div class="col"><button class="btn btn-primary float-right" ng-click="processOrder()">Complete</button></div>
+<div class="col"><button class="btn btn-primary float-right" ng-click="processOrder()" ng-hide="showProcessing">Complete</button></div>
+					<span class="text-dark" ng-show="showProcessing"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> Processing...</span>
 </div>
 <div class="sticky-top m-2">
 <div class="progress">

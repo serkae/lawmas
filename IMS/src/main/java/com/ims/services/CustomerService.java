@@ -26,7 +26,7 @@ public class CustomerService {
 												c.getAddress(),c.getCity(),c.getState(),c.getZipcode(),c.getPhone(),
 												c.getCard());
 		cust = customerDao.createOrUpdateCustomer(cust);
-		c.setId(c.getId());
+		c.setId(cust.getId());
 		c.setAuthenticated(true);
 		return c;
 	}

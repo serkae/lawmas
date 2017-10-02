@@ -68,7 +68,6 @@ public class OrderController {
 	@RequestMapping(value="/getAll",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<List<Order>> getAllOrders(){
-		System.out.println("Listing orders: ");
 		return new ResponseEntity<List<Order>>(orderService.getAllOrders(), HttpStatus.OK);
 		
 	}
@@ -77,7 +76,6 @@ public class OrderController {
 	@RequestMapping(value="/getAllByCustomerId",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<List<Order>> getAllOrdersFromCustomerId(int id){
-		System.out.println("Listing orders: ");
 		return new ResponseEntity<List<Order>>(orderService.getAllOrdersFromCustomerId(id), HttpStatus.OK);
 		
 	}
@@ -86,7 +84,6 @@ public class OrderController {
 	@RequestMapping(value="/getOrder",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<Order> getOrder(int id){
-		System.out.println("Listing orders: ");
 		return new ResponseEntity<Order>(orderService.getOrder(id), HttpStatus.OK);
 		
 	}

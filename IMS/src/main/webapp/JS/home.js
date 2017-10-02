@@ -405,7 +405,7 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $
 		promise.then(
 				function(response){
 					if(response.data.id !== -1){
-						console.log(login.customer);
+						console.log(response.data);
 						CustomerService.setCustomer(response.data);
 						$rootScope.authenticated = true;
 						$rootScope.customer = response.data;
@@ -427,7 +427,7 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $
 	
 	$scope.createInfo = function() {
 		var ncust = CustomerService.getCustomer();
-		
+			ncust.id = -1;
 			ncust.firstname = $scope.custInfo.firstName;
 			ncust.lastname = $scope.custInfo.lastName;
 			ncust.email = $scope.custInfo.email;
@@ -438,13 +438,12 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $
 			ncust.zipcode = $scope.custInfo.zipcode;
 			ncust.phone = $scope.custInfo.phone;
 			ncust.card = null;
-			
-			console.log($scope.custInfo);
-			console.log($scope.chosenState.id + " " + $scope.chosenState.name);
-			console.log(ncust);
+			ncust.authenticated = false;
 			
 			$http.post('rest/customer/create', ncust).then(function(response){
 				CustomerService.setCustomer(response.data);
+				$rootScope.customer = response.data;
+				$rootScope.customer.authenticated = true;
 				$state.go('mainStorePage');
 			});
 	}
@@ -452,11 +451,11 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $
 });
 
 
-storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
+storeApp.controller('getOrdersCtrl',function($http,$rootScope, $scope, CustomerService){
 	$scope.orders = [];
-
-	var customer = CustomerService.getCustomer();
-	$http.get('rest/order/getAllByCustomerId?id=' + customer.id).then( function(response){
+	
+	$http.get('rest/order/getAllByCustomerId?id=' + $rootScope.customer.id).then( function(response){
+		console.log($rootScope.customer.id);
 		console.log(response.data);
 		var orders = response.data;
 		for(var i = 0; i < orders.length; i ++){
@@ -466,17 +465,26 @@ storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
 			order.show = false;
 			order.lineitems = [];
 			$scope.orders.push(order);
+			$scope.loadOrder(order);
 		}
+		
 	});
 
-	$scope.showOrder = function(order){
-		console.log("called");
+	$scope.loadOrder = function(order){
 		$http.get('rest/lineitem/getAllByOrderId?id=' + order.id).then(function(response){
 			console.log(response);
 			order.lineitems = response.data;
-			order.show = true;
+			order.total = 0;
+			order.lineitems.forEach(function(l){
+				$http.get('rest/inventoryitem/get?id='+l.inventoryItem.id).then(function(response){
+					l.inventoryitem = response.data;
+					order.total += l.inventoryitem.unitPrice * l.quantity;
+				});
+			});
 		});
 	}
+	
+	
 
 });
 
@@ -773,10 +781,11 @@ storeApp.controller('viewItemController', function($rootScope,$scope,$state,$htt
 });
 
 
-storeApp.controller('viewCartController', function($rootScope,$scope,$state,$http,CustomerService,ItemService,ItemsService){
+storeApp.controller('viewCartController', function($rootScope,$scope,$state,$http,$timeout,CustomerService,ItemService,ItemsService){
 	$scope.cart = ItemsService.getCart();
 	$rootScope.customer = CustomerService.getCustomer();
 	$scope.showFirstButtons = true;
+	$scope.showProcessing = false;
 	$scope.cart.total = 0;
 	$scope.progress = 20;
 	$scope.date = new Date().toLocaleDateString()
@@ -811,7 +820,7 @@ storeApp.controller('viewCartController', function($rootScope,$scope,$state,$htt
 	
 	$scope.checkout = function() {
 		$scope.showFirstButtons = false;
-		
+		console.log($rootScope.customer);
 		if ($rootScope.customer.id < 0) {
 			$scope.showLogin = true;
 			$scope.progress = 40;
@@ -873,6 +882,7 @@ storeApp.controller('viewCartController', function($rootScope,$scope,$state,$htt
 	};
 	
 	$scope.processOrder = function(){
+		$scope.showProcessing = true;
 		let newOrder = {
 				id: -1,
 				customer: $rootScope.customer,
@@ -884,9 +894,10 @@ storeApp.controller('viewCartController', function($rootScope,$scope,$state,$htt
 			$scope.cart.forEach(function(item){
 				ItemsService.createLineItem(response.data,item);
 			});
+			$http.post('rest/order/sendEmail',newOrder);
 		});
 		ItemsService.emptyCart();
-		$state.go('getPastOrders');
+		$timeout( function(){ $state.go('getPastOrders');} , 5000);
 	};
 });
 
