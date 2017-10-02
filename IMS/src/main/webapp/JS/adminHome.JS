@@ -122,6 +122,17 @@ adminApp.service("AdminService", function($http, $q) {
 	};
 
 	console.log("after set admin = " + service.admin);
+	
+	service.resetAdmin = function(){
+		service.admin={
+				id: -1,
+				firstname: "",
+				lastname: "",
+				email : "",
+				password : "",
+				authenticated : false
+		}
+	};
 
 	service.loginAdmin = function() {
 		console.log("in loginAdmin");
@@ -141,7 +152,7 @@ adminApp.service("AdminService", function($http, $q) {
 	};
 });
 
-adminApp.controller("AdminCtrl", function(AdminService,$state) {
+adminApp.controller("AdminCtrl", function(AdminService, $rootScope, $state) {
 	console.log("in AdminCtrl");
 
 	var login = this;
@@ -155,8 +166,9 @@ adminApp.controller("AdminCtrl", function(AdminService,$state) {
 		promise.then(
 				function(response) {
 					console.log("Response: "+ response);
-					if(login.admin!= null){
+					if(response.data.id !== -1){
 						login.admin.authenticated = true;
+						$rootScope.authenticated = true;
 						AdminService.setAdmin(response.data);
 						console.log("setting user in login ctrl")
 						console.log(AdminService.getAdmin());
@@ -183,8 +195,16 @@ adminApp.controller("MainPageCtrl", function($state){
 	console.log("in adminMainPage");
 });
 
-adminApp.controller("ManagerLogout", function(state) {
+adminApp.controller("ManagerLogout", function(AdminService, $rootScope, $state) {
 	console.log("Logging out...");
+	
+	$rootScope.logout = function () {
+		console.log("within logout");
+		$rootScope.authenticated = false;
+		AdminService.resetAdmin();
+		console.log(AdminService.getAdmin());
+		$state.go("managerLogin");
+	}
 	//$window.location.href = "http://localhost:8081/IMS/managerLogin.html";
 });
 
