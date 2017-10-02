@@ -42,7 +42,7 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	});
 });
 
-storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,$state) {
+storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,ItemsService,$state) {
 	$scope.sortType = "department";
 	$scope.sortReverse = false;
 	$rootScope.departments = [];
