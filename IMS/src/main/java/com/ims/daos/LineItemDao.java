@@ -37,7 +37,9 @@ public class LineItemDao {
 	public List<LineItem> getAllByOrder(Order o){
 		return aRepo.findByOrder(o);
 	}
-	
+	public List<LineItem> getAllByOrderId(int id){
+		return aRepo.findByOrderId(id);
+	}
 	public LineItem getLineItemById(int id) {
 		return aRepo.findOne(id);
 	}

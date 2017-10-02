@@ -35,4 +35,16 @@ public class ProductReviewDao {
 	public void removeReview(ProductReview s) {
 		aRepo.delete(s);
 	}
+	public List<ProductReview> getAllByInventoryItemId(int id){
+		return aRepo.findByInventoryItemId(id);
+	}
+	
+	public float getAverage(int id) {
+		return aRepo.averageRatingById(id);
+	}
+
+	public List<ProductReview> getReviewByItemId(int id) {
+		return aRepo.findByInventoryItemId(id);
+	}
+
 }
