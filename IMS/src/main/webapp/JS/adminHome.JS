@@ -82,6 +82,10 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 		templateUrl: "partials/man-show-all-custs.html",
 		controller: "showAllCustsController"
 	})
+	.state("dashboard",{
+		url: "/dashboard",
+		templateUrl: "partials/manager_dashboard.html"
+	})
 	.state("adminInfo",{
 		url: "/man-show-info",
 		templateUrl: "partials/man-show-info.html",
@@ -153,7 +157,7 @@ adminApp.service("AdminService", function($http, $q) {
 	};
 });
 
-adminApp.controller("AdminCtrl", function(AdminService,$state) {
+adminApp.controller("AdminCtrl", function(AdminService,$state,$rootScope) {
 	console.log("in AdminCtrl");
 
 	var login = this;
@@ -376,6 +380,18 @@ adminApp.controller("invCtrl", function($scope,$http){
 
 	$http.get('rest/inventoryitem/getAll').success(function(data){
 		$scope.itemlist = data;
+		$http.get('rest/department/getAll').success(function(data){
+			var departments = data;
+			$scope.itemlist.forEach(function(item){
+				departments.forEach(function(d){
+					if(d.id == item.departmentid){
+						item.department = d;
+						
+					}
+				});
+			});
+		});
+		console.log(data);
 	})
 
 });
