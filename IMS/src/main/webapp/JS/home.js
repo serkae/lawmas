@@ -885,6 +885,7 @@ storeApp.controller('viewCartController', function($rootScope,$scope,$state,$htt
 				ItemsService.createLineItem(response.data,item);
 			});
 		});
+		ItemsService.emptyCart();
 		$state.go('getPastOrders');
 	};
 });
