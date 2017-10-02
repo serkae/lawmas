@@ -43,6 +43,7 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 });
 
 storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,ItemsService,$state) {
+	$scope.cart = ItemsService.getCart();
 	$scope.sortType = "department";
 	$scope.sortReverse = false;
 	$rootScope.departments = [];
@@ -87,19 +88,43 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 							dept.index++;
 						}
 						dept.show[dept.index].push(true);
-						dept.items[dept.index].push({
-							id: item.id,
-							name: item.name,
-							unitPrice: item.unitPrice,
-							quantity: item.quantity,
-							department: dept,
-							description: item.description,
-							discountid: item.discountid,
-							image: item.image,
-							imageWidth: w,
-							imageHeight: h,
-							inCart: false
+						
+						var inCart = false;
+						$scope.cart.forEach(function(c){
+							if(c.inventoryitemid == item.id){
+								dept.items[dept.index].push({
+									id: item.id,
+									name: item.name,
+									unitPrice: item.unitPrice,
+									quantity: item.quantity,
+									department: dept,
+									description: item.description,
+									discountid: item.discountid,
+									image: item.image,
+									imageWidth: w,
+									imageHeight: h,
+									inCart: true
+								});
+								inCart = true;
+							}
 						});
+						
+						if(!inCart){
+							dept.items[dept.index].push({
+								id: item.id,
+								name: item.name,
+								unitPrice: item.unitPrice,
+								quantity: item.quantity,
+								department: dept,
+								description: item.description,
+								discountid: item.discountid,
+								image: item.image,
+								imageWidth: w,
+								imageHeight: h,
+								inCart: false
+							});
+						}
+						
 					}
 				});
 			});
@@ -125,33 +150,23 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 	
 
 	//------------------------------------------Cart
-	$rootScope.addItemToCart = function(item,quantity) {
+	$rootScope.addItemToCart = function(item,q) {
 		item.inCart = true;
 		itemToAdd = {
-				id: item.id,
+				inventoryitemid: item.id,
 				name: item.name,
 				unitPrice: item.unitPrice,
-				quantity: quantity
+				quantity: q
 		};
-		let cart = ItemsService.getCart();
-		if (cart.length === 0) {
-			ItemsService.addToCart(itemToAdd);
-		} else {
-			let itemInCart = false;
-			for (i = 0; i < cart.length; i++) {
-				if (cart[i].id === itemToAdd.id) {
-					itemInCart = true;
-					cart[i].quantity++;
-				}
-			}
-			if (!itemInCart) {
-				ItemsService.addToCart(itemToAdd);
-			}
-		}
+		ItemsService.addToCart(itemToAdd);
+		$scope.updateCart();
+		console.log($scope.cart);
 	};
-
-	$scope.cart = ItemsService.getCart();
-
+	
+	$scope.updateCart = function(){
+		$scope.cart = ItemsService.getCart();
+	}
+	
 	$scope.getTotal = function() {
 		var total = 0;
 		for(var i = 0; i < $scope.cart.length; i++) {
@@ -169,18 +184,6 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 		return numberOfItems;
 	}
 
-	$scope.removeFromCart = function(item) {
-		for (i = 0; i < $scope.cart.length; i++) {
-			if ($scope.cart[i].id === item.id) {
-				$scope.cart[i].quantity--;
-				if ($scope.cart[i].quantity < 1) {
-					$scope.cart.splice(i, 1);
-					$state.go("cart");
-					//$state.go($state.$current, null, {reload: true});
-				}
-			}
-		}
-	}
 
 	$scope.checkout = function() {
 		let customer = CustomerService.getCustomer();
@@ -223,6 +226,33 @@ storeApp.service('ItemsService', function($http) {
 
 	this.addToCart = function(lineItem) {
 		this.cart.push(lineItem);
+	}
+	
+	this.updateItemQuantity = function(item,chosenQuantity){
+		for (i = 0; i < this.cart.length; i++) {
+			if (this.cart[i].inventoryitemid === item.id) {
+				this.cart[i].quantity = chosenQuantity;
+				return true;
+			}
+		}
+	};
+	
+	this.removeFromCart = function(item) {
+		for (i = 0; i < this.cart.length; i++) {
+			if (this.cart[i].inventoryitemid === item.id) {
+				item.inCart = false;
+				return true;
+			}
+		}
+	};
+	
+	this.getQuantityIfIn = function(item){
+		for (i = 0; i < this.cart.length; i++) {
+			if (this.cart[i].inventoryitemid === item.id) {
+				return this.cart[i].quantity;
+			}
+		}
+		return 0;
 	}
 
 	this.createOrder = function(order) {
@@ -643,15 +673,17 @@ storeApp.service("ItemService", function($http, $q){
 	};
 });
 
-storeApp.controller('viewItemController', function($scope,$state,$http,CustomerService,ItemService){
+storeApp.controller('viewItemController', function($rootScope,$scope,$state,$http,CustomerService,ItemService,ItemsService){
 
 	$scope.item = ItemService.getItem();
-
+	$scope.inCartQuantity = ItemsService.getQuantityIfIn($scope.item);
+	
 	$scope.discountShow = false;
 	$scope.showQuantityWarning = false;
 	$scope.showReviewWarning = false;
 	$scope.finishedReview = false;
 	$scope.quantities = [];
+	
 	//set discount info
 	if($scope.item.discountid != -1){
 		$http.get('rest/discount/get?id='+$scope.item.discountid).then(function(response){
@@ -713,8 +745,11 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 		});
 	};
 
+	//line items
+	
 	//create and add line item to cart
-	$scope.addToCart = function(){
+	$scope.addToCart = function(item,quantity){
+		$scope.inCartQuantity = quantity;
 		if($scope.chosenQuantity == null){
 			$scope.showQuantityWarning = true;
 			return;
@@ -727,9 +762,20 @@ storeApp.controller('viewItemController', function($scope,$state,$http,CustomerS
 				inventoryitemid: $scope.item.id
 		}
 		console.log(lineitem);
-		//CartService.addLineItem(lineitem);
-	}
+		$rootScope.addItemToCart(lineitem);
+		item.inCart = true;
+		console.log(ItemsService.getCart());
+	};
 
+	$scope.increaseCartQuantity = function(item,chosenQuantity){
+		$scope.inCartQuantity = chosenQuantity;
+		if(chosenQuantity == 0){
+			ItemsService.removeFromCart(item);
+		}else{
+			ItemsService.updateItemQuantity(item,chosenQuantity);
+		}
+	};
+	
 	console.log($scope.item);
 
 });

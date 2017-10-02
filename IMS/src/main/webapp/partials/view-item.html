@@ -35,7 +35,7 @@
 		</div>
 	</div>
 	<div class="col-2 p-1">
-				<form ng-submit="addToCart()" class="border border-dark rounded p-1">
+				<form class="border border-dark rounded p-1">
 				<label for="quantity">Quantity</label>
 				<span>
 						<select class="form-control" id="quantity" ng-model="chosenQuantity">
@@ -43,7 +43,18 @@
 						</select>
 				</span><br>
 				
-				<button class="btn btn-primary" type="submit"><span><i class="fa fa-cart-plus" aria-hidden="true"></i></span>    Add to cart</button>
+				<button class="btn btn-info" ng-click="addToCart(item,chosenQuantity)" ng-hide="item.inCart">
+				 <span ng-hide="item.inCart"><i class="fa fa-cart-plus" aria-hidden="true"></i>Add To Cart</span>
+				 <span ng-hide="!item.inCart"><i class="fa fa-plus" aria-hidden="true"></i>In Cart</span>
+				 </button>
+				 
+				 <button class="btn btn-info" ng-click="increaseCartQuantity(item,chosenQuantity)" ng-hide="!item.inCart">
+				 	<span ng-hide="!item.inCart"><i class="fa fa-plus" aria-hidden="true"></i>Add more</span>
+				 </button><br><hr>
+				 <div class="alert alert-success" ng-hide="!item.inCart">
+				 	{{inCartQuantity}}<span> in cart  <i class="fa fa-cart-arrow-down" aria-hidden="true"></i></span>
+				 </div>
+				 
 				</form>
 				<p ng-show="showQuantityWarning" class=text-danger>Please choose a quantity.</p>
 	</div>
