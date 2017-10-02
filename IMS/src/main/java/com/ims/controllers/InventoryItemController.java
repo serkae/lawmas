@@ -61,15 +61,20 @@ public class InventoryItemController {
 	public ResponseEntity<InventoryItemDto> addItem(@RequestBody InventoryItemDto iDto){
 		Department d = dService.getById(iDto.getDepartmentid());
 		Discount di = null;
+		System.out.println(iDto.getDiscountid());
 		if(iDto.getDiscountid() != -1) {
 			di = discountService.getById(iDto.getDiscountid());
+			System.out.println(di);
+			iDto.setDiscountid(di.getDiscountID());
+			System.out.println(iDto.getDiscountid());
 		}
 		InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
+		i.setDepartment(d);
+		i.setDiscount(di);
 		i = inventoryItemService.createOrUpdate(i);
 		iDto.setId(i.getId());
 		return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
 	}
-	
 	@RequestMapping(value="/getAll",method=(RequestMethod.GET),produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<List<InventoryItemDto>> getAllItems(){
 		List<InventoryItemDto> dtos = new ArrayList<InventoryItemDto>();
@@ -94,17 +99,23 @@ public class InventoryItemController {
 	@RequestMapping(value="/update",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<InventoryItemDto> updateItem(@RequestBody InventoryItemDto iDto){
-		Department d = dService.getById(iDto.getDepartmentid());
-		Discount di = null;
-		if(iDto.getDiscountid() != -1) {
-			di = discountService.getById(iDto.getDiscountid());
-		}
-		InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
-		i = inventoryItemService.createOrUpdate(i);
-		iDto.setId(i.getId());
-		return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
+public ResponseEntity<InventoryItemDto> updateItem(@RequestBody InventoryItemDto iDto){
+	Department d = dService.getById(iDto.getDepartmentid());
+	Discount di = null;
+	System.out.println(iDto.getDiscountid());
+	if(iDto.getDiscountid() != -1) {
+		di = discountService.getById(iDto.getDiscountid());
+		System.out.println(di);
+		iDto.setDiscountid(di.getDiscountID());
+		System.out.println(iDto.getDiscountid());
 	}
+	InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
+	i.setDepartment(d);
+	i.setDiscount(di);
+	i = inventoryItemService.createOrUpdate(i);
+	iDto.setId(i.getId());
+	return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
+}
 	
 	@RequestMapping(value="/remove",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
@@ -178,4 +189,25 @@ public class InventoryItemController {
 		
 		
 	}
+	@RequestMapping(value="/removeDiscount",method=(RequestMethod.POST),
+			consumes=(MediaType.APPLICATION_JSON_VALUE),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+public ResponseEntity<InventoryItemDto> removeDiscount(@RequestBody InventoryItemDto iDto, Discount di){
+	Department d = dService.getById(iDto.getDepartmentid());
+	
+	if(di.getDiscount_Type() == 1) {
+		iDto.setUnitPrice(iDto.getUnitPrice()+ iDto.getUnitPrice()*di.getAmount());
+	}
+	else {
+		iDto.setUnitPrice(iDto.getUnitPrice()+di.getAmount());
+	}
+	di = null;
+	InventoryItem i = new InventoryItem(iDto.getId(),d,iDto.getUnitPrice(),iDto.getQuantity(),iDto.getName(),iDto.getDescription(),iDto.getImage());
+	i.setDepartment(d);
+	i.setDiscount(di);
+	i = inventoryItemService.createOrUpdate(i);
+	iDto.setId(i.getId());
+	iDto.setDiscountid(-1);
+	return new ResponseEntity<InventoryItemDto>(iDto, HttpStatus.OK);
+}
 }
