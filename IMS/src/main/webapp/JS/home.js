@@ -97,7 +97,8 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 							discountid: item.discountid,
 							image: item.image,
 							imageWidth: w,
-							imageHeight: h
+							imageHeight: h,
+							inCart: false
 						});
 					}
 				});
@@ -122,14 +123,15 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 		$state.go("mainStorePage");
 	};
 	
+
 	//------------------------------------------Cart
-	$scope.addItemToCart = function(id) {
-		let item = ItemsService.getItemByID(id);
+	$rootScope.addItemToCart = function(item,quantity) {
+		item.inCart = true;
 		itemToAdd = {
 				id: item.id,
 				name: item.name,
 				unitPrice: item.unitPrice,
-				quantity: 1
+				quantity: quantity
 		};
 		let cart = ItemsService.getCart();
 		if (cart.length === 0) {
@@ -202,43 +204,11 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 
 
 storeApp.service('ItemsService', function($http) {
-	this.itemsToShow;
-
-	this.getItemsToShow = function() {
-		return this.itemsToShow;
-	}
 
 	this.getItemByID = function(id) {
-		for (i = 0; i < this.itemsToShow.length; i++) {
-			if (this.itemsToShow[i].id === id) {
-				return this.itemsToShow[i];
-			}
-		}
-	}
-
-	this.setItemsToShow = function(items) {
-		this.itemsToShow = items;
-	}
-
-	this.lineItem = {
-			id: -1,
-			orderid: -1,
-			quantity: 0,
-			inventoryitemid: -1
-	};
-
-	this.getLineItem = function() {
-		return this.lineItem;
-	};
-
-	this.setLineItem = function(orderid, itemid) {
-		this.lineItem.id = -1,
-		this.lineItem.orderid = orderid,
-		this.lineItem.inventoryitemid = itemid
-	};
-
-	this.incrementQuantity = function() {
-		this.lineItem.quantity += 1;
+		$http.get('rest/inventoryitem/get?id='+id).then(function(response){
+			return response.data;
+		});
 	}
 
 	this.cart = [];

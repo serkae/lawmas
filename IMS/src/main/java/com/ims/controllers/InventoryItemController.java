@@ -29,6 +29,7 @@ import com.ims.beans.Department;
 import com.ims.beans.Discount;
 import com.ims.beans.InventoryItem;
 import com.ims.dtos.InventoryItemDto;
+import com.ims.dtos.LineItemDto;
 import com.ims.services.DepartmentService;
 import com.ims.services.DiscountService;
 import com.ims.services.InventoryItemService;
@@ -94,6 +95,12 @@ public class InventoryItemController {
 					i.getImage()));
 		}
 		return new ResponseEntity<List<InventoryItemDto>>(dtos, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/get",method=(RequestMethod.GET),
+			produces=(MediaType.APPLICATION_JSON_VALUE))
+	public ResponseEntity<InventoryItem> getLineId(int id){
+		return new ResponseEntity<InventoryItem>(inventoryItemService.getById(id), HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/update",method=(RequestMethod.POST),

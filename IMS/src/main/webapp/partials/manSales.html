@@ -1,0 +1,58 @@
+<div >
+	<nav class="navbar navbar-default">
+		<form class="navbar-form navbar-left" role="search">
+			<div class="form-group">
+				<div style="float: left">
+					<input type="text" class="form-control" placeholder="Search"
+						ng-model="searchItem">
+				</div>
+				<div style="float: right"></div>
+			</div>
+		</form>
+	</nav>
+	Viewing your current inventory
+	<!-- <p ng-repeat = "x in itemlist">{{x}}</p> -->
+	<table class="table" ng-hide = "hide == 1">
+		<thead>
+			<tr>
+				<th>Order ID#</th>
+				<th>Customer ID#</th>
+				<th>Order Date</th>
+				<th>Display More Detail</th>
+			</tr>
+		</thead>
+		<tr
+			ng-repeat="x in orderList | orderBy:sortType:sortReverse | filter:searchItem">
+			<td>{{x.id}}</td>
+			<td>{{x.customer.id}}</td>
+			<td>{{x.order_Date | date: 'yyyy-MM-dd'}}</td>
+			<td><button ng-click = "change(x)">More Info</button></td>
+		</tr>
+	</table>
+</div>
+​
+<div ng-hide = "hide == 0">
+​
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Order ID#</th>
+				<th>Line Item#</th>
+				<th>Quantity</th>
+				<th>From Inventory ID</th>
+			</tr>
+		</thead>
+		<tr
+			ng-repeat="x in lineitem | orderBy:sortType:sortReverse | filter:searchItem">
+			<td>{{x.order.id}}</td>
+			<td>{{x.id}}</td>
+			<td>{{x.quantity}}</td>
+			<td>{{x.inventoryItem.id}}</td>
+			<td><button ng-click = "goBack()">Go Back</button></td>
+		</tr>
+	</table>
+​
+​
+​
+​
+</div>
