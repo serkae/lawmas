@@ -6,8 +6,7 @@
 	<display-name>IMS</display-name>
 
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>adminHomepage.html</welcome-file>
+		<welcome-file>homePage.html</welcome-file>
 	</welcome-file-list>
 
 	<!-- The dispatcher servlet is the front controller of this spring web app. 

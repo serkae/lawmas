@@ -40,11 +40,11 @@ public class ProductReviewController {
 	@RequestMapping(value="/create",method=(RequestMethod.POST),
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<ProductReview> createOrReplace(@RequestBody ProductReview productReview){
+	public ResponseEntity<ProductReview> createOrReplace(@RequestBody ProductReviewDto productReview){
 		// Loading inventory item from database because of null department
-		InventoryItem i = inventoryItemService.getById(productReview.getInventoryItem().getId());
-		System.out.println("inventory item: " + i.toString());
-		return new ResponseEntity<ProductReview>(productReviewService.createOrUpdateProductReview(productReview), HttpStatus.OK);
+		InventoryItem i = inventoryItemService.getById(productReview.getInventoryitemid());
+		ProductReview review = new ProductReview(productReview.getId(), i, productReview.getRating(), productReview.getDescription());
+		return new ResponseEntity<ProductReview>(productReviewService.createOrUpdateProductReview(review), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/update",method=(RequestMethod.POST),

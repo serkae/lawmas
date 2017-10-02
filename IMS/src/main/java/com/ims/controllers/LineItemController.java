@@ -53,13 +53,14 @@ public class LineItemController {
 			consumes=(MediaType.APPLICATION_JSON_VALUE),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
 	public ResponseEntity<LineItemDto> createLineItem(@RequestBody LineItemDto dto){
-		
+		System.out.println(dto.toString());
 		//get inventory and order objects from id's givenin dto
 		InventoryItem a = iiservice.getById(dto.getInventoryitemid());
 		Order o = oservice.getOrder(dto.getOrderid());
 		
 		//setup line item to insert and execute
 		LineItem i = new LineItem(dto.getId(),o,dto.getQuantity(),a);
+		System.out.println(i);
 		dto = liservice.createOrUpdateLineItem(i);
 		return new ResponseEntity<LineItemDto>(dto, HttpStatus.OK);
 		

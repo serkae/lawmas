@@ -45,11 +45,12 @@
 	
       <div class="btn-group">
       <button class="btn btn-light nav-link" ui-sref="mainStorePage"><i class="fa fa-home" aria-hidden="true"></i> Home</button></li>
-      <button class="btn btn-light nav-link" ui-sref="cart" data-toggle="tooltip" data-placement="bottom" title="Nothing in cart yet">
+      <button class="btn btn-light nav-link" ui-sref="cart" data-toggle="tooltip" data-placement="bottom" title="{{cart.items.length}} items in cart">
 	  			<span><i class="fa fa-shopping-cart" aria-hidden="true"></i></i></span> Cart</button>
-	  <button ng-hide="authenticated" class="btn btn-light nav-link" ui-sref="login">Login <i class="fa fa-sign-in" aria-hidden="true"></i></button></li>	  			
-	  <button ng-hide="!authenticated" class="btn btn-light nav-link" ui-sref="customerInfo"><i class="fa fa-user" aria-hidden="true"></i> User Info</button></li>
-	  <button ng-hide="!authenticated" class="btn btn-light nav-link" ng-click="logout()">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></button></li>
+	  <button ng-hide="customer.authenticated" class="btn btn-light nav-link" ui-sref="login">Login <i class="fa fa-sign-in" aria-hidden="true"></i></button></li>	  			
+	  <button ng-hide="!customer.authenticated" class="btn btn-light nav-link" ui-sref="customerInfo"><i class="fa fa-user" aria-hidden="true"></i> User Info</button></li>
+	  <button ng-hide="!customer.authenticated" class="btn btn-light nav-link" ui-sref="getPastOrders"><i class="fa fa-archive" aria-hidden="true"></i> Orders</button></li>
+	  <button ng-hide="!customer.authenticated" class="btn btn-light nav-link" ng-click="logout()">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></button></li>
 	  </div>
     </ul>
   </div>

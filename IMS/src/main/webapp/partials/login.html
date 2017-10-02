@@ -1,19 +1,20 @@
-<div class="col-7 mr-2">
-<div class="jumbotron">
-			<h2>Customer Login</h2>
-			<form class="form-horizontal" ng-submit="login.doLogin()">
-    			<div class="form-group">
-        			<div class="col-xs-10">
-            			<input type="text" class="form-control" ng-model="login.customer.email" placeholder="Email" required>
-       				 </div>
-    			</div>
-    			<div class="form-group">
-        			<div class="col-xs-10">
-            			<input type="password" class="form-control" ng-model="login.customer.password" placeholder="Password" required>
-       				 </div>
-    			</div>
-    			<button type="submit" class="btn" align="center">Login</button>
-    		</form>
+
+<div class="row m-1">
+    		<div class="col">
+    			<h2 class="display-4 m-2">Customer Login</h2>
+    			<hr>
+		<div class="form-group"><form ng-submit="login.doLogin()">
+			<label for="email">Email</label>
+			<input type="text" id="email" class="form-control w-50" ng-model="login.customer.email" required>
+		
+			<label for="pass">Password</label>
+			<input type="password" id="pass" class="form-control w-50" ng-model="login.customer.password" required>
+			<button class="btn btn-primary m-1" ng-click="login.doLogin()">Login</button>
+			<hr>
+			<div class="alert alert danger" ng-show="showFailLogin">Incorrect credentials</div>
+			</form>
+		</div>
+	</div>
 </div>
 <br>
 <br>
@@ -34,7 +35,7 @@
     			<input type="email" class="form-control" id="inputEmail" ng-model="custInfo.email" placeholder="Enter email" required>
     			<br>
     			<label for="inputPass">Password</label>
-    			<input type="text" class="form-control" id="inputPass" ng-model="custInfo.password" placeholder="Enter password" required>
+    			<input type="password" class="form-control" id="inputPass" ng-model="custInfo.password" placeholder="Enter password" required>
     			<br>
     			<label for="inputAdd">Address</label>
     			<input type="text" class="form-control" id="inputAdd" ng-model="custInfo.address" placeholder="Enter address" required>
@@ -53,5 +54,4 @@
     			<br>
     			<button type="submit" class="btn btn-primary">Submit</button>
 			</form>
-</div>
 </div>

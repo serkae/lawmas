@@ -19,7 +19,8 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 	})
 	.state("cart", {
 		url: "/cart",
-		templateUrl: "partials/cust-cart.html"
+		templateUrl: "partials/cust-cart.html",
+		controller: "viewCartController"
 	})
 	.state("viewItem", {
 		url: "/item",
@@ -44,6 +45,7 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 
 storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,ItemsService,$state) {
 	$scope.cart = ItemsService.getCart();
+	$rootScope.customer = CustomerService.getCustomer();
 	$scope.sortType = "department";
 	$scope.sortReverse = false;
 	$rootScope.departments = [];
@@ -144,7 +146,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 		console.log("within logout");
 		$rootScope.authenticated = false;
 		CustomerService.resetCustomer();
-		console.log(CustomerService.getCustomer());
+		$rootScope.customer = CustomerService.getCustomer();
 		$state.go("mainStorePage");
 	};
 	
@@ -166,15 +168,6 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 	$scope.updateCart = function(){
 		$scope.cart = ItemsService.getCart();
 	}
-	
-	$scope.getTotal = function() {
-		var total = 0;
-		for(var i = 0; i < $scope.cart.length; i++) {
-			var lineItem = $scope.cart[i];
-			total += (lineItem.unitPrice * lineItem.quantity);
-		}
-		return total;
-	};
 
 	$scope.getNumberOfItemsInCart = function() {
 		let numberOfItems = 0;
@@ -182,26 +175,6 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 			numberOfItems += $scope.cart[i].quantity;
 		}
 		return numberOfItems;
-	}
-
-
-	$scope.checkout = function() {
-		let customer = CustomerService.getCustomer();
-		if (customer.id < 0) {
-			$state.go("login");
-		} else {
-			let newOrder = {
-					id: -1,
-					customer: customer,
-					order_Date: new Date().getTime()
-			}
-			let createOrderPromise = ItemsService.createOrder(newOrder).then(function(response) {
-				ItemsService.createLineItems(response.data);
-			});
-			ItemsService.emptyCart();
-			$scope.cart = ItemsService.getCart();
-			$state.go("confirmCheckout");
-		}
 	}
 });
 
@@ -224,6 +197,10 @@ storeApp.service('ItemsService', function($http) {
 		return this.cart;
 	};
 
+	this.setCart = function(c){
+		this.cart = c;
+	};
+	
 	this.addToCart = function(lineItem) {
 		this.cart.push(lineItem);
 	}
@@ -239,11 +216,12 @@ storeApp.service('ItemsService', function($http) {
 	
 	this.removeFromCart = function(item) {
 		for (i = 0; i < this.cart.length; i++) {
-			if (this.cart[i].inventoryitemid === item.id) {
+			if (this.cart[i].inventoryitemid === item.inventoryitemid) {
 				item.inCart = false;
 				return true;
 			}
 		}
+		return false;
 	};
 	
 	this.getQuantityIfIn = function(item){
@@ -267,6 +245,26 @@ storeApp.service('ItemsService', function($http) {
 		return promise;
 	}
 
+	this.createLineItem = function(order,item){
+		let lineItem = {
+				id: -1,
+				orderid: order.id,
+				quantity: item.quantity,
+				inventoryitemid: item.inventoryitemid
+		};
+		console.log(lineItem);
+		console.log(order);
+		console.log(item);
+		$http.post('rest/lineitem/create', lineItem).then(
+				function(response) {
+					console.log(response.data);
+				},
+				function(error) {
+					return error;
+				}
+		);
+	};
+	
 	this.createLineItems = function(order) {
 		let promise;
 		this.cart.forEach(function(item) {
@@ -286,7 +284,7 @@ storeApp.service('ItemsService', function($http) {
 			);
 		});
 		return promise;
-	}
+	};
 });
 
 // Service that handles all things relating to Customer
@@ -410,6 +408,7 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $
 						console.log(login.customer);
 						CustomerService.setCustomer(response.data);
 						$rootScope.authenticated = true;
+						$rootScope.customer = response.data;
 						$state.go("mainStorePage");
 					} else {
 						alert("Invalid login!");
@@ -446,8 +445,7 @@ storeApp.controller("LoginCtrl", function(CustomerService, $rootScope, $scope, $
 			
 			$http.post('rest/customer/create', ncust).then(function(response){
 				CustomerService.setCustomer(response.data);
-				$scope.message = "Customer Created."
-				$scope.messageClass = "alert-success";
+				$state.go('mainStorePage');
 			});
 	}
 	
@@ -483,7 +481,7 @@ storeApp.controller('getOrdersCtrl',function($http, $scope, CustomerService){
 });
 
 // Displays the Customer information and handles editing the customer information
-storeApp.controller('custShowInfoController', function($http, $scope, CustomerService, CardService) {
+storeApp.controller('custShowInfoController', function($http, $rootScope, $scope, CustomerService, CardService) {
 
 	console.log("this is custshow");
 	var customer = CustomerService.getCustomer();
@@ -734,10 +732,11 @@ storeApp.controller('viewItemController', function($rootScope,$scope,$state,$htt
 
 		var productreview = {
 				id: -1,
-				inventoryItem: $scope.item,
+				inventoryitemid: $scope.item.id,
 				rating: $scope.chosenRating,
 				description: $scope.userReviewDescription
 		};
+		
 		console.log(productreview);
 		$http.post('rest/productreview/create',productreview).then(function(response){
 			$scope.productreviews.push(productreview);
@@ -749,20 +748,13 @@ storeApp.controller('viewItemController', function($rootScope,$scope,$state,$htt
 	
 	//create and add line item to cart
 	$scope.addToCart = function(item,quantity){
-		$scope.inCartQuantity = quantity;
 		if($scope.chosenQuantity == null){
 			$scope.showQuantityWarning = true;
 			return;
 		}
-
-		var lineitem = {
-				id: -1,
-				orderid: -1,
-				quantity: $scope.chosenQuantity,
-				inventoryitemid: $scope.item.id
-		}
-		console.log(lineitem);
-		$rootScope.addItemToCart(lineitem);
+		
+		$scope.inCartQuantity = quantity;
+		$rootScope.addItemToCart(item,quantity);
 		item.inCart = true;
 		console.log(ItemsService.getCart());
 	};
@@ -779,3 +771,128 @@ storeApp.controller('viewItemController', function($rootScope,$scope,$state,$htt
 	console.log($scope.item);
 
 });
+
+
+storeApp.controller('viewCartController', function($rootScope,$scope,$state,$http,CustomerService,ItemService,ItemsService){
+	$scope.cart = ItemsService.getCart();
+	$rootScope.customer = CustomerService.getCustomer();
+	$scope.showFirstButtons = true;
+	$scope.cart.total = 0;
+	$scope.progress = 20;
+	$scope.date = new Date().toLocaleDateString()
+	
+	$scope.cart.forEach(function(i){
+		$scope.cart.total += i.unitPrice * i.quantity;
+		i.removed = false;
+	});	
+	
+	$scope.removeFromCart = function(item){
+		ItemsService.removeFromCart(item);
+		item.removed = true;
+		item.inCart = false;
+		$scope.cart.total = 0;
+		$scope.cart.forEach(function(i){
+			if(!i.removed){
+				$scope.cart.total += i.unitPrice * i.quantity;
+			}	
+		});	
+	};
+	
+	$scope.addItemBack = function(item){
+		item.removed = false;
+		item.inCart = true;
+		$scope.cart.total = 0;
+		$scope.cart.forEach(function(i){
+			if(!i.removed){
+				$scope.cart.total += i.unitPrice * i.quantity;
+			}	
+		});	
+	};
+	
+	$scope.checkout = function() {
+		$scope.showFirstButtons = false;
+		
+		if ($rootScope.customer.id < 0) {
+			$scope.showLogin = true;
+			$scope.progress = 40;
+		} else {
+			if($scope.customer.card == null){
+				$scope.customer.card = {};
+				$scope.showPaymentForm = true;
+				$scope.progress = 60;
+			}
+			else{
+				$scope.showPayment = true;
+				$scope.showCheckout = true;
+				$scope.progress = 80;
+			}
+		}
+	};
+	
+	$scope.login = function(){
+		$rootScope.customer.email = $scope.inputEmail;
+		$rootScope.customer.password = $scope.inputPass;
+		
+		$http.post('rest/customer/auth',$scope.customer).then(function(response){
+			console.log(response.data);
+			if(response.data.authenticated){
+				$rootScope.customer = response.data;
+				CustomerService.setCustomer($scope.customer);
+				$scope.showLogin = false;
+				$scope.showFailLogin = false;
+				if($scope.customer.card == null){
+					$scope.customer.card = {};
+					$scope.showPaymentForm = true;
+					$scope.progress = 60;
+				}
+				else{
+					$scope.showPayment = true;
+					$scope.showCheckout = true;
+					$scope.progress = 80;
+				}
+			}else{
+				$scope.showFailLogin = true;
+			}
+		});
+	};
+	
+	$scope.submitPaymentInfo = function(){
+		$rootScope.customer.card.id = -1;
+		console.log($rootScope.customer.card);
+		$scope.showPaymentForm = false;
+		$http.post('rest/card/create',$rootScope.customer.card).then(function(response){
+			$rootScope.customer.card = response.data;
+			CustomerService.setCustomer($rootScope.customer);
+			$http.post('rest/customer/update',$rootScope.customer).then(function(response2){
+				$scope.showPayment = true;
+				$scope.showCheckout = true;
+				$scope.progress = 90;
+			});
+		});
+		
+	};
+	
+	$scope.processOrder = function(){
+		let newOrder = {
+				id: -1,
+				customer: $rootScope.customer,
+				order_Date: new Date().getTime()
+		}
+		ItemsService.createOrder(newOrder).then(function(response) {
+			console.log(response.data);
+			ItemsService.setCart = $scope.cart;
+			$scope.cart.forEach(function(item){
+				ItemsService.createLineItem(response.data,item);
+			});
+		});
+		$state.go('getPastOrders');
+	};
+});
+
+
+
+
+
+
+
+

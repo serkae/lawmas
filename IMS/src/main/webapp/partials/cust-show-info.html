@@ -1,19 +1,24 @@
-<div class="container" ng-app="custShowInfoApp" ng-controller="custShowInfoController">
-<div class="panel panel-info"> <!-- Originally had ng-app & ng-controller -->
-	<div class="panel-heading">
-		<h3>
-			<span class="glyphicon glyphicon-user"></span> Welcome,
-			{{custInfo.firstName + " " + custInfo.lastName}}
-		</h3>
-	</div>
-	<div class="panel-body">
-		<h4>Email: {{custInfo.email}}</h4>
-		<h4>Address: {{custInfo.address + ", " + custInfo.city + ", " +
-			custInfo.state.name + " " + custInfo.zipcode}}</h4>
-		<h4>Phone: {{custInfo.phone}}</h4>
-		<h4 ng-hide="cardlf==null">Card Number: {{cardlf}}</h4>
-		<h4 ng-hide="cardlf==null">Card Expiration Date: {{custInfo.card.expiration}}</h4>
-	</div>
+<div class="row pad-top-botm client-info">
+         <div class="col-lg-6 col-md-6 col-sm-6">
+         <h4>  <strong>Customer Information</strong></h4>
+           <strong> {{customer.firstname}} {{customer.lastname}}</strong>
+             <br>
+                  <b>Address :</b> {{customer.address}}
+              <br>
+                 {{customer.city}}, {{customer.state.name}}, United States. {{customer.zipcode}}
+             <br>
+             <b>Call :</b> {{customer.phone}}
+              <br>
+             <b>E-mail :</b> {{customer.email}}
+         </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            
+              <hr><br>
+               <b>Card :  {{customer.card.cardnumber}} </b>
+               <br>
+               	  Expires : {{customer.card.expiration}}
+              <br>
+         </div>
 </div>
 	<br>
 	<div class="row m-1">
@@ -115,6 +120,5 @@
     			<button type="submit" class="btn btn-primary">Submit</button>
 			</form>
 		</div>
-	</div>
 	</div>
 </div>
