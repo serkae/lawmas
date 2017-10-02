@@ -75,7 +75,7 @@ adminApp.config(function($stateProvider, $urlRouterProvider) {
 	.state("managerLogout", {
 		url: "/managerLogin",
 		templateUrl: "partials/viewCurrentInventory.html",
-		controller: "invCtrl"
+		controller: "ManagerLogout"
 	})
 	.state("customers",{
 		url: "/man-show-all-custs",
@@ -244,9 +244,10 @@ adminApp.controller("MainPageCtrl", function($state){
 	console.log("in adminMainPage");
 });
 
-adminApp.controller("ManagerLogout", function(state) {
-	console.log("Logging out...");
-	//$window.location.href = "http://localhost:8081/IMS/managerLogin.html";
+adminApp.controller("ManagerLogout", function($rootScope,$state,AdminService) {
+	$rootScope.authenticated = false;
+	AdminService.resetAdmin();
+	$state.go('managerLogin');
 });
 
 /*
