@@ -51,6 +51,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 	$scope.sortReverse = false;
 	// End filter
 	$scope.cart = ItemsService.getCart();
+	console.log($scope.cart);
 	$rootScope.customer = CustomerService.getCustomer();
 	$rootScope.departments = [];
 	let allInvItems;
@@ -99,7 +100,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 						
 						var inCart = false;
 						$scope.cart.forEach(function(c){
-							if(c.inventoryitemid == item.id){
+							if(c.inventoryitemid == item.id && c.removed == false){
 								dept.items[dept.index].push({
 									id: item.id,
 									name: item.name,
@@ -223,10 +224,17 @@ storeApp.service('ItemsService', function($http) {
 	this.removeFromCart = function(item) {
 		for (i = 0; i < this.cart.length; i++) {
 			if (this.cart[i].inventoryitemid === item.inventoryitemid) {
+				var index = this.cart.indexOf(item);
+				if (index > -1) {
+				    this.cart.splice(index, 1);
+				}
+				
 				item.inCart = false;
+				console.log("removed : "+this.cart);
 				return true;
 			}
 		}
+		console.log(" not removed");
 		return false;
 	};
 	
@@ -797,12 +805,15 @@ storeApp.controller('viewCartController', function($rootScope,$scope,$state,$htt
 	$scope.date = new Date().toLocaleDateString()
 	
 	$scope.cart.forEach(function(i){
+		if(i.removed == true){
+			ItemsService.removeFromCart(i);
+			return; //next loop iteration
+		}
 		$scope.cart.total += i.unitPrice * i.quantity;
 		i.removed = false;
 	});	
 	
 	$scope.removeFromCart = function(item){
-		ItemsService.removeFromCart(item);
 		item.removed = true;
 		item.inCart = false;
 		$scope.cart.total = 0;
@@ -900,10 +911,13 @@ storeApp.controller('viewCartController', function($rootScope,$scope,$state,$htt
 			newOrder = response.data;
 			ItemsService.setCart = $scope.cart;
 			$scope.cart.forEach(function(item){
-				ItemsService.createLineItem(response.data,item);
+				if(item.removed != true){
+					ItemsService.createLineItem(response.data,item);
+				}
 			});
 		});
 		ItemsService.emptyCart();
+		
 		$timeout( function(){ 
 				$http.post('rest/order/sendEmail',newOrder);
 				$state.go('getPastOrders');	
