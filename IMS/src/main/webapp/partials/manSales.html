@@ -1,67 +1,64 @@
-<div class = "w3-sidebar w3-bar-block" id = "managerSideNav" style = "width 25%">
-	<a ui-sref = "dashboard" class="w3-bar-item w3-button">Dashboard</a>
-    <a ui-sref = "manageInventoryHome" class="w3-bar-item w3-button">Manage Inventory</a>
-  	<a ui-sref="sales" class="w3-bar-item w3-button">Check Sales</a>
-  	<a ui-sref= "customers" class="w3-bar-item w3-button">Check Customer Database</a>
-    <a ui-sref= "adminInfo" class="w3-bar-item w3-button">View/Edit Personal Information</a>
-    <a href="#" class="w3-bar-item w3-button">Logout</a>
-</div>
-<div style = "margin-left:25%">
-	<nav class="navbar navbar-default">
-		<form class="navbar-form navbar-left" role="search">
-			<div class="form-group">
-				<div style="float: left">
-					<input type="text" class="form-control" placeholder="Search"
-						ng-model="searchItem">
+<div class="container border border-dark mt-2">
+		<h1 class="display-4 text-center m-2">Sales</h1>
+		<hr>
+		<div ng-hide = "hide == 1">
+		<nav class="float-left navbar navbar-default">
+			<form class="navbar-form navbar-left" role="search">
+				<div class="form-group">
+						<span class="lead">Find a sale: <input type="text" class="form-control" placeholder="Search" ng-model = "searchCustomer"></span>
 				</div>
-				<div style="float: right"></div>
-			</div>
-		</form>
-	</nav>
-	Viewing your current inventory
-	<!-- <p ng-repeat = "x in itemlist">{{x}}</p> -->
-	<table class="table" ng-hide = "hide == 1">
-		<thead>
+			</form>
+		</nav>
+	
+	<table class="table table-striped table-bordered table-hover">
+		<thead class="thead-inverse">
 			<tr>
-				<th>Order ID#</th>
-				<th>Customer ID#</th>
-				<th>Order Date</th>
-				<th>Display More Detail</th>
+				<th><span class="lead">Order ID#</span></th>
+				<th><span class="lead">Total</span></th>
+				<th><span class="lead">Customer ID#</span></th>
+				<th><span class="lead">Order Date</span></th>
+				<th><span class="lead">Display More Detail</span></th>
 			</tr>
 		</thead>
 		<tr
 			ng-repeat="x in orderList | orderBy:sortType:sortReverse | filter:searchItem">
-			<td>{{x.id}}</td>
-			<td>{{x.customer.id}}</td>
-			<td>{{x.order_Date | date:MM-dd-YY}}</td>
-			<td><button ng-click = "showOrder(x)">More Info</button></td>
+			<td><span class="lead">{{x.id}}</span></td>
+			<td><span class="lead">{{x.total | currency}}</span></td>
+			<td><span class="lead">{{x.customer.id}}</span></td>
+			<td><span class="lead">{{x.order_Date | date:MM-dd-YY}}</span></td>
+			<td><button class="btn btn-info" ng-click = "showOrder(x)">More Info</button></td>
 		</tr>
 	</table>
+
 </div>
 
-
-<div ng-hide = "hide == 0" style = "margin-left:25%">
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Order ID#</th>
-				<th>Line Item#</th>
-				<th>Quantity</th>
-				<th>From Inventory ID</th>
+	<div ng-hide = "hide == 0">
+		<button class="btn btn-info" ng-click = "goBack()">Go Back</button><br>
+		
+		<div class="m-2"><span class="lead"> Total: {{order.total | currency}}</span></div>
+		<table class="table table-striped table-bordered table-hover">
+			<thead class="thead-inverse">
+				<tr>
+					<th>Order ID#</th>
+					<th>Line Item#</th>
+					<th>Quantity</th>
+					<th>Item Name</th>
+					<th>Item Price</th>
+				</tr>
+			</thead>
+			<tr
+				ng-repeat="x in lineitems | orderBy:sortType:sortReverse | filter:searchItem">
+				<td><span class="lead">{{x.order.id}}</span></td>
+				<td><span class="lead">{{x.id}}</span></td>
+				<td><span class="lead">{{x.quantity}}</span></td>
+				<td><span class="lead">{{x.inventoryItem.name}}</span></td>
+				<td><span class="lead">{{x.inventoryItem.unitPrice | currency}}</span></td>
 			</tr>
-		</thead>
-		<tr
-			ng-repeat="x in lineitems | orderBy:sortType:sortReverse | filter:searchItem">
-			<td>{{x.order.id}}</td>
-			<td>{{x.id}}</td>
-			<td>{{x.quantity}}</td>
-			<td>{{x.inventoryItem.id}}</td>
-			<td><button ng-click = "goBack()">Go Back</button></td>
-		</tr>
-	</table>
-
+		</table>
+	
+	
+	</div>
+	
+	
 
 </div>
-
-
-

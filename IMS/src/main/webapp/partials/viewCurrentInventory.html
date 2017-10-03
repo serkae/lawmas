@@ -1,41 +1,37 @@
-<div>
+<div><h1 class="display-4 text-center m-2">Inventory</h1>
 	<nav class="navbar navbar-default">
 		<form class="navbar-form navbar-left" role="search">
 			<div class="form-group">
 				<div style="float: left">
-					<input type="text" class="form-control" placeholder="Search"
-						ng-model="searchItem">
+					<span class="lead">Find an item<input type="text" class="form-control" placeholder="Search"
+						ng-model="searchItem"></span>
 				</div>
 				<div style="float: right"></div>
 			</div>
 		</form>
 	</nav>
-	Viewing your current inventory
-	<!-- <p ng-repeat = "x in itemlist">{{x}}</p> -->
-	<div class="alert alert-info">Sort Type: {{sortType}} Sort
-		Reverse: {{sortReverse}} Search Query: {{searchInventory}}</div>
-	<table class="table">
-		<thead>
+
+	<table class="table table-striped table-bordered table-hover">
+		<thead class="thead-inverse">
 			<tr>
-				<th>id</th>
-				<th>department</th>
-				<th>name</th>
-				<th>unit price</th>
-				<th>quantity</th>
-				<th>description</th>
-				<th>image</th>
+				<th><span class="lead">Id</span></th>
+				<th><span class="lead">Department</span></th>
+				<th><span class="lead">Name</span></th>
+				<th><span class="lead">Unit price</span></th>
+				<th><span class="lead">Quantity</span></th>
+				<th><span class="lead">Description</span></th>
+				<th><span class="lead">Image</span></th>
 			</tr>
 		</thead>
 		<tr
 			ng-repeat="x in itemlist  | orderBy:sortType:sortReverse | filter:searchItem">
-			<td>{{x.id}}</td>
-			<td>{{x.department.name}}</td>
-			<td>{{x.name}}</td>
-			<td>{{x.unitPrice}}</td>
-			<td>{{x.quantity}}</td>
-			<td>{{x.description}}</td>
-			<td>{{x.image}}</td>
-			<td></td>
+			<td><span class="lead">{{x.id}}</span></td>
+			<td><span class="lead">{{x.department.name}}</span></td>
+			<td><span class="lead">{{x.name}}</span></td>
+			<td><span class="lead">{{x.unitPrice}}</span></td>
+			<td><span class="lead">{{x.quantity}}</span></td>
+			<td><span class="lead">{{x.description}}</span></td>
+			<td><span class="lead">{{x.image}}</span></td>
 		</tr>
 	</table>
 </div>

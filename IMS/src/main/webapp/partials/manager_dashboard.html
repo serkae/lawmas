@@ -1,22 +1,29 @@
-<div class = "w3-sidebar w3-bar-block" id = "managerSideNav" style = "width 25%">
-    <a ui-sref = "manageInventoryHome" class="w3-bar-item w3-button">Manage Inventory</a>
-  	<a ui-sref= "sales" class="w3-bar-item w3-button">Check Sales</a>
-  	<a ui-sref= "customers" class="w3-bar-item w3-button">Check Customer Database</a>
-    <a ui-sref= "adminInfo" class="w3-bar-item w3-button">View/Edit Personal Information</a>
-    <a href="#" class="w3-bar-item w3-button">Logout</a>
-</div>
 <div id="managerDashboard" ui-view>
 	<div class="container">
-		<h1>Manager Dashboard</h1>
-		<table class="columns">
+		<div class="row">
+			<div class="col text-center">
+				<h1 class="display-3">Manager Dashboard</h1>
+			</div>
+		</div>
+		<table>
 			<tr>
-				<td><div chart1 ></div></td>
-				<td><div chart2 ></div></td>
+				<td>
+					<div chart1></div>
+				</td>
+				<td>
+					<div chart2></div>
+				</td>
 			</tr>
 			<tr>
-				<td><div chart3 ></div></td>
-				<td><div chart4 ></div></td>
+				<td>
+					<div chart3></div>
+				</td>
+				<td>
+					<div chart4></div>
+				</td>
 			</tr>
 		</table>
 	</div>
+</div>
+</div>
 </div>
