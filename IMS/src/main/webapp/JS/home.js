@@ -44,10 +44,14 @@ storeApp.config(function($stateProvider, $urlRouterProvider) {
 });
 
 storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerService,ItemService,ItemsService,$state) {
+	// Begin filter
+	$rootScope.searchTerms = "";
+	$scope.orderBy = "id";
+	$scope.sortType = "inventoryItem";
+	$scope.sortReverse = false;
+	// End filter
 	$scope.cart = ItemsService.getCart();
 	$rootScope.customer = CustomerService.getCustomer();
-	$scope.sortType = "department";
-	$scope.sortReverse = false;
 	$rootScope.departments = [];
 	let allInvItems;
 	$http.get('rest/inventoryitem/getAll').then(function(data) {
@@ -55,6 +59,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 		$http.get('rest/department/getAll').then(function(response) {
 			$rootScope.departments = response.data;
 			$rootScope.departments.forEach(function(dept) {
+				console.log("yeeeeboi");
 				dept.items = [];
 				dept.show = [];
 				dept.index = -1;
@@ -118,7 +123,7 @@ storeApp.controller('MainCtrl', function($http, $scope,$rootScope,CustomerServic
 								name: item.name,
 								unitPrice: item.unitPrice,
 								quantity: item.quantity,
-								department: dept,
+								department: dept.id,
 								description: item.description,
 								discountid: item.discountid,
 								image: item.image,
