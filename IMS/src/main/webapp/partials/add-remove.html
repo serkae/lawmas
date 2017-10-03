@@ -1,5 +1,5 @@
-
-<div style="width-left: 25%" ng-hide="edit == 1">
+<h1 class="display-4 text-center m-2">Edit Inventory</h1>
+<div ng-hide="edit == 1">
 	<nav class="navbar navbar-default">
 		<form class="navbar-form navbar-left" role="search">
 			<div class="form-group">
@@ -12,22 +12,19 @@
 			</div>
 		</form>
 	</nav>
-	Edit your Existing Inventory
-	<!-- <p ng-repeat = "x in itemlist">{{x}}</p> -->
-
-	<table class="table">
-		<thead>
+	<table class="table table-striped table-bordered table-hover">
+		<thead class="thead-inverse">
 			<tr>
 				<th></th>
-				<th>id</th>
-				<th>department</th>
-				<th>name</th>
-				<th>unit price</th>
-				<th>discount</th>
-				<th>quantity</th>
-				<th>description</th>
-				<th>image</th>
-				<th>average rating</th>
+				<th>Id</th>
+				<th>Department</th>
+				<th>Name</th>
+				<th>Unit price</th>
+				<th>Discount</th>
+				<th>Quantity</th>
+				<th>Description</th>
+				<th>Image</th>
+				<th>Avg rating</th>
 			</tr>
 		</thead>
 		<tr
@@ -53,8 +50,8 @@
 	</table>
 </div>
 <div ng-hide="edit == 0">
-	<table>
-		<thead>
+	<table class="table table-striped table-bordered table-hover">
+		<thead class="thead-inverse">
 			<tr>
 				<th>Current Inventory Information</th>
 				<th>New Inventory Information</th>

@@ -4,13 +4,13 @@
 		<nav class="float-left navbar navbar-default">
 			<form class="navbar-form navbar-left" role="search">
 				<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search" ng-model = "searchCustomer">
+						<span class="lead">Find a sale: <input type="text" class="form-control" placeholder="Search" ng-model = "searchCustomer"></span>
 				</div>
 			</form>
 		</nav>
 	
-	<table class="table" ng-hide = "hide == 1">
-		<thead>
+	<table class="table table-striped table-bordered table-hover" ng-hide = "hide == 1">
+		<thead class="thead-inverse">
 			<tr>
 				<th>Order ID#</th>
 				<th>Customer ID#</th>
