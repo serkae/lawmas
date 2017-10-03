@@ -30,7 +30,7 @@
 	src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
+<link rel="stylesheet" type="text/css" href="css/stars.css">
 
 <meta charset="ISO-8859-1">
 <title>World Tree Management Portal</title>
@@ -39,18 +39,19 @@
 
 <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-dark">
 <div class="col">
-<a class="navbar-brand text-light float-left" ui-sref="dashboard"><em><i class="fa fa-tree fa-3" aria-hidden="true"></i> World Tree</em></a>
-
+<a class="navbar-brand text-light float-left" ng-show="!authenticated"><em><i class="fa fa-tree fa-3" aria-hidden="true"></i> World Tree</em></a>
+<a class="navbar-brand text-light float-left" ui-sref="dashboard" ng-show="authenticated"><em><i class="fa fa-tree fa-3" aria-hidden="true"></i> World Tree</em></a>
  </div>
  <div class="col">
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
 </button>
 
   <div class="collapse navbar-collapse float-right" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
 	
-      <div class="btn-group">
+      <div class="btn-group" ng-show="authenticated" ng-init="authenticated = false">
       <button class="btn btn-light nav-link" ui-sref="dashboard"><i class="fa fa-home" aria-hidden="true"></i> Dashboard</button></li>
       <button class="btn btn-light nav-link" ui-sref="manageInventoryHome">
 	  			<span><i class="fa fa-shopping-cart" aria-hidden="true"></i></i> Inventory</span>

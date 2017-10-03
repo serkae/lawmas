@@ -115,24 +115,28 @@ adminApp.controller("sCtrl", function($http, $scope){
 	$http.get('rest/order/getAll').success( function(data){
 		console.log(data);
 		$scope.orderList = data;
-//		for(var i = 0; i < orders.length; i ++){
-//			var order = orders[i];
-//			var date = new Date(order.order_Date);
-//			order.order_Date = date.toLocaleDateString();
-//			order.show = false;
-//			order.lineitems = [];
-//			$scope.orders.push(order);
-//		}
+		$scope.orderList.forEach(function(o){
+			$http.get("rest/lineitem/getAllByOrderId?id=" + o.id).success(function(response){
+				itemlist = response;
+				var total = 0;
+				itemlist.forEach(function(item){
+					total+= (item.quantity * item.inventoryItem.unitPrice);
+				});
+				o.total = total;
+			});
+		});
 	});
+	
 
 	$scope.showOrder = function(order){
 		$scope.hide = 1;
-		order.id = order.id;
+		$scope.order = order;
+		$scope.order.id = order.id;
 		console.log("called");
-		$http.get('rest/lineitem/getAllByOrderId?id='+order.id).then(function(response){
+		$http.get('rest/lineitem/getAllByOrderId?id='+$scope.order.id).then(function(response){
 			console.log(response);
 			$scope.lineitems = response.data;
-			order.show = true;
+			$scope.order.show = true;
 		});
 	}	
 	$scope.goBack = function(){
@@ -203,7 +207,7 @@ adminApp.service("AdminService", function($http, $q) {
 
 adminApp.controller("AdminCtrl", function(AdminService,$state,$rootScope) {
 	console.log("in AdminCtrl");
-
+	$rootScope.authenticated = false;
 	var login = this;
 	console.log(login);
 	login.admin = AdminService.getAdmin();
@@ -431,7 +435,6 @@ adminApp.controller("invCtrl", function($scope,$http){
 				departments.forEach(function(d){
 					if(d.id == item.departmentid){
 						item.department = d;
-						
 					}
 				});
 			});
@@ -827,7 +830,17 @@ adminApp.controller("salesCtrl", function($http, $scope){
 	
 	$http.get("rest/order/getAll").success(function(data){
 
-		$scope.orderList = data;	
+		$scope.orderList = data;
+		$scope.orderList.forEach(function(o){
+			$http.get("rest/lineitem/getAllByOrder?id =" + order.id).success(function(response){
+				$scope.itemlist = response;
+				var total = 0;
+				$scope.lineitems.forEach(function(item){
+					total+= (item.quantity * item.inventoryItem.unitPrice);
+				});
+				o.total = total;
+			});
+		});
 	});
 	
 	$scope.change = function(data){
@@ -836,7 +849,11 @@ adminApp.controller("salesCtrl", function($http, $scope){
 		console.log(order.id);
 		$http.get("rest/lineitem/getAllByOrder?id =" + order.id).success(function(response){
 			$scope.itemlist = response;
-			
+			var total = 0;
+			$scope.lineitems.forEach(function(item){
+				total+= (item.quantity * item.inventoryItem.unitPrice);
+			});
+			data.total = total;
 		});
 
 	};

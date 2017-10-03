@@ -99,7 +99,7 @@ public class LineItemController {
 	
 	@RequestMapping(value="/getAllByOrderId",method=(RequestMethod.GET),
 			produces=(MediaType.APPLICATION_JSON_VALUE))
-	public ResponseEntity<List<LineItem>> getLineItemsByOrderId(Integer id){
+	public ResponseEntity<List<LineItem>> getLineItemsByOrderId(int id){
 		//Order o = oservice.getOrder(orderId);
 		return new ResponseEntity<List<LineItem>>(liservice.getAllLineItemsByOrderId(id), HttpStatus.OK);
 	}
