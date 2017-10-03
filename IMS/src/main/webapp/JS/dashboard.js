@@ -30,7 +30,10 @@ adminApp.directive("chart1", function(LoadChart1) {
 					"title": "Items Sold by Date",
 					"width": 500,
 					"height": 400,
-					"legend": {position:'none'}
+					"legend": {position:'none'},
+					"hAxis": {textPosition: 'none' , title:"Time"},
+					"vAxis": {title:"# of items"}
+					
 				}
 			
 				var chart = new google.visualization.LineChart($elm[0]);
